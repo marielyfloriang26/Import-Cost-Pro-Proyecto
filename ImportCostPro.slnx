@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Capa de Datos/Capa de Datos.csproj" />
+  <Project Path="Capa de Negocio/Capa de Negocio.csproj" />
+  <Project Path="WebApp/WebApp.csproj" />
+</Solution>

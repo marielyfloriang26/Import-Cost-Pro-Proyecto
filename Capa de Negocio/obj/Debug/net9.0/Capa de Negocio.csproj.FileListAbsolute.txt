@@ -1,0 +1,14 @@
+C:\Users\orlan\source\repos\ImportCostPro\Capa de Negocio\bin\Debug\net9.0\Capa de Negocio.exe
+C:\Users\orlan\source\repos\ImportCostPro\Capa de Negocio\bin\Debug\net9.0\Capa de Negocio.deps.json
+C:\Users\orlan\source\repos\ImportCostPro\Capa de Negocio\bin\Debug\net9.0\Capa de Negocio.runtimeconfig.json
+C:\Users\orlan\source\repos\ImportCostPro\Capa de Negocio\bin\Debug\net9.0\Capa de Negocio.dll
+C:\Users\orlan\source\repos\ImportCostPro\Capa de Negocio\bin\Debug\net9.0\Capa de Negocio.pdb
+C:\Users\orlan\source\repos\ImportCostPro\Capa de Negocio\obj\Debug\net9.0\Capa de Negocio.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\orlan\source\repos\ImportCostPro\Capa de Negocio\obj\Debug\net9.0\Capa de Negocio.AssemblyInfoInputs.cache
+C:\Users\orlan\source\repos\ImportCostPro\Capa de Negocio\obj\Debug\net9.0\Capa de Negocio.AssemblyInfo.cs
+C:\Users\orlan\source\repos\ImportCostPro\Capa de Negocio\obj\Debug\net9.0\Capa de Negocio.csproj.CoreCompileInputs.cache
+C:\Users\orlan\source\repos\ImportCostPro\Capa de Negocio\obj\Debug\net9.0\Capa de Negocio.dll
+C:\Users\orlan\source\repos\ImportCostPro\Capa de Negocio\obj\Debug\net9.0\refint\Capa de Negocio.dll
+C:\Users\orlan\source\repos\ImportCostPro\Capa de Negocio\obj\Debug\net9.0\Capa de Negocio.pdb
+C:\Users\orlan\source\repos\ImportCostPro\Capa de Negocio\obj\Debug\net9.0\Capa de Negocio.genruntimeconfig.cache
+C:\Users\orlan\source\repos\ImportCostPro\Capa de Negocio\obj\Debug\net9.0\ref\Capa de Negocio.dll
