@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Capa_de_Negocio.Services.Implementations
 {
-    internal class example
+    public class example
     {
+        
     }
 }
