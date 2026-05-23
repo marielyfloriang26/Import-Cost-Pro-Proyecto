@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\orlan\\source\\repos\\ImportCostPro\\WebApp\\WebApp.csproj": {}
+    "C:\\Users\\orlan\\Documents\\GitHub\\ImportCostPro\\WebApp\\WebApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\orlan\\source\\repos\\ImportCostPro\\WebApp\\WebApp.csproj": {
+    "C:\\Users\\orlan\\Documents\\GitHub\\ImportCostPro\\WebApp\\WebApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\orlan\\source\\repos\\ImportCostPro\\WebApp\\WebApp.csproj",
+        "projectUniqueName": "C:\\Users\\orlan\\Documents\\GitHub\\ImportCostPro\\WebApp\\WebApp.csproj",
         "projectName": "WebApp",
-        "projectPath": "C:\\Users\\orlan\\source\\repos\\ImportCostPro\\WebApp\\WebApp.csproj",
+        "projectPath": "C:\\Users\\orlan\\Documents\\GitHub\\ImportCostPro\\WebApp\\WebApp.csproj",
         "packagesPath": "C:\\Users\\orlan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\orlan\\source\\repos\\ImportCostPro\\WebApp\\obj\\",
+        "outputPath": "C:\\Users\\orlan\\Documents\\GitHub\\ImportCostPro\\WebApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

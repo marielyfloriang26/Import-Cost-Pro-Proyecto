@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\orlan\\source\\repos\\ImportCostPro\\Capa de Negocio\\Capa de Negocio.csproj",
+      "projectUniqueName": "C:\\Users\\orlan\\Documents\\GitHub\\ImportCostPro\\Capa de Negocio\\Capa de Negocio.csproj",
       "projectName": "Capa de Negocio",
-      "projectPath": "C:\\Users\\orlan\\source\\repos\\ImportCostPro\\Capa de Negocio\\Capa de Negocio.csproj",
+      "projectPath": "C:\\Users\\orlan\\Documents\\GitHub\\ImportCostPro\\Capa de Negocio\\Capa de Negocio.csproj",
       "packagesPath": "C:\\Users\\orlan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\orlan\\source\\repos\\ImportCostPro\\Capa de Negocio\\obj\\",
+      "outputPath": "C:\\Users\\orlan\\Documents\\GitHub\\ImportCostPro\\Capa de Negocio\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
