@@ -1,3 +1,5 @@
+using Capa_de_Datos;
+
 namespace WebApp
 {
     public class Program
@@ -8,6 +10,9 @@ namespace WebApp
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            // Configurar Capa de Datos
+            builder.Services.AddDataServices(builder.Configuration);
 
             var app = builder.Build();
 

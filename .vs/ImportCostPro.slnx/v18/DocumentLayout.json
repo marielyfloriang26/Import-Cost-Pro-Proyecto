@@ -1,54 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\orlan\\Documents\\GitHub\\ImportCostPro\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{CC7E4887-121C-72E1-AE9B-39555C9F60A5}|Capa de Negocio\\Capa de Negocio.csproj|c:\\users\\orlan\\documents\\github\\importcostpro\\capa de negocio\\services\\implementations\\example.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC7E4887-121C-72E1-AE9B-39555C9F60A5}|Capa de Negocio\\Capa de Negocio.csproj|solutionrelative:capa de negocio\\services\\implementations\\example.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC7E4887-121C-72E1-AE9B-39555C9F60A5}|Capa de Negocio\\Capa de Negocio.csproj|c:\\users\\orlan\\documents\\github\\importcostpro\\capa de negocio\\dtos\\paisesdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC7E4887-121C-72E1-AE9B-39555C9F60A5}|Capa de Negocio\\Capa de Negocio.csproj|solutionrelative:capa de negocio\\dtos\\paisesdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "example.cs",
-              "DocumentMoniker": "C:\\Users\\orlan\\Documents\\GitHub\\ImportCostPro\\Capa de Negocio\\Services\\Implementations\\example.cs",
-              "RelativeDocumentMoniker": "Capa de Negocio\\Services\\Implementations\\example.cs",
-              "ToolTip": "C:\\Users\\orlan\\Documents\\GitHub\\ImportCostPro\\Capa de Negocio\\Services\\Implementations\\example.cs",
-              "RelativeToolTip": "Capa de Negocio\\Services\\Implementations\\example.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-23T03:44:54.763Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "PaisesDto.cs",
-              "DocumentMoniker": "C:\\Users\\orlan\\Documents\\GitHub\\ImportCostPro\\Capa de Negocio\\DTOs\\PaisesDto.cs",
-              "RelativeDocumentMoniker": "Capa de Negocio\\DTOs\\PaisesDto.cs",
-              "ToolTip": "C:\\Users\\orlan\\Documents\\GitHub\\ImportCostPro\\Capa de Negocio\\DTOs\\PaisesDto.cs",
-              "RelativeToolTip": "Capa de Negocio\\DTOs\\PaisesDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-23T03:42:21.267Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }
