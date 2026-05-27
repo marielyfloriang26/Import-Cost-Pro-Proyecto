@@ -1,4 +1,6 @@
 using Capa_de_Datos;
+using Capa_de_Negocio.Interfaces;
+using Capa_de_Negocio.Services;
 
 namespace WebApp
 {
@@ -14,6 +16,9 @@ namespace WebApp
             // Configurar Capa de Datos
             builder.Services.AddDataServices(builder.Configuration);
 
+            // Registramos el servicio de proveedores y su interfaz
+            builder.Services.AddScoped<IProveedorService, ProveedorService>();
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
