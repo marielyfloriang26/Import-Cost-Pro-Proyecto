@@ -1,4 +1,8 @@
 using Capa_de_Datos;
+using Capa_de_Datos.Repositories.Implementations;
+using Capa_de_Datos.Repositories.Interfaces;
+using Capa_de_Negocio.Interfaces;
+using Capa_de_Negocio.Servicios;
 
 namespace WebApp
 {
@@ -10,6 +14,8 @@ namespace WebApp
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<IMonedaRepository, MonedaRepository>();
+            builder.Services.AddScoped<IMonedaService, MonedaService>();
 
             // Configurar Capa de Datos
             builder.Services.AddDataServices(builder.Configuration);
