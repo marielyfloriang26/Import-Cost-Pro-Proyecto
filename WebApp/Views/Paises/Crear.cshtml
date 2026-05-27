@@ -1,0 +1,38 @@
+@model WebApp.ViewModels.PaisViewModel
+
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="card shadow-sm border-0 p-4">
+        <h3 class="text-dark font-weight-bold mb-3">Crear país</h3>
+        <hr />
+        
+        <form asp-action="Crear" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger font-weight-bold"></div>
+
+            <div class="mb-3">
+                <label asp-for="Nombre" class="form-label font-weight-bold text-secondary"></label>
+                <input asp-for="Nombre" class="form-control" placeholder="Ej. República Dominicana" />
+                <span asp-validation-for="Nombre" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CodigoIso" class="form-label font-weight-bold text-secondary"></label>
+                <input asp-for="CodigoIso" class="form-control text-uppercase" placeholder="Ej. DO" maxlength="3" />
+                <span asp-validation-for="CodigoIso" class="text-danger small"></span>
+            </div>
+
+            <div class="form-check mb-4">
+                <input asp-for="Estado" class="form-check-input" type="checkbox" />
+                <label asp-for="Estado" class="form-check-label font-weight-bold text-secondary">¿País Activo?</label>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-outline-secondary px-4">Volver atrás</a>
+                <button type="submit" class="btn btn-primary px-4">Crear país</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

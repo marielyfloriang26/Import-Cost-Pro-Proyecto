@@ -1,0 +1,29 @@
+@model WebApp.ViewModels.PaisViewModel
+
+<div class="container mt-4" style="max-width: 550px;">
+    <div class="card shadow-sm border-danger p-4 text-center">
+        <div class="text-danger mb-3 fs-1">⚠️</div>
+        
+        <h4 class="text-dark font-weight-bold mb-3">¿Está seguro que desea eliminar este país?</h4>
+        
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger text-start font-weight-bold mb-3">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        <div class="bg-light p-3 rounded text-start mb-4 border">
+            <p class="mb-1 text-secondary"><strong>País:</strong> @Model.Nombre</p>
+            <p class="mb-0 text-secondary"><strong>Código ISO:</strong> @Model.CodigoIso</p>
+        </div>
+
+        <form asp-action="Eliminar" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="d-flex justify-content-around">
+                <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancelar</a>
+                <button type="submit" class="btn btn-danger px-4">Aceptar</button>
+            </div>
+        </form>
+    </div>
+</div>
