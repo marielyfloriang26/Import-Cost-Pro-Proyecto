@@ -14,6 +14,8 @@ namespace WebApp
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<IMonedaRepository, MonedaRepository>();
+            builder.Services.AddScoped<IMonedaService, MonedaService>();
 
             // Registrar Servicios de Negocio
             builder.Services.AddScoped<Capa_de_Negocio.Services.Interfaces.ITasasDeCambioService, Capa_de_Negocio.Services.Implementations.TasasDeCambioService>();
