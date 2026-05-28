@@ -10,5 +10,6 @@ namespace Capa_de_Datos.Repositories.Interfaces
         Task AddAsync(T entity);
         void Update(T entity);
         void Remove(T entity);
+        Task SaveAsync();
     }
 }

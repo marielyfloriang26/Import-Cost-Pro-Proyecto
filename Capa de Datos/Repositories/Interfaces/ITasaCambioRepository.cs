@@ -4,5 +4,6 @@ namespace Capa_de_Datos.Repositories.Interfaces
 {
     public interface ITasaCambioRepository : IRepository<TasaCambio>
     {
+        Task<bool> HasBeenUsedInLandedCostAsync(TasaCambio tasa);
     }
 }

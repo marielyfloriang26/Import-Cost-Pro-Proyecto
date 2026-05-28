@@ -45,5 +45,10 @@ namespace Capa_de_Datos.Repositories.Implementations
         {
             _dbSet.Remove(entity);
         }
+
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }
