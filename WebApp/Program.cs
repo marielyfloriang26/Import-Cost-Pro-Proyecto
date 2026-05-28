@@ -2,6 +2,7 @@ using Capa_de_Datos;
 using Capa_de_Datos.Repositories.Implementations;
 using Capa_de_Datos.Repositories.Interfaces;
 using Capa_de_Negocio.Interfaces;
+using Capa_de_Negocio.Services;
 using Capa_de_Negocio.Servicios;
 
 namespace WebApp
@@ -24,6 +25,8 @@ namespace WebApp
             builder.Services.AddDataServices(builder.Configuration);
             builder.Services.AddScoped<IPaisRepository, PaisRepository>();
             builder.Services.AddScoped<IPaisService, PaisService>();
+
+            builder.Services.AddScoped<IProveedorService, ProveedorService>();
 
             var app = builder.Build();
 
