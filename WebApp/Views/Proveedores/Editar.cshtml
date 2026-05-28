@@ -1,0 +1,81 @@
+@model WebApp.Models.ProveedorCrearViewModel
+
+@{
+    ViewData["Title"] = "Editar Proveedor";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-0 mx-auto" style="max-width: 600px;">
+        <div class="card-body p-4">
+            <h2 class="text-dark font-weight-bold mb-3">Editar Proveedor</h2>
+            <hr />
+
+            <form asp-action="Editar" method="post">
+                @Html.AntiForgeryToken()
+                
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label asp-for="Nombre" class="form-label fw-bold">Proveedor / Razón Social</label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Correo" class="form-label fw-bold">Correo Electrónico</label>
+                    <input asp-for="Correo" class="form-control" type="email" />
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Telefono" class="form-label fw-bold">Teléfono de Contacto</label>
+                    <input asp-for="Telefono" class="form-control" />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PaisId" class="form-label fw-bold">País de Procedencia</label>
+                    <select asp-for="PaisId" class="form-select">
+                        <option value="">-- Seleccione un País --</option>
+                        @if (Model.Paises != null)
+                        {
+                            @foreach (var pais in Model.Paises)
+                            {
+                                <option value="@pais.Key">@pais.Value</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="PaisId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="MonedaPrincipalId" class="form-label fw-bold">Moneda de Facturación</label>
+                    <select asp-for="MonedaPrincipalId" class="form-select">
+                        <option value="">-- Seleccione una Moneda --</option>
+                        @if (Model.Monedas != null)
+                        {
+                            @foreach (var moneda in Model.Monedas)
+                            {
+                                <option value="@moneda.Key">@moneda.Value</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="MonedaPrincipalId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input asp-for="Estado" class="form-check-input" type="checkbox" />
+                    <label asp-for="Estado" class="form-check-label fw-bold">Proveedor Activo</label>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a asp-action="Index" class="btn btn-light px-4">Cancelar</a>
+                    <button type="submit" class="btn btn-primary px-4 shadow-sm">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}}

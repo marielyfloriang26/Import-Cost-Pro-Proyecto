@@ -1,0 +1,52 @@
+@model Capa_de_Negocio.DTOs.ProveedorDTO
+
+@{
+    ViewData["Title"] = "Eliminar Proveedor";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm border-0 mx-auto" style="max-width: 550px; border-radius: 12px;">
+        <div class="card-body p-4 text-center">
+            
+            <div class="text-danger mb-3">
+                <i class="bi bi-exclamation-triangle" style="font-size: 3.5rem;"></i>
+            </div>
+            
+            <h3 class="text-dark font-weight-bold mb-3" style="font-size: 1.5rem;">
+                ¿Está seguro que desea eliminar este proveedor?
+            </h3>
+            
+            <div class="alert alert-light border text-start my-4 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+                <div class="mb-2">
+                    <span class="text-muted small d-block">Proveedor / Razón Social</span>
+                    <strong class="text-dark" style="font-size: 1.1rem;">@Model.Nombre</strong>
+                </div>
+                <div>
+                    <span class="text-muted small d-block">Correo de contacto</span>
+                    <strong class="text-dark">@(string.IsNullOrEmpty(Model.Correo) ? "No registrado" : Model.Correo)</strong>
+                </div>
+            </div>
+            
+            <p class="text-muted small mb-4">
+                * Nota: El sistema no procesará la eliminación si este proveedor cuenta con órdenes de importación históricas asociadas.
+            </p>
+            
+            <hr class="text-muted opacity-25" />
+
+            <form asp-action="EliminarConfirmado" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                
+                <div class="d-flex justify-content-center gap-2 mt-2">
+                    <a asp-action="Index" class="btn btn-light px-4 fw-semibold" style="border-radius: 6px;">
+                        Cancelar
+                    </a>
+                    
+                    <button type="submit" class="btn btn-danger px-4 fw-semibold shadow-sm" style="border-radius: 6px;">
+                        Aceptar
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
