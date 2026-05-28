@@ -1,6 +1,7 @@
 using Capa_de_Datos.Entities;
 using Capa_de_Datos.Repositories.Interfaces;
 using Capa_de_Negocio.DTOs;
+using Capa_de_Negocio.Exceptions;
 using Capa_de_Negocio.Interfaces;
 
 namespace Capa_de_Negocio.Services;
@@ -98,7 +99,7 @@ public class ProveedorService : IProveedorService
                 // Si ya tiene ordenes y el usuario intento cambiar el pais o la moneda, frena el proceso y manda el error
                 if (proveedor.PaisId != dto.PaisId || proveedor.MonedaPrincipalId != dto.MonedaPrincipalId)
                 {
-                    throw new InvalidOperationException("No se puede modificar el país de origen ni la moneda principal de este proveedor porque ya tiene órdenes de importación registradas.");
+                    throw new ReglasProvException("No se puede modificar el país de origen ni la moneda principal de este proveedor porque ya tiene órdenes de importación registradas.");
                 }
             }
 
@@ -130,7 +131,7 @@ public class ProveedorService : IProveedorService
             // regla: Si el proveedor ya se uso en una orden, no se puede borrar
             if (await TieneOrdenesAsociadasAsync(id))
             {
-                throw new InvalidOperationException("No se puede eliminar este proveedor porque tiene órdenes de importación registradas.");
+                throw new ReglasProvException("No se puede eliminar este proveedor porque tiene órdenes de importación registradas.");
             }
 
             // Si no tiene ordenes, lo borra por completo

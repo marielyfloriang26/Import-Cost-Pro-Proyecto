@@ -4,160 +4,90 @@
     ViewData["Title"] = "Mantenimiento de Proveedores";
 }
 
-<div class="container-fluid py-4 animate__animated animate__fadeIn">
-    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-        <div>
-            <h1 class="h3 mb-1 text-dark fw-bold">
-                <i class="bi bi-truck text-primary me-2"></i>Mantenimiento de Proveedores
-            </h1>
-            <p class="text-muted mb-0 font-monospace" style="font-size: 0.9rem;">
-                Administración de suplidores internacionales, países de origen y monedas base.
-            </p>
-        </div>
-        <div>
-            <a asp-action="Crear" class="btn btn-primary d-inline-flex align-items-center shadow-sm fw-semibold px-3 py-2">
-                <i class="bi bi-plus-lg me-2"></i> Nuevo Proveedor
-            </a>
-        </div>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-dark font-weight-bold">Mantenimiento de Proveedores</h2>
+        <a asp-action="Crear" class="btn btn-primary px-4 shadow-sm">Crear proveedor</a>
     </div>
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show shadow-sm d-flex align-items-center" role="alert">
-            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
-            <div>@TempData["Success"]</div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-with-dismiss="alert" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show shadow-sm d-flex align-items-center" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
-            <div>@TempData["Error"]</div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-with-dismiss="alert" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
-    <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0" style="min-width: 900px;">
-                    <thead class="table-light border-bottom text-uppercase tracking-wider" style="font-size: 0.75rem; font-weight: 700; color: #6c757d;">
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-secondary text-uppercase" style="font-size: 0.85rem;">
+                    <tr>
+                        <th class="p-3">ID</th>
+                        <th class="p-3">Proveedor / Razón Social</th>
+                        <th class="p-3">Contacto</th>
+                        <th class="p-3">Procedencia</th>
+                        <th class="p-3">Moneda Base</th>
+                        <th class="p-3">Estado</th>
+                        <th class="p-3 text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model == null || !Model.Any())
+                    {
                         <tr>
-                            <th class="ps-4 py-3" style="width: 80px;">ID</th>
-                            <th class="py-3">Proveedor / Razón Social</th>
-                            <th class="py-3">Contacto</th>
-                            <th class="py-3">Procedencia</th>
-                            <th class="py-3">Moneda Base</th>
-                            <th class="py-3" style="width: 120px;">Estado</th>
-                            <th class="pe-4 py-3 text-end" style="width: 160px;">Acciones</th>
+                            <td colspan="7" class="text-center py-4 text-muted">No hay proveedores registrados.</td>
                         </tr>
-                    </thead>
-                    <tbody class="border-top-0" style="font-size: 0.9rem; color: #495057;">
-                        @if (Model == null || !Model.Any())
+                    }
+                    else
+                    {
+                        @foreach (var item in Model)
                         {
                             <tr>
-                                <td colspan="7" class="text-center py-5 text-muted">
-                                    <i class="bi bi-inbox fs-1 d-block mb-2 text-black-50"></i>
-                                    No hay proveedores registrados en el sistema actualmente.
+                                <td class="p-3 text-secondary font-monospace">#@item.Id</td>
+                                <td class="p-3 font-weight-bold text-dark">@item.Nombre</td>
+                                <td class="p-3">
+                                    <div class="d-flex flex-column" style="font-size: 0.9rem;">
+                                        <span><i class="bi bi-envelope text-muted me-1"></i>@(string.IsNullOrEmpty(item.Correo) ? "Sin correo" : item.Correo)</span>
+                                        <small class="text-muted"><i class="bi bi-telephone text-muted me-1"></i>@(string.IsNullOrEmpty(item.Telefono) ? "Sin teléfono" : item.Telefono)</small>
+                                    </div>
+                                </td>
+                                <td class="p-3">
+                                    <span class="badge bg-secondary px-2 py-1">@item.PaisNombre</span>
+                                </td>
+                                <td class="p-3 font-weight-bold text-secondary">
+                                    <span class="badge bg-light text-dark border px-2 py-1 font-monospace">@item.MonedaNombre</span>
+                                </td>
+                                <td class="p-3">
+                                    @if (item.Estado)
+                                    {
+                                        <span class="badge bg-success px-2 py-1">Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger px-2 py-1">Inactivo</span>
+                                    }
+                                </td>
+                                <td class="p-3 text-end">
+                                    <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-warning text-white me-1">Editar</a>
+                                    <a asp-action="Eliminar" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
                                 </td>
                             </tr>
                         }
-                        else
-                        {
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td class="ps-4 fw-semibold text-secondary">
-                                        #@item.Id
-                                    </td>
-                                    
-                                    <td>
-                                        <span class="fw-bold text-dark d-block text-truncate" style="max-width: 250px;">
-                                            @item.Nombre
-                                        </span>
-                                    </td>
-                                    
-                                    <td>
-                                        <div class="d-flex flex-column text-truncate" style="max-width: 200px;">
-                                            <small class="text-dark">
-                                                <i class="bi bi-envelope text-muted me-1"></i> @(string.IsNullOrEmpty(item.Correo) ? "Sin correo" : item.Correo)
-                                            </small>
-                                            <small class="text-muted mt-0.5">
-                                                <i class="bi bi-telephone text-muted me-1"></i> @(string.IsNullOrEmpty(item.Telefono) ? "Sin teléfono" : item.Telefono)
-                                            </small>
-                                        </div>
-                                    </td>
-                                    
-                                    <td>
-                                        <span class="badge bg-light text-dark border px-2 py-1.5 fw-medium">
-                                            <i class="bi bi-geo-alt-fill text-danger me-1"></i> @item.PaisNombre
-                                        </span>
-                                    </td>
-                                    
-                                    <td>
-                                        <span class="badge bg-light text-primary border border-primary-subtle px-2 py-1.5 font-monospace fw-bold">
-                                            <i class="bi bi-cash-coin me-1"></i> @item.MonedaNombre
-                                        </span>
-                                    </td>
-                                    
-                                    <td>
-                                        @if (item.Estado)
-                                        {
-                                            <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-2.5 py-1.5 d-inline-flex align-items-center fw-semibold">
-                                                <span class="bg-success rounded-circle me-1.5" style="width: 6px; height: 6px; display: inline-block;"></span>
-                                                Activo
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle px-2.5 py-1.5 d-inline-flex align-items-center fw-semibold">
-                                                <span class="bg-danger rounded-circle me-1.5" style="width: 6px; height: 6px; display: inline-block;"></span>
-                                                Inactivo
-                                            </span>
-                                        }
-                                    </td>
-                                    
-                                    <td class="pe-4 text-end">
-                                        <div class="btn-group shadow-sm border rounded">
-                                            <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-white btn-sm px-2 text-secondary hover-primary border-0" title="Editar datos">
-                                                <i class="bi bi-pencil-square text-primary fs-6"></i>
-                                            </a>
-                                            <a asp-action="Eliminar" asp-route-id="@item.Id" class="btn btn-white btn-sm px-2 text-secondary hover-danger border-0" title="Eliminar registro">
-                                                <i class="bi bi-trash3-fill text-danger fs-6"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-<style>
-    .btn-white {
-        background-color: #fff;
-    }
-    .btn-white:hover {
-        background-color: #f8f9fa;
-    }
-    .tracking-wider {
-        letter-spacing: 0.05em;
-    }
-    .table-hover tbody tr:hover {
-        background-color: rgba(248, 249, 250, 0.7) !important;
-        transition: background-color 0.2s ease;
-    }
-    .btn-group .btn:not(:last-child) {
-        border-right: 1px solid #dee2e6 !important;
-    }
-</style>
-
 @section Scripts {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 }

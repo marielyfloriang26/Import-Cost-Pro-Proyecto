@@ -4,6 +4,8 @@ namespace Capa_de_Negocio.Interfaces;
 
 public interface IProveedorService
 {
+    Task<ProveedorDTO?> ObtenerPorIdAsync(int id);
+    
     // lista todos los proveedores para la pantalla inicial
     Task<IEnumerable<ProveedorDTO>> ObtenerTodosAsync();
 
