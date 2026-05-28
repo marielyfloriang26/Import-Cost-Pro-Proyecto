@@ -76,6 +76,7 @@ namespace Capa_de_Negocio.Services.Implementations
 
             ValidarEstadoEdicion(ordenExistente);
             await ValidarEdicionCamposCriticos(ordenExistente, dto);
+            await ValidarCambioEntidadesActivas(ordenExistente, dto);
 
             ordenExistente.NumeroOrden = dto.NumeroOrden.Trim();
             ordenExistente.ImportadorId = dto.ImportadorId;
@@ -96,13 +97,42 @@ namespace Capa_de_Negocio.Services.Implementations
             var orden = await _repository.GetWithDetailsAsync(id);
             if (orden == null) return;
 
-            if (orden.EstadoOrden == EstadoOrden.Calculada || orden.EstadoOrden == EstadoOrden.Cerrada)
+            // Pág 82: No se debe permitir eliminar una orden que tenga cálculo oficial confirmado.
+            if (orden.EstadoOrden == EstadoOrden.Calculada || orden.EstadoOrden == EstadoOrden.Cerrada || orden.LandedCostCalculo != null)
             {
                 throw new OrdenImportacionLockedException("No se puede eliminar una orden que ya tiene un cálculo oficial o está cerrada.");
             }
 
             _repository.Remove(orden);
             await _repository.SaveAsync();
+        }
+
+        private async Task ValidarCambioEntidadesActivas(OrdenImportacion orden, OrdenImportacionDto dto)
+        {
+            // Regla Pág 80: Si el usuario cambia el campo, solo debe poder seleccionar registros activos.
+            if (dto.ImportadorId != orden.ImportadorId)
+            {
+                var ent = await _importadorRepository.GetByIdAsync(dto.ImportadorId);
+                if (ent == null || !ent.Estado) throw new InactiveEntityException("El nuevo importador seleccionado no existe o no está activo.");
+            }
+
+            if (dto.ProveedorId != orden.ProveedorId)
+            {
+                var ent = await _proveedorRepository.GetByIdAsync(dto.ProveedorId);
+                if (ent == null || !ent.Estado) throw new InactiveEntityException("El nuevo proveedor seleccionado no existe o no está activo.");
+            }
+
+            if (dto.PaisOrigenId != orden.PaisOrigenId)
+            {
+                var ent = await _paisService.ObtenerPorIdAsync(dto.PaisOrigenId);
+                if (ent == null || !ent.Estado) throw new InactiveEntityException("El nuevo país seleccionado no existe o no está activo.");
+            }
+
+            if (dto.MonedaId != orden.MonedaId)
+            {
+                var ent = await _monedaService.ObtenerPorIdAsync(dto.MonedaId);
+                if (ent == null || !ent.Estado) throw new InactiveEntityException("La nueva moneda seleccionada no existe o no está activa.");
+            }
         }
 
         public async Task<bool> CambiarEstadoAsync(int id, EstadoOrden nuevoEstado)
