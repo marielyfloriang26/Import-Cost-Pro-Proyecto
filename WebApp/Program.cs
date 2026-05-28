@@ -1,4 +1,8 @@
 using Capa_de_Datos;
+using Capa_de_Datos.Repositories.Implementations;
+using Capa_de_Datos.Repositories.Interfaces;
+using Capa_de_Negocio.Interfaces;
+using Capa_de_Negocio.Servicios;
 
 namespace WebApp
 {
@@ -16,6 +20,8 @@ namespace WebApp
 
             // Configurar Capa de Datos
             builder.Services.AddDataServices(builder.Configuration);
+            builder.Services.AddScoped<IPaisRepository, PaisRepository>();
+            builder.Services.AddScoped<IPaisService, PaisService>();
 
             var app = builder.Build();
 
