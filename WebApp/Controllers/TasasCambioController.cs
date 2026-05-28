@@ -22,6 +22,7 @@ public class TasasCambioController : Controller
         _monedaRepository = monedaRepository;
     }
 
+    // GET: TasasCambio
     public async Task<IActionResult> Index()
     {
         var tasasDto = await _service.GetTasas();
@@ -40,40 +41,17 @@ public class TasasCambioController : Controller
         return View(viewModels);
     }
 
-    public async Task<IActionResult> Details(int id)
-    {
-        try
-        {
-            var t = await _service.GetTasaById(id);
-            var monedas = await _monedaRepository.GetAllAsync();
-
-            var viewModel = new TasaCambioIndexViewModel
-            {
-                IdTasaCambio = t.IdTasaCambio,
-                MonedaOrigenNombre = monedas.FirstOrDefault(m => m.Id == t.MonedaOrigenId)?.Nombre ?? "N/A",
-                MonedaDestinoNombre = monedas.FirstOrDefault(m => m.Id == t.MonedaDestinoId)?.Nombre ?? "N/A",
-                ValorTasa = t.ValorTasa,
-                FechaVigencia = t.FechaVigencia,
-                Estado = t.Estado
-            };
-
-            return View(viewModel);
-        }
-        catch (TasaCambioNotFoundException)
-        {
-            return NotFound();
-        }
-    }
-
-    public async Task<IActionResult> Create()
+    // GET: TasasCambio/Crear
+    public async Task<IActionResult> Crear()
     {
         await CargarMonedasEnViewBag();
         return View(new TasaCambioFormViewModel());
     }
 
+    // POST: TasasCambio/Crear
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(TasaCambioFormViewModel viewModel)
+    public async Task<IActionResult> Crear(TasaCambioFormViewModel viewModel)
     {
         if (!ModelState.IsValid)
         {
@@ -108,7 +86,8 @@ public class TasasCambioController : Controller
         }
     }
 
-    public async Task<IActionResult> Edit(int id)
+    // GET: TasasCambio/Editar/5
+    public async Task<IActionResult> Editar(int id)
     {
         try
         {
@@ -133,9 +112,10 @@ public class TasasCambioController : Controller
         }
     }
 
+    // POST: TasasCambio/Editar/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, TasaCambioFormViewModel viewModel)
+    public async Task<IActionResult> Editar(int id, TasaCambioFormViewModel viewModel)
     {
         if (id != viewModel.IdTasaCambio) return BadRequest();
 
@@ -180,7 +160,8 @@ public class TasasCambioController : Controller
         }
     }
 
-    public async Task<IActionResult> Delete(int id)
+    // GET: TasasCambio/Eliminar/5
+    public async Task<IActionResult> Eliminar(int id)
     {
         try
         {
@@ -205,9 +186,10 @@ public class TasasCambioController : Controller
         }
     }
 
-    [HttpPost, ActionName("Delete")]
+    // POST: TasasCambio/Eliminar/5
+    [HttpPost, ActionName("Eliminar")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+    public async Task<IActionResult> EliminarConfirmado(int id)
     {
         try
         {
@@ -217,7 +199,7 @@ public class TasasCambioController : Controller
         catch (TasaCambioLockedException ex)
         {
             TempData["ErrorMessage"] = ex.Message;
-            return RedirectToAction(nameof(Delete), new { id });
+            return RedirectToAction(nameof(Eliminar), new { id });
         }
         catch (TasaCambioNotFoundException)
         {
