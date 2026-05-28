@@ -11,8 +11,10 @@ namespace Capa_de_Negocio.DTOs
         public int IdTasaCambio { get; set; }
         
         public int MonedaOrigenId { get; set; }
+        public string MonedaOrigenNombre { get; set; } = string.Empty;
 
         public int MonedaDestinoId { get; set; }
+        public string MonedaDestinoNombre { get; set; } = string.Empty;
 
         public decimal ValorTasa { get; set; }
 

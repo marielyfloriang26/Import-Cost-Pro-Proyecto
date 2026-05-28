@@ -1,7 +1,7 @@
 using Capa_de_Negocio.DTOs;
 using Capa_de_Negocio.Exceptions;
 using Capa_de_Negocio.Services.Interfaces;
-using Capa_de_Datos.Repositories.Interfaces;
+using Capa_de_Negocio.Interfaces;
 using Capa_de_Negocio.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,31 +14,55 @@ namespace WebApp.Controllers;
 public class TasasCambioController : Controller
 {
     private readonly ITasasDeCambioService _service;
-    private readonly IMonedaRepository _monedaRepository;
+    private readonly IMonedaService _monedaService;
 
-    public TasasCambioController(ITasasDeCambioService service, IMonedaRepository monedaRepository)
+    public TasasCambioController(ITasasDeCambioService service, IMonedaService monedaService)
     {
         _service = service;
-        _monedaRepository = monedaRepository;
+        _monedaService = monedaService;
     }
 
     // GET: TasasCambio
     public async Task<IActionResult> Index()
     {
         var tasasDto = await _service.GetTasas();
-        var monedas = await _monedaRepository.GetAllAsync();
 
         var viewModels = tasasDto.Select(t => new TasaCambioIndexViewModel
         {
             IdTasaCambio = t.IdTasaCambio,
-            MonedaOrigenNombre = monedas.FirstOrDefault(m => m.Id == t.MonedaOrigenId)?.Nombre ?? "N/A",
-            MonedaDestinoNombre = monedas.FirstOrDefault(m => m.Id == t.MonedaDestinoId)?.Nombre ?? "N/A",
+            MonedaOrigenNombre = t.MonedaOrigenNombre,
+            MonedaDestinoNombre = t.MonedaDestinoNombre,
             ValorTasa = t.ValorTasa,
             FechaVigencia = t.FechaVigencia,
             Estado = t.Estado
         });
 
         return View(viewModels);
+    }
+
+    // GET: TasasCambio/Details/5
+    public async Task<IActionResult> Details(int id)
+    {
+        try
+        {
+            var t = await _service.GetTasaById(id);
+
+            var viewModel = new TasaCambioIndexViewModel
+            {
+                IdTasaCambio = t.IdTasaCambio,
+                MonedaOrigenNombre = t.MonedaOrigenNombre,
+                MonedaDestinoNombre = t.MonedaDestinoNombre,
+                ValorTasa = t.ValorTasa,
+                FechaVigencia = t.FechaVigencia,
+                Estado = t.Estado
+            };
+
+            return View(viewModel);
+        }
+        catch (TasaCambioNotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     // GET: TasasCambio/Crear
@@ -161,18 +185,17 @@ public class TasasCambioController : Controller
     }
 
     // GET: TasasCambio/Eliminar/5
-    public async Task<IActionResult> Eliminar(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
             var t = await _service.GetTasaById(id);
-            var monedas = await _monedaRepository.GetAllAsync();
 
             var viewModel = new TasaCambioIndexViewModel
             {
                 IdTasaCambio = t.IdTasaCambio,
-                MonedaOrigenNombre = monedas.FirstOrDefault(m => m.Id == t.MonedaOrigenId)?.Nombre ?? "N/A",
-                MonedaDestinoNombre = monedas.FirstOrDefault(m => m.Id == t.MonedaDestinoId)?.Nombre ?? "N/A",
+                MonedaOrigenNombre = t.MonedaOrigenNombre,
+                MonedaDestinoNombre = t.MonedaDestinoNombre,
                 ValorTasa = t.ValorTasa,
                 FechaVigencia = t.FechaVigencia,
                 Estado = t.Estado
@@ -189,7 +212,7 @@ public class TasasCambioController : Controller
     // POST: TasasCambio/Eliminar/5
     [HttpPost, ActionName("Eliminar")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EliminarConfirmado(int id)
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
         try
         {
@@ -209,7 +232,7 @@ public class TasasCambioController : Controller
 
     private async Task CargarMonedasEnViewBag()
     {
-        var monedas = await _monedaRepository.GetAllAsync();
-        ViewBag.Monedas = new SelectList(monedas.Where(m => m.Estado), "Id", "Nombre");
+        var monedas = await _monedaService.ObtenerActivasAsync();
+        ViewBag.Monedas = new SelectList(monedas, "Id", "Nombre");
     }
 }
