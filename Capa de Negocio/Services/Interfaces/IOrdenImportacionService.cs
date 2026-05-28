@@ -8,6 +8,7 @@ namespace Capa_de_Negocio.Services.Interfaces
     public interface IOrdenImportacionService
     {
         Task<IEnumerable<OrdenImportacionDto>> ObtenerTodasAsync();
+        Task<IEnumerable<OrdenImportacionDto>> ObtenerAbiertasAsync();
         Task<OrdenImportacionDto?> ObtenerPorIdAsync(int id);
         Task<OrdenImportacionDto> CrearAsync(CrearOrdenImportacionDto dto);
         Task<OrdenImportacionDto> EditarAsync(int id, OrdenImportacionDto dto);

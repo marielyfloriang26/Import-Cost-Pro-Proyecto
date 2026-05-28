@@ -40,6 +40,12 @@ namespace Capa_de_Negocio.Services.Implementations
             return ordenes.Select(MapToDto);
         }
 
+        public async Task<IEnumerable<OrdenImportacionDto>> ObtenerAbiertasAsync()
+        {
+            var ordenes = await _repository.GetAllWithDetailsAsync();
+            return ordenes.Where(o => o.EstadoOrden == EstadoOrden.Abierta).Select(MapToDto);
+        }
+
         public async Task<OrdenImportacionDto?> ObtenerPorIdAsync(int id)
         {
             var orden = await _repository.GetWithDetailsAsync(id);
@@ -97,10 +103,9 @@ namespace Capa_de_Negocio.Services.Implementations
             var orden = await _repository.GetWithDetailsAsync(id);
             if (orden == null) return;
 
-            // Pág 82: No se debe permitir eliminar una orden que tenga cálculo oficial confirmado.
             if (orden.EstadoOrden == EstadoOrden.Calculada || orden.EstadoOrden == EstadoOrden.Cerrada || orden.LandedCostCalculo != null)
             {
-                throw new OrdenImportacionLockedException("No se puede eliminar una orden que ya tiene un cálculo oficial o está cerrada.");
+                throw new OrdenImportacionLockedException("No se puede eliminar esta orden porque ya tiene un cálculo oficial de landed cost o está cerrada.");
             }
 
             _repository.Remove(orden);
@@ -109,7 +114,6 @@ namespace Capa_de_Negocio.Services.Implementations
 
         private async Task ValidarCambioEntidadesActivas(OrdenImportacion orden, OrdenImportacionDto dto)
         {
-            // Regla Pág 80: Si el usuario cambia el campo, solo debe poder seleccionar registros activos.
             if (dto.ImportadorId != orden.ImportadorId)
             {
                 var ent = await _importadorRepository.GetByIdAsync(dto.ImportadorId);
@@ -153,6 +157,9 @@ namespace Capa_de_Negocio.Services.Implementations
             if (string.IsNullOrWhiteSpace(dto.NumeroOrden))
                 throw new Exception("El número de orden es requerido.");
 
+            if (dto.NumeroOrden.Length > 30)
+                throw new Exception("El número de orden no puede exceder los 30 caracteres.");
+
             var duplicado = await _repository.FindAsync(o => o.NumeroOrden == dto.NumeroOrden.Trim());
             if (duplicado.Any())
                 throw new DuplicateOrderNumberException("Ya existe una orden de importación registrada con este número.");
@@ -182,6 +189,9 @@ namespace Capa_de_Negocio.Services.Implementations
 
         private async Task ValidarEdicionCamposCriticos(OrdenImportacion orden, OrdenImportacionDto dto)
         {
+            if (dto.NumeroOrden.Length > 30)
+                throw new Exception("El número de orden no puede exceder los 30 caracteres.");
+
             if (orden.EstadoOrden == EstadoOrden.Calculada)
             {
                 bool camposCriticosCambiaron = 
@@ -193,10 +203,9 @@ namespace Capa_de_Negocio.Services.Implementations
                     orden.MedioTransporte != dto.MedioTransporte;
 
                 if (camposCriticosCambiaron)
-                    throw new OrdenImportacionLockedException("No se pueden modificar campos críticos porque la orden ya tiene un cálculo oficial de landed cost.");
+                    throw new OrdenImportacionLockedException("No se pueden modificar estos datos porque la orden ya tiene un cálculo oficial de landed cost.");
             }
 
-            // Validar que el nuevo número de orden no esté duplicado
             if (orden.NumeroOrden != dto.NumeroOrden.Trim())
             {
                 var duplicado = await _repository.FindAsync(o => o.NumeroOrden == dto.NumeroOrden.Trim() && o.Id != orden.Id);
@@ -212,9 +221,9 @@ namespace Capa_de_Negocio.Services.Implementations
             if (actual == EstadoOrden.Abierta)
                 esValida = nuevo == EstadoOrden.Calculada || nuevo == EstadoOrden.Cancelada;
             else if (actual == EstadoOrden.Calculada)
-                esValida = nuevo == EstadoOrden.Cerrada || nuevo == EstadoOrden.Abierta; // Permitir volver a abierta para recalcular si es necesario
+                esValida = nuevo == EstadoOrden.Cerrada || nuevo == EstadoOrden.Abierta; 
             else if (actual == EstadoOrden.Cerrada || actual == EstadoOrden.Cancelada)
-                esValida = false; // Estado terminal
+                esValida = false;
 
             if (!esValida)
                 throw new InvalidOrderStatusTransitionException($"Transición de estado de {actual} a {nuevo} no permitida.");
@@ -237,7 +246,6 @@ namespace Capa_de_Negocio.Services.Implementations
                 FechaOrden = o.FechaOrden,
                 MedioTransporte = o.MedioTransporte,
                 EstadoOrden = o.EstadoOrden,
-                // Calcular FOB Total desde la colección de productos
                 FobTotal = o.ProductosOrden?.Sum(p => p.Cantidad * p.PrecioUnitarioFob) ?? 0,
                 TotalEstimadoLandedCost = o.LandedCostCalculo?.CostoTotalImportacion ?? 0
             };
