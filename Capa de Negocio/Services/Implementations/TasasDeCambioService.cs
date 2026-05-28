@@ -22,6 +22,23 @@ namespace Capa_de_Negocio.Services.Implementations
             _monedaService = monedaService;
         }
 
+        public async Task<IEnumerable<TasaCambioDto>> GetTasasActivas()
+        {
+            var tasas = await _repository.FindAsync(t => t.Estado);
+            var monedas = await _monedaService.ObtenerTodasAsync();
+            return tasas.Select(t => new TasaCambioDto
+            {
+                IdTasaCambio = t.Id,
+                MonedaOrigenId = t.MonedaOrigenId,
+                MonedaOrigenNombre = monedas.FirstOrDefault(m => m.Id == t.MonedaOrigenId)?.Nombre ?? "N/A",
+                MonedaDestinoId = t.MonedaDestinoId,
+                MonedaDestinoNombre = monedas.FirstOrDefault(m => m.Id == t.MonedaDestinoId)?.Nombre ?? "N/A",
+                ValorTasa = t.ValorTasa,
+                FechaVigencia = t.FechaVigencia,
+                Estado = t.Estado
+            });
+        }
+
         public async Task<IEnumerable<TasaCambioDto>> GetTasas()
         {
             var tasas = await _repository.GetAllAsync();
