@@ -25,6 +25,8 @@ namespace WebApp
             builder.Services.AddDataServices(builder.Configuration);
             builder.Services.AddScoped<IPaisRepository, PaisRepository>();
             builder.Services.AddScoped<IPaisService, PaisService>();
+            builder.Services.AddScoped<IImportadorRepository, ImportadorRepository>();
+            builder.Services.AddScoped<IImportadorService, ImportadorService>();
 
             builder.Services.AddScoped<IProveedorService, ProveedorService>();
 
