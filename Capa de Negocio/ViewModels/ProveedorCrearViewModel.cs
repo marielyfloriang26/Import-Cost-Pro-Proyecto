@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApp.Models;
+namespace Capa_de_Negocio.ViewModels;
 
     public class ProveedorCrearViewModel
     {
