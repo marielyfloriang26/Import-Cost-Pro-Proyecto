@@ -184,8 +184,7 @@ public class TasasCambioController : Controller
         }
     }
 
-    // GET: TasasCambio/Eliminar/5
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Eliminar(int id)
     {
         try
         {

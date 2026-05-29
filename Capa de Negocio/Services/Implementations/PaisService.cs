@@ -123,7 +123,6 @@ namespace Capa_de_Negocio.Servicios
 
         public async Task<IEnumerable<PaisDto>> ObtenerActivosAsync()
         {
-            // Usa el FindAsync que heredaste del repositorio genérico de tu equipo
             var paisesActivos = await _paisRepository.FindAsync(p => p.Estado == true);
             
             return paisesActivos.Select(p => new PaisDto
