@@ -5,6 +5,9 @@ namespace Capa_de_Datos.Enums
         Unidad,
         Caja,
         Paquete,
+        Docena,
+        Galón,
+        Metro,
         Otros
     }
 }

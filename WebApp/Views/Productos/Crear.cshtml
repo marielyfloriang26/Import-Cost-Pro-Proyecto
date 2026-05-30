@@ -1,0 +1,169 @@
+@model Capa_de_Negocio.ViewModels.ProductoViewModel
+
+@{
+    ViewData["Title"] = "Nuevo Producto";
+}
+
+<div class="container py-4 animate__animated animate__fadeIn">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            
+            <div class="mb-3">
+                <a asp-action="Index" class="text-decoration-none text-muted small fw-semibold">
+                    <i class="bi bi-arrow-left me-1"></i> Volver al listado
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body p-4 border-bottom bg-light rounded-top-3">
+                    <h2 class="h4 mb-1 text-dark fw-bold">
+                        <i class="bi bi-plus-circle text-primary me-2"></i>Registrar Nuevo Producto
+                    </h2>
+                    <p class="text-muted small mb-0">Complete los datos requeridos para dar de alta al producto en el catálogo de importación.</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form asp-action="Crear" method="post">
+                        @Html.AntiForgeryToken()
+
+                        @* Resumen de Alertas para atrapar ReglasProdException (como código duplicado) *@
+                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mb-4" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                @foreach (var error in ViewData.ModelState[string.Empty]!.Errors)
+                                {
+                                    <span>@error.ErrorMessage</span>
+                                }
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label asp-for="Nombre" class="form-label fw-semibold text-secondary small"></label>
+                            <input asp-for="Nombre" class="form-control" placeholder="Ej. Laptop Dell Latitude 5420" />
+                            <span asp-validation-for="Nombre" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CodigoReferencia" class="form-label fw-semibold text-secondary small"></label>
+                            <input asp-for="CodigoReferencia" class="form-control font-monospace" placeholder="Ej. LAP-DELL-5420" />
+                            <span asp-validation-for="CodigoReferencia" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="PaisOrigenId" class="form-label fw-semibold text-secondary small"></label>
+                                <select asp-for="PaisOrigenId" class="form-select">
+                                    <option value="">-- Seleccione un País --</option>
+                                    @if (Model.PaisesOptions != null)
+                                    {
+                                        @foreach (var pais in Model.PaisesOptions)
+                                        {
+                                            <option value="@pais.Key">@pais.Value</option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="PaisOrigenId" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CategoriaId" class="form-label fw-semibold text-secondary small"></label>
+                                <select asp-for="CategoriaId" class="form-select">
+                                    <option value="">-- Seleccione una Categoría --</option>
+                                    @if (Model.CategoriasOptions != null)
+                                    {
+                                        @foreach (var cat in Model.CategoriasOptions)
+                                        {
+                                            <option value="@cat.Key">@cat.Value</option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="CategoriaId" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="PesoUnitario" class="form-label fw-semibold text-secondary small"></label>
+                                <div class="input-group">
+                                    <input asp-for="PesoUnitario" class="form-control" type="number" step="0.001" placeholder="0.000" />
+                                    <span class="input-group-text bg-light text-muted small">Kg</span>
+                                </div>
+                                <span asp-validation-for="PesoUnitario" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="UnidadMedidaSelected" class="form-label fw-semibold text-secondary small"></label>
+                                <select asp-for="UnidadMedidaSelected" class="form-select">
+                                    @foreach (var unidad in Model.UnidadesMedidaOptions)
+                                    {
+                                        <option value="@unidad">@unidad</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="UnidadMedidaSelected" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-light rounded-3 mb-3 border border-light-subtle">
+                            <div class="d-flex align-items-center mb-1">
+                                <h6 class="text-dark fw-bold mb-0" style="font-size: 0.9rem;">Dimensiones Físicas</h6>
+                                <span class="badge bg-secondary ms-2 font-monospace" style="font-size: 0.65rem; padding: 3px 6px;">Opcionales en conjunto</span>
+                            </div>
+                            <p class="text-muted small mb-3" style="font-size: 0.8rem;">Si especifica una medida, es obligatorio ingresar las tres (Largo, Ancho y Alto) con valores mayores que 0.</p>
+                            
+                            <div class="row g-2">
+                                <div class="col-md-4">
+                                    <label asp-for="Largo" class="form-label text-secondary small font-weight-bold" style="font-size: 0.75rem;"></label>
+                                    <div class="input-group input-group-sm">
+                                        <input asp-for="Largo" class="form-control font-monospace" type="number" step="0.1" placeholder="0.0" />
+                                        <span class="input-group-text text-muted">cm</span>
+                                    </div>
+                                    <span asp-validation-for="Largo" class="text-danger small" style="font-size: 0.75rem;"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="Ancho" class="form-label text-secondary small font-weight-bold" style="font-size: 0.75rem;"></label>
+                                    <div class="input-group input-group-sm">
+                                        <input asp-for="Ancho" class="form-control font-monospace" type="number" step="0.1" placeholder="0.0" />
+                                        <span class="input-group-text text-muted">cm</span>
+                                    </div>
+                                    <span asp-validation-for="Ancho" class="text-danger small" style="font-size: 0.75rem;"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="Alto" class="form-label text-secondary small font-weight-bold" style="font-size: 0.75rem;"></label>
+                                    <div class="input-group input-group-sm">
+                                        <input asp-for="Alto" class="form-control font-monospace" type="number" step="0.1" placeholder="0.0" />
+                                        <span class="input-group-text text-muted">cm</span>
+                                    </div>
+                                    <span asp-validation-for="Alto" class="text-danger small" style="font-size: 0.75rem;"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Descripcion" class="form-label fw-semibold text-secondary small"></label>
+                            <textarea asp-for="Descripcion" class="form-control" rows="2" placeholder="Detalles o notas aclaratorias sobre el producto..."></textarea>
+                            <span asp-validation-for="Descripcion" class="text-danger small"></span>
+                        </div>
+                         <div class="form-check form-switch pt-3">
+                                    <input asp-for="Estado" type="checkbox" class="form-check-input" role="switch" />
+                                    <label asp-for="Estado" class="form-check-label fw-semibold text-dark small">Producto Activo</label>
+                                </div>
+                        <div class="text-end pt-3 border-top">
+                            <a asp-action="Index" class="btn btn-light fw-semibold me-2 px-4">Cancelar</a>
+                            <button type="submit" class="btn btn-primary fw-semibold px-4 shadow-sm">Guardar Producto</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+}

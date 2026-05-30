@@ -1,6 +1,7 @@
 using Capa_de_Datos;
 using Capa_de_Datos.Repositories.Implementations;
 using Capa_de_Datos.Repositories.Interfaces;
+using Capa_de_Negocio.Implementations;
 using Capa_de_Negocio.Interfaces;
 using Capa_de_Negocio.Services;
 using Capa_de_Negocio.Servicios;
@@ -31,6 +32,7 @@ namespace WebApp
 
             builder.Services.AddScoped<IProveedorService, ProveedorService>();
             builder.Services.AddScoped<ICategoriaArancelariaService, CategoriaArancelariaService>();
+            builder.Services.AddScoped<IProductoService, ProductoService>();
 
             var app = builder.Build();
 
