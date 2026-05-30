@@ -22,6 +22,7 @@ namespace WebApp
 
             // Registrar Servicios de Negocio
             builder.Services.AddScoped<Capa_de_Negocio.Services.Interfaces.ITasasDeCambioService, Capa_de_Negocio.Services.Implementations.TasasDeCambioService>();
+            builder.Services.AddScoped<Capa_de_Negocio.Services.Interfaces.IOrdenImportacionService, Capa_de_Negocio.Services.Implementations.OrdenImportacionService>();
 
             // Configurar Capa de Datos
             builder.Services.AddDataServices(builder.Configuration);

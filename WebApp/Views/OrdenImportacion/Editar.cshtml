@@ -1,0 +1,150 @@
+@model Capa_de_Negocio.ViewModels.OrdenImportacionFormViewModel
+@using Capa_de_Datos.Enums
+
+@{
+    bool esLectura = Model.EstadoOrden == EstadoOrden.Calculada || Model.EstadoOrden == EstadoOrden.Cerrada || Model.EstadoOrden == EstadoOrden.Cancelada;
+    bool soloLecturaCritica = Model.EstadoOrden == EstadoOrden.Calculada;
+}
+
+<div class="container mt-4" style="max-width: 800px;">
+    <div class="card shadow-sm border-0 p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="text-dark font-weight-bold mb-0">Editar orden de importación</h3>
+            @if (Model.EstadoOrden == EstadoOrden.Calculada)
+            {
+                <span class="badge bg-info text-dark px-3 py-2">Estado: Calculada (Bloqueo de campos críticos)</span>
+            }
+        </div>
+        <hr />
+        
+        <form asp-action="Editar" method="post">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="EstadoOrden" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger font-weight-bold"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="NumeroOrden" class="form-label font-weight-bold text-secondary"></label>
+                    <input asp-for="NumeroOrden" class="form-control" readonly="@(Model.EstadoOrden == EstadoOrden.Cerrada)" />
+                    <span asp-validation-for="NumeroOrden" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="FechaOrden" class="form-label font-weight-bold text-secondary"></label>
+                    @if (soloLecturaCritica || esLectura)
+                    {
+                        <input type="date" class="form-control" value="@Model.FechaOrden.ToString("yyyy-MM-dd")" disabled />
+                        <input type="hidden" asp-for="FechaOrden" />
+                    }
+                    else
+                    {
+                        <input asp-for="FechaOrden" class="form-control" />
+                    }
+                    <span asp-validation-for="FechaOrden" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ImportadorId" class="form-label font-weight-bold text-secondary"></label>
+                    @if (soloLecturaCritica || esLectura)
+                    {
+                        <select asp-for="ImportadorId" class="form-select" asp-items="ViewBag.Importadores" disabled></select>
+                        <input type="hidden" asp-for="ImportadorId" />
+                    }
+                    else
+                    {
+                        <select asp-for="ImportadorId" class="form-select" asp-items="ViewBag.Importadores">
+                            <option value="">-- Seleccione Importador --</option>
+                        </select>
+                    }
+                    <span asp-validation-for="ImportadorId" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ProveedorId" class="form-label font-weight-bold text-secondary"></label>
+                    @if (soloLecturaCritica || esLectura)
+                    {
+                        <select asp-for="ProveedorId" class="form-select" asp-items="ViewBag.Proveedores" disabled></select>
+                        <input type="hidden" asp-for="ProveedorId" />
+                    }
+                    else
+                    {
+                        <select asp-for="ProveedorId" class="form-select" asp-items="ViewBag.Proveedores">
+                            <option value="">-- Seleccione Proveedor --</option>
+                        </select>
+                    }
+                    <span asp-validation-for="ProveedorId" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="PaisOrigenId" class="form-label font-weight-bold text-secondary"></label>
+                    @if (soloLecturaCritica || esLectura)
+                    {
+                        <select asp-for="PaisOrigenId" class="form-select" asp-items="ViewBag.Paises" disabled></select>
+                        <input type="hidden" asp-for="PaisOrigenId" />
+                    }
+                    else
+                    {
+                        <select asp-for="PaisOrigenId" class="form-select" asp-items="ViewBag.Paises">
+                            <option value="">-- Seleccione País --</option>
+                        </select>
+                    }
+                    <span asp-validation-for="PaisOrigenId" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="MonedaId" class="form-label font-weight-bold text-secondary"></label>
+                    @if (soloLecturaCritica || esLectura)
+                    {
+                        <select asp-for="MonedaId" class="form-select" asp-items="ViewBag.Monedas" disabled></select>
+                        <input type="hidden" asp-for="MonedaId" />
+                    }
+                    else
+                    {
+                        <select asp-for="MonedaId" class="form-select" asp-items="ViewBag.Monedas">
+                            <option value="">-- Seleccione Moneda --</option>
+                        </select>
+                    }
+                    <span asp-validation-for="MonedaId" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label asp-for="MedioTransporte" class="form-label font-weight-bold text-secondary"></label>
+                    @if (soloLecturaCritica || esLectura)
+                    {
+                        <select asp-for="MedioTransporte" class="form-select" asp-items="ViewBag.MediosTransporte" disabled></select>
+                        <input type="hidden" asp-for="MedioTransporte" />
+                    }
+                    else
+                    {
+                        <select asp-for="MedioTransporte" class="form-select" asp-items="ViewBag.MediosTransporte">
+                            <option value="">-- Seleccione Transporte --</option>
+                        </select>
+                    }
+                    <span asp-validation-for="MedioTransporte" class="text-danger small"></span>
+                </div>
+            </div>
+
+            @if (soloLecturaCritica)
+            {
+                <div class="alert alert-warning small py-2 mb-4">
+                    <i class="bi bi-exclamation-triangle me-1"></i> Esta orden ya ha sido calculada. Para modificar campos críticos (Importador, Proveedor, País, Moneda, Fecha o Transporte), primero debe restablecer la orden al estado Abierta eliminando el cálculo actual (si el flujo lo permite) o crear una nueva orden.
+                </div>
+            }
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-outline-secondary px-4">Volver atrás</a>
+                <button type="submit" class="btn btn-warning text-white px-4">Guardar cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

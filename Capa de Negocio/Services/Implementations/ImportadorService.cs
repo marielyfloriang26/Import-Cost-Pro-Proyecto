@@ -11,13 +11,11 @@ namespace Capa_de_Negocio.Servicios
     {
         private readonly IImportadorRepository _importadorRepository;
         private readonly IPaisRepository _paisRepository;
-        private readonly ImportCostContext _context;
 
-        public ImportadorService(IImportadorRepository importadorRepository, IPaisRepository paisRepository, ImportCostContext context)
+        public ImportadorService(IImportadorRepository importadorRepository, IPaisRepository paisRepository)
         {
             _importadorRepository = importadorRepository;
             _paisRepository = paisRepository;
-            _context = context;
         }
 
         public async Task<IEnumerable<ImportadorDto>> ObtenerTodosAsync()
@@ -100,7 +98,7 @@ namespace Capa_de_Negocio.Servicios
             };
 
             await _importadorRepository.AddAsync(nuevoImportador);
-            await _context.SaveChangesAsync();
+            await _importadorRepository.SaveAsync();
         }
 
         public async Task EditarAsync(ImportadorDto dto)
@@ -141,7 +139,7 @@ namespace Capa_de_Negocio.Servicios
             importadorExistente.Estado = dto.Estado;
 
             _importadorRepository.Update(importadorExistente);
-            await _context.SaveChangesAsync();
+            await _importadorRepository.SaveAsync();
         }
 
         public async Task EliminarAsync(int id)
@@ -157,7 +155,7 @@ namespace Capa_de_Negocio.Servicios
             }
 
             _importadorRepository.Remove(importador);
-            await _context.SaveChangesAsync();
+            await _importadorRepository.SaveAsync();
         }
 
         private void ValidarCamposEstructurales(ImportadorDto dto)

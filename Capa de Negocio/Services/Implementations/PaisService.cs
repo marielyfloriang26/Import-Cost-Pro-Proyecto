@@ -10,13 +10,11 @@ namespace Capa_de_Negocio.Servicios
     public class PaisService : IPaisService
     {
         private readonly IPaisRepository _paisRepository;
-        private readonly ImportCostContext _context;
 
-        // Inyectamos la interfaz del repositorio y el contexto de base de datos
-        public PaisService(IPaisRepository paisRepository, ImportCostContext context)
+        // Inyectamos la interfaz del repositorio
+        public PaisService(IPaisRepository paisRepository)
         {
             _paisRepository = paisRepository;
-            _context = context;
         }
 
         public async Task<IEnumerable<PaisDto>> ObtenerTodosAsync()
@@ -72,7 +70,7 @@ namespace Capa_de_Negocio.Servicios
             };
 
             await _paisRepository.AddAsync(nuevoPais);
-            await _context.SaveChangesAsync();
+            await _paisRepository.SaveAsync();
         }
 
         public async Task EditarAsync(PaisDto paisDto)
@@ -102,7 +100,7 @@ namespace Capa_de_Negocio.Servicios
             paisExistente.Estado = paisDto.Estado;
 
             _paisRepository.Update(paisExistente);
-            await _context.SaveChangesAsync();
+            await _paisRepository.SaveAsync();
         }
 
         public async Task EliminarAsync(int id)
@@ -118,7 +116,7 @@ namespace Capa_de_Negocio.Servicios
             }
 
             _paisRepository.Remove(pais);
-            await _context.SaveChangesAsync();
+            await _paisRepository.SaveAsync();
         }
 
         public async Task<IEnumerable<PaisDto>> ObtenerActivosAsync()
