@@ -61,6 +61,7 @@
                             </div>
                         </div>
 
+
                         <div class="card bg-light border-0 rounded-3 p-3 mb-4">
                             <div class="row align-items-center">
                                 <div class="col-md-5 mb-2 mb-md-0">
@@ -84,7 +85,12 @@
                                 </div>
                             </div>
                         </div>
-
+                         <div class="col-md-4 mb-3 ps-md-4">
+                                <div class="form-check form-switch pt-3">
+                                    <input asp-for="Estado" type="checkbox" class="form-check-input" role="switch" />
+                                    <label asp-for="Estado" class="form-check-label fw-semibold text-dark small">Categoría Activa</label>
+                                </div>
+                         </div>
                         <div class="text-end pt-3 border-top">
                             <a asp-action="Index" class="btn btn-light fw-semibold me-2 px-4">Cancelar</a>
                             <button type="submit" class="btn btn-primary fw-semibold px-4 shadow-sm">Crear categoría arancelaria</button>
