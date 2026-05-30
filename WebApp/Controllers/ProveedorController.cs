@@ -3,7 +3,7 @@ using Capa_de_Datos.Repositories.Interfaces;
 using Capa_de_Negocio.DTOs;
 using Capa_de_Negocio.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.Models;
+using Capa_de_Negocio.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Capa_de_Negocio.Exceptions;
 

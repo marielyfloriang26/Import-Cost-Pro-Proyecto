@@ -4,6 +4,7 @@ using Capa_de_Datos.Repositories.Interfaces;
 using Capa_de_Negocio.Interfaces;
 using Capa_de_Negocio.Services;
 using Capa_de_Negocio.Servicios;
+using Capa_Negocio.Implementations;
 
 namespace WebApp
 {
@@ -30,6 +31,7 @@ namespace WebApp
             builder.Services.AddScoped<IImportadorService, ImportadorService>();
 
             builder.Services.AddScoped<IProveedorService, ProveedorService>();
+            builder.Services.AddScoped<ICategoriaArancelariaService, CategoriaArancelariaService>();
 
             var app = builder.Build();
 
