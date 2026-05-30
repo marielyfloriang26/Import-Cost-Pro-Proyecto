@@ -14,12 +14,10 @@ namespace Capa_de_Negocio.Servicios
     public class MonedaService : IMonedaService
     {
         private readonly IMonedaRepository _monedaRepository;
-        private readonly ImportCostContext _context;
 
-        public MonedaService(IMonedaRepository monedaRepository, ImportCostContext context)
+        public MonedaService(IMonedaRepository monedaRepository)
         {
             _monedaRepository = monedaRepository;
-            _context = context;
         }
 
         public async Task<IEnumerable<MonedaDto>> ObtenerTodasAsync()
@@ -107,7 +105,7 @@ namespace Capa_de_Negocio.Servicios
             };
 
             await _monedaRepository.AddAsync(nuevaMoneda);
-            await _context.SaveChangesAsync();
+            await _monedaRepository.SaveAsync();
         }
 
         public async Task EditarAsync(MonedaDto monedaDto)
@@ -169,7 +167,7 @@ namespace Capa_de_Negocio.Servicios
             monedaExistente.Estado = monedaDto.Estado;
 
             _monedaRepository.Update(monedaExistente);
-            await _context.SaveChangesAsync();
+            await _monedaRepository.SaveAsync();
         }
 
         public async Task EliminarAsync(int id)
@@ -191,7 +189,7 @@ namespace Capa_de_Negocio.Servicios
             }
 
             _monedaRepository.Remove(moneda);
-            await _context.SaveChangesAsync();
+            await _monedaRepository.SaveAsync();
         }
     }
 }

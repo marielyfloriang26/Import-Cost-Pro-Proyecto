@@ -81,6 +81,7 @@ public class ProveedorService : IProveedorService
 
             // Guarda el nuevo proveedor en la base de datos
             await _proveedorRepository.AddAsync(nuevoProveedor);
+            await _proveedorRepository.SaveAsync();
             return true;
         }
 
@@ -118,6 +119,7 @@ public class ProveedorService : IProveedorService
 
             // Aplica los cambios en la base de datos
             _proveedorRepository.Update(proveedor);
+            await _proveedorRepository.SaveAsync();
             return true;
         }
 
@@ -136,6 +138,7 @@ public class ProveedorService : IProveedorService
 
             // Si no tiene ordenes, lo borra por completo
             _proveedorRepository.Remove(proveedor);
+            await _proveedorRepository.SaveAsync();
             return true;
         }
 

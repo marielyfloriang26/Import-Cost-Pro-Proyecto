@@ -1,0 +1,118 @@
+@model Capa_de_Negocio.ViewModels.OrdenImportacionIndexViewModel
+@using Capa_de_Datos.Enums
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-dark font-weight-bold">Detalle de la Orden: @Model.NumeroOrden</h2>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-secondary me-2">Volver al listado</a>
+            @if (Model.EstadoOrden == EstadoOrden.Abierta || Model.EstadoOrden == EstadoOrden.Calculada)
+            {
+                <a asp-action="Editar" asp-route-id="@Model.Id" class="btn btn-warning text-white">Editar General</a>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Información General -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 font-weight-bold text-primary">Información General</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <label class="small text-uppercase text-secondary font-weight-bold d-block">Importador</label>
+                            <span class="text-dark fs-5">@Model.ImportadorNombre</span>
+                        </div>
+                        <div class="col-sm-6 mb-3 text-sm-end">
+                            <label class="small text-uppercase text-secondary font-weight-bold d-block">Estado</label>
+                            @switch (Model.EstadoOrden)
+                            {
+                                case EstadoOrden.Abierta:
+                                    <span class="badge bg-primary fs-6">Abierta</span>
+                                    break;
+                                case EstadoOrden.Calculada:
+                                    <span class="badge bg-info text-dark fs-6">Calculada</span>
+                                    break;
+                                case EstadoOrden.Cerrada:
+                                    <span class="badge bg-success fs-6">Cerrada</span>
+                                    break;
+                                case EstadoOrden.Cancelada:
+                                    <span class="badge bg-secondary fs-6">Cancelada</span>
+                                    break;
+                            }
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label class="small text-uppercase text-secondary font-weight-bold d-block">Proveedor</label>
+                            <span class="text-dark fs-5">@Model.ProveedorNombre</span>
+                        </div>
+                        <div class="col-sm-6 mb-3 text-sm-end">
+                            <label class="small text-uppercase text-secondary font-weight-bold d-block">Fecha de Orden</label>
+                            <span class="text-dark">@Model.FechaOrden.ToString("dd/MM/yyyy")</span>
+                        </div>
+                        <div class="col-sm-4 mb-3">
+                            <label class="small text-uppercase text-secondary font-weight-bold d-block">País de Origen</label>
+                            <span class="text-dark">@Model.PaisOrigenNombre</span>
+                        </div>
+                        <div class="col-sm-4 mb-3 text-center">
+                            <label class="small text-uppercase text-secondary font-weight-bold d-block">Moneda</label>
+                            <span class="text-dark">@Model.MonedaNombre</span>
+                        </div>
+                        <div class="col-sm-4 mb-3 text-end">
+                            <label class="small text-uppercase text-secondary font-weight-bold d-block">Transporte</label>
+                            <span class="text-dark">@Model.MedioTransporte</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aquí irán las tablas de Productos y Gastos en el futuro -->
+            <div class="alert alert-secondary text-center py-4 border-dashed">
+                <i class="bi bi-box-seam fs-2 d-block mb-2"></i>
+                <p class="mb-0">Los módulos de <strong>Detalle de Productos</strong> y <strong>Gastos de Importación</strong> se integrarán en esta vista próximamente.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Resumen de Costos -->
+            <div class="card shadow-sm border-0 mb-4 bg-light">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="mb-0 font-weight-bold">Resumen Financiero</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush bg-transparent">
+                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
+                            <span class="text-secondary font-weight-bold">FOB TOTAL (Local)</span>
+                            <span class="text-dark font-weight-bold fs-5">@Model.FobTotal.ToString("N2")</span>
+                        </li>
+                        @if (Model.EstadoOrden == EstadoOrden.Calculada || Model.EstadoOrden == EstadoOrden.Cerrada)
+                        {
+                            <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3 border-top border-2">
+                                <span class="text-success font-weight-bold">LANDED COST ESTIMADO</span>
+                                <span class="text-success font-weight-bold fs-4">@Model.TotalEstimadoLandedCost.ToString("N2")</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="card-footer bg-white p-3 border-0 text-center">
+                    @if (Model.EstadoOrden == EstadoOrden.Abierta)
+                    {
+                        <button class="btn btn-primary w-100 shadow-sm mb-2" disabled>Calcular Landed Cost</button>
+                    }
+                    else if (Model.EstadoOrden == EstadoOrden.Calculada)
+                    {
+                        <button class="btn btn-success w-100 shadow-sm" disabled>Cerrar Orden</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .border-dashed {
+        border: 2px dashed #dee2e6 !important;
+    }
+</style>

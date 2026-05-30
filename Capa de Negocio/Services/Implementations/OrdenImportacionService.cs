@@ -15,21 +15,21 @@ namespace Capa_de_Negocio.Services.Implementations
     public class OrdenImportacionService : IOrdenImportacionService
     {
         private readonly IOrdenImportacionRepository _repository;
-        private readonly IImportadorRepository _importadorRepository;
-        private readonly IProveedorRepository _proveedorRepository;
+        private readonly IImportadorService _importadorService;
+        private readonly IProveedorService _proveedorService;
         private readonly IPaisService _paisService;
         private readonly IMonedaService _monedaService;
 
         public OrdenImportacionService(
             IOrdenImportacionRepository repository,
-            IImportadorRepository importadorRepository,
-            IProveedorRepository proveedorRepository,
+            IImportadorService importadorService,
+            IProveedorService proveedorService,
             IPaisService paisService,
             IMonedaService monedaService)
         {
             _repository = repository;
-            _importadorRepository = importadorRepository;
-            _proveedorRepository = proveedorRepository;
+            _importadorService = importadorService;
+            _proveedorService = proveedorService;
             _paisService = paisService;
             _monedaService = monedaService;
         }
@@ -116,26 +116,30 @@ namespace Capa_de_Negocio.Services.Implementations
         {
             if (dto.ImportadorId != orden.ImportadorId)
             {
-                var ent = await _importadorRepository.GetByIdAsync(dto.ImportadorId);
-                if (ent == null || !ent.Estado) throw new InactiveEntityException("El nuevo importador seleccionado no existe o no está activo.");
+                var ent = await _importadorService.ObtenerPorIdAsync(dto.ImportadorId);
+                if (ent == null) throw new ImportadorNotFoundException($"El importador con ID {dto.ImportadorId} no existe.");
+                if (!ent.Estado) throw new InactiveImportadorException("El nuevo importador seleccionado no está activo.");
             }
 
             if (dto.ProveedorId != orden.ProveedorId)
             {
-                var ent = await _proveedorRepository.GetByIdAsync(dto.ProveedorId);
-                if (ent == null || !ent.Estado) throw new InactiveEntityException("El nuevo proveedor seleccionado no existe o no está activo.");
+                var ent = await _proveedorService.ObtenerPorIdAsync(dto.ProveedorId);
+                if (ent == null) throw new ProveedorNotFoundException($"El proveedor con ID {dto.ProveedorId} no existe.");
+                if (!ent.Estado) throw new InactiveProveedorException("El nuevo proveedor seleccionado no está activo.");
             }
 
             if (dto.PaisOrigenId != orden.PaisOrigenId)
             {
                 var ent = await _paisService.ObtenerPorIdAsync(dto.PaisOrigenId);
-                if (ent == null || !ent.Estado) throw new InactiveEntityException("El nuevo país seleccionado no existe o no está activo.");
+                if (ent == null) throw new PaisNotFoundException($"El país con ID {dto.PaisOrigenId} no existe.");
+                if (!ent.Estado) throw new InactivePaisException("El nuevo país seleccionado no está activo.");
             }
 
             if (dto.MonedaId != orden.MonedaId)
             {
                 var ent = await _monedaService.ObtenerPorIdAsync(dto.MonedaId);
-                if (ent == null || !ent.Estado) throw new InactiveEntityException("La nueva moneda seleccionada no existe o no está activa.");
+                if (ent == null) throw new CurrencyNotFoundException($"La moneda con ID {dto.MonedaId} no existe.");
+                if (!ent.Estado) throw new InactiveCurrencyException("La nueva moneda seleccionada no está activa.");
             }
         }
 
@@ -155,30 +159,34 @@ namespace Capa_de_Negocio.Services.Implementations
         private async Task ValidarOrdenNueva(CrearOrdenImportacionDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.NumeroOrden))
-                throw new Exception("El número de orden es requerido.");
+                throw new OrdenImportacionException("El número de orden es requerido.");
 
             if (dto.NumeroOrden.Length > 30)
-                throw new Exception("El número de orden no puede exceder los 30 caracteres.");
+                throw new OrdenImportacionException("El número de orden no puede exceder los 30 caracteres.");
 
             var duplicado = await _repository.FindAsync(o => o.NumeroOrden == dto.NumeroOrden.Trim());
             if (duplicado.Any())
                 throw new DuplicateOrderNumberException("Ya existe una orden de importación registrada con este número.");
 
-            var importador = await _importadorRepository.GetByIdAsync(dto.ImportadorId);
-            if (importador == null || !importador.Estado)
-                throw new InactiveEntityException("El importador seleccionado no existe o no está activo.");
+            var importador = await _importadorService.ObtenerPorIdAsync(dto.ImportadorId);
+            if (importador == null) throw new ImportadorNotFoundException($"El importador con ID {dto.ImportadorId} no existe.");
+            if (!importador.Estado)
+                throw new InactiveImportadorException("El importador seleccionado no está activo.");
 
-            var proveedor = await _proveedorRepository.GetByIdAsync(dto.ProveedorId);
-            if (proveedor == null || !proveedor.Estado)
-                throw new InactiveEntityException("El proveedor seleccionado no existe o no está activo.");
+            var proveedor = await _proveedorService.ObtenerPorIdAsync(dto.ProveedorId);
+            if (proveedor == null) throw new ProveedorNotFoundException($"El proveedor con ID {dto.ProveedorId} no existe.");
+            if (!proveedor.Estado)
+                throw new InactiveProveedorException("El proveedor seleccionado no está activo.");
 
             var pais = await _paisService.ObtenerPorIdAsync(dto.PaisOrigenId);
-            if (pais == null || !pais.Estado)
-                throw new InactiveEntityException("El país seleccionado no existe o no está activo.");
+            if (pais == null) throw new PaisNotFoundException($"El país con ID {dto.PaisOrigenId} no existe.");
+            if (!pais.Estado)
+                throw new InactivePaisException("El país seleccionado no está activo.");
 
             var moneda = await _monedaService.ObtenerPorIdAsync(dto.MonedaId);
-            if (moneda == null || !moneda.Estado)
-                throw new InactiveEntityException("La moneda seleccionada no existe o no está activa.");
+            if (moneda == null) throw new CurrencyNotFoundException($"La moneda con ID {dto.MonedaId} no existe.");
+            if (!moneda.Estado)
+                throw new InactiveCurrencyException("La moneda seleccionada no está activa.");
         }
 
         private void ValidarEstadoEdicion(OrdenImportacion orden)
@@ -190,7 +198,7 @@ namespace Capa_de_Negocio.Services.Implementations
         private async Task ValidarEdicionCamposCriticos(OrdenImportacion orden, OrdenImportacionDto dto)
         {
             if (dto.NumeroOrden.Length > 30)
-                throw new Exception("El número de orden no puede exceder los 30 caracteres.");
+                throw new OrdenImportacionException("El número de orden no puede exceder los 30 caracteres.");
 
             if (orden.EstadoOrden == EstadoOrden.Calculada)
             {

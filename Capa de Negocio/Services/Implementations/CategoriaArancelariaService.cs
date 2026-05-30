@@ -9,15 +9,12 @@ namespace Capa_Negocio.Implementations
     public class CategoriaArancelariaService : ICategoriaArancelariaService
     {
         private readonly IRepository<CategoriaArancelaria> _categoriaRepo;
-        private readonly IRepository<Producto> _productoRepo;
 
         // Constructor 
         public CategoriaArancelariaService(
-            IRepository<CategoriaArancelaria> categoriaRepo, 
-            IRepository<Producto> productoRepo)
+            IRepository<CategoriaArancelaria> categoriaRepo)
         {
             _categoriaRepo = categoriaRepo;
-            _productoRepo = productoRepo;
         }
 
     

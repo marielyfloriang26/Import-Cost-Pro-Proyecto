@@ -1,0 +1,68 @@
+@model Capa_de_Negocio.ViewModels.OrdenImportacionIndexViewModel
+@using Capa_de_Datos.Enums
+
+<div class="container mt-4" style="max-width: 650px;">
+    <div class="card shadow-sm border-danger p-4 text-center">
+        <div class="text-danger mb-3 fs-1">⚠️</div>
+        
+        <h4 class="text-dark font-weight-bold mb-3">¿Está seguro que desea eliminar esta orden de importación?</h4>
+        
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger text-start font-weight-bold mb-3">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        <div class="bg-light p-3 rounded text-start mb-4 border">
+            <div class="row">
+                <div class="col-6 mb-2">
+                    <p class="mb-0 text-secondary small font-weight-bold text-uppercase">Número de Orden</p>
+                    <p class="mb-0 text-dark">@Model.NumeroOrden</p>
+                </div>
+                <div class="col-6 mb-2 text-end">
+                    <p class="mb-0 text-secondary small font-weight-bold text-uppercase">Fecha</p>
+                    <p class="mb-0 text-dark">@Model.FechaOrden.ToString("dd/MM/yyyy")</p>
+                </div>
+                <div class="col-12 mb-2">
+                    <p class="mb-0 text-secondary small font-weight-bold text-uppercase">Importador</p>
+                    <p class="mb-0 text-dark">@Model.ImportadorNombre</p>
+                </div>
+                <div class="col-12 mb-2">
+                    <p class="mb-0 text-secondary small font-weight-bold text-uppercase">Proveedor</p>
+                    <p class="mb-0 text-dark">@Model.ProveedorNombre</p>
+                </div>
+                <div class="col-6">
+                    <p class="mb-0 text-secondary small font-weight-bold text-uppercase">Estado</p>
+                    <p class="mb-0">
+                         @switch (Model.EstadoOrden)
+                         {
+                             case EstadoOrden.Abierta:
+                                 <span class="text-primary">Abierta</span>
+                                 break;
+                             default:
+                                 <span class="text-dark">@Model.EstadoOrden</span>
+                                 break;
+                         }
+                    </p>
+                </div>
+                <div class="col-6 text-end">
+                    <p class="mb-0 text-secondary small font-weight-bold text-uppercase">FOB Total</p>
+                    <p class="mb-0 text-dark font-weight-bold">@Model.FobTotal.ToString("N2") @Model.MonedaNombre</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning small text-start mb-4">
+            <i class="bi bi-info-circle me-1"></i> Se eliminarán también todos los productos y gastos asociados a esta orden. Esta acción no se puede deshacer.
+        </div>
+
+        <form asp-action="Eliminar" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="d-flex justify-content-around">
+                <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancelar</a>
+                <button type="submit" class="btn btn-danger px-4 shadow-sm">Confirmar Eliminación</button>
+            </div>
+        </form>
+    </div>
+</div>
