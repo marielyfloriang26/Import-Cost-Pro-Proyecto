@@ -1,0 +1,113 @@
+@model IEnumerable<Capa_de_Negocio.ViewModels.GastoImportacionViewModel>
+
+@{
+    int ordenId = ViewBag.OrdenId;
+    string numeroOrden = ViewBag.NumeroOrden;
+    string estadoOrden = ViewBag.EstadoOrden;
+    
+    // Regla: Bloquear acciones si la orden esta Calculada, Cerrada o Cancelada
+    bool permiteModificaciones = estadoOrden == "Abierta";
+}
+
+<div class="container mt-4">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-3" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="text" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mb-3" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i> @TempData["ErrorMessage"]
+            <button type="text" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="text-dark font-weight-bold mb-0">Gastos de Importación</h2>
+            <p class="text-muted mb-0">Orden de Importación: <span class="font-weight-bold text-primary">@numeroOrden</span> | Estado: 
+                @if (permiteModificaciones)
+                {
+                    <span class="badge bg-success px-2 py-1">@estadoOrden</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary px-2 py-1">@estadoOrden</span>
+                }
+            </p>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <a asp-action="Index" asp-route-ordenId="" class="btn btn-outline-secondary px-3 shadow-sm">
+                Cambiar Orden
+            </a>
+            
+            @if (permiteModificaciones)
+            {
+                <a asp-action="Registrar" asp-route-ordenId="@ordenId" class="btn btn-primary px-4 shadow-sm">
+                    Registrar gasto
+                </a>
+            }
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-secondary text-uppercase">
+                    <tr>
+                        <th class="p-3">Tipo de gasto</th>
+                        <th class="p-3 text-end">Monto</th>
+                        <th class="p-3">Moneda</th>
+                        <th class="p-3">Método de distribución</th>
+                        <th class="p-3">Fecha</th>
+                        <th class="p-3 text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">No hay gastos de importación registrados para esta orden.</td>
+                        </tr>
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="p-3 font-weight-bold text-dark">
+                                @System.Text.RegularExpressions.Regex.Replace(item.TipoGasto.ToString(), "([a-z])([A-Z])", "$1 $2")
+                            </td>
+                            <td class="p-3 font-monospace text-end font-weight-bold text-dark">
+                                @item.Monto.ToString("N2")
+                            </td>
+                            <td class="p-3 text-secondary">
+                                @item.MonedaNombre
+                            </td>
+                            <td class="p-3 text-secondary">
+                                @System.Text.RegularExpressions.Regex.Replace(item.MetodoDistribucion.ToString(), "([a-z])([A-Z])", "$1 $2")
+                            </td>
+                            <td class="p-3 text-secondary">
+                                @item.FechaGasto.ToString("dd/MM/yyyy")
+                            </td>
+                            <td class="p-3 text-end">
+                                @if (permiteModificaciones)
+                                {
+                                    <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-warning text-white me-1 shadow-sm">Editar</a>
+                                    <a asp-action="Eliminar" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger shadow-sm">Eliminar</a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-sm btn-secondary disabled me-1" title="La orden no permite modificaciones" disabled>Editar</button>
+                                    <button class="btn btn-sm btn-outline-secondary disabled" title="La orden no permite modificaciones" disabled>Eliminar</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

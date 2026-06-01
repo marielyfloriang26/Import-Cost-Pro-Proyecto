@@ -1,0 +1,34 @@
+@{
+    Layout = "_Layout";
+}
+
+<div class="container mt-5" style="max-width: 850px;">
+    <div class="card shadow-sm border-0 p-5">
+        
+        <h2 class="text-dark font-weight-bold mb-3">Gestión de Gastos de Importación</h2>
+        <p class="text-muted fs-6">
+            Para gestionar, registrar o editar los gastos de un embarque, por favor seleccione una orden de importación que se encuentre abierta en el sistema.
+        </p>
+        <hr class="my-4" />
+        
+        <form asp-action="Index" method="get">
+            <div class="mb-4">
+                <label class="form-label font-weight-bold text-secondary fs-5 mb-2">Orden de Importación Abierta</label>
+                
+                <select name="ordenId" class="form-select form-select-lg shadow-sm" asp-items="ViewBag.Ordenes" required>
+                    <option value="">-- Seleccione una orden de importación --</option>
+                </select>
+                
+                <div class="form-text text-muted mt-2 fs-6">
+                    Solo se listan las órdenes que permiten la asignación de gastos (Estado: Abierta).
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm">
+                    Continuar al Listado
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

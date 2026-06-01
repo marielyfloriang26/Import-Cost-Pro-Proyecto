@@ -4,6 +4,7 @@ using Capa_de_Datos.Repositories.Interfaces;
 using Capa_de_Negocio.Implementations;
 using Capa_de_Negocio.Interfaces;
 using Capa_de_Negocio.Services;
+using Capa_de_Negocio.Services.Implementations;
 using Capa_de_Negocio.Servicios;
 using Capa_Negocio.Implementations;
 
@@ -30,6 +31,9 @@ namespace WebApp
             builder.Services.AddScoped<IPaisService, PaisService>();
             builder.Services.AddScoped<IImportadorRepository, ImportadorRepository>();
             builder.Services.AddScoped<IImportadorService, ImportadorService>();
+            
+            builder.Services.AddScoped<IGastoImportacionRepository, GastoImportacionRepository>();
+            builder.Services.AddScoped<IGastoImportacionService, GastoImportacionService>();
 
             builder.Services.AddScoped<IProveedorService, ProveedorService>();
             builder.Services.AddScoped<ICategoriaArancelariaService, CategoriaArancelariaService>();

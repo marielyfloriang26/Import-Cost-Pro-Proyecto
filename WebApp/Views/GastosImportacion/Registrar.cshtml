@@ -1,0 +1,63 @@
+@model Capa_de_Negocio.ViewModels.GastoImportacionViewModel
+
+<div class="container mt-4" style="max-width: 650px;">
+    <div class="card shadow-sm border-0 p-4">
+        <h3 class="text-dark font-weight-bold mb-3">Registrar Gasto de Importación</h3>
+        <hr />
+        
+        <form asp-action="Registrar" method="post">
+            <input type="hidden" asp-for="OrdenId" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger font-weight-bold"></div>
+
+            <div class="mb-3">
+                <label class="form-label font-weight-bold text-secondary">Orden de Importación Asociada</label>
+                <input asp-for="OrdenCodigo" class="form-control bg-light" readonly />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="TipoGasto" class="form-label font-weight-bold text-secondary">Tipo de Gasto</label>
+                <select asp-for="TipoGasto" class="form-select" asp-items="ViewBag.TiposGastos">
+                    <option value="">-- Seleccione el tipo de gasto --</option>
+                </select>
+                <span asp-validation-for="TipoGasto" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Monto" class="form-label font-weight-bold text-secondary">Monto del Gasto</label>
+                <input asp-for="Monto" type="number" step="0.01" class="form-control text-end font-monospace" placeholder="0.00" />
+                <span asp-validation-for="Monto" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="MonedaId" class="form-label font-weight-bold text-secondary">Moneda</label>
+                <select asp-for="MonedaId" class="form-select" asp-items="ViewBag.Monedas">
+                    <option value="">-- Seleccione la moneda --</option>
+                </select>
+                <span asp-validation-for="MonedaId" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="MetodoDistribucion" class="form-label font-weight-bold text-secondary">Método de Distribución (Prorrateo)</label>
+                <select asp-for="MetodoDistribucion" class="form-select" asp-items="ViewBag.MetodosDistribucion">
+                    <option value="">-- Seleccione método de prorrateo --</option>
+                </select>
+                <span asp-validation-for="MetodoDistribucion" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="FechaGasto" class="form-label font-weight-bold text-secondary">Fecha del Gasto</label>
+                <input asp-for="FechaGasto" type="date" class="form-control" />
+                <span asp-validation-for="FechaGasto" class="text-danger small"></span>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" asp-route-ordenId="@Model.OrdenId" class="btn btn-outline-secondary px-4">Volver atrás</a>
+                <button type="submit" class="btn btn-primary px-4 shadow-sm">Registrar gasto</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

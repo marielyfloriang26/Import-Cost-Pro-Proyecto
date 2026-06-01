@@ -1,0 +1,24 @@
+@model Capa_de_Negocio.ViewModels.GastoImportacionViewModel
+
+<div class="container mt-4" style="max-width: 550px;">
+    <div class="card shadow-sm border-danger p-4 text-center">
+        <div class="text-danger mb-3 fs-1">⚠️</div>
+        
+        <h4 class="text-dark font-weight-bold mb-3">¿Está seguro que desea eliminar este gasto de importación?</h4>
+
+        <div class="bg-light p-3 rounded text-start mb-4 border">
+            <p class="mb-1 text-secondary"><strong>Orden de Compra:</strong> @Model.OrdenCodigo</p>
+            <p class="mb-1 text-secondary"><strong>Tipo de Gasto:</strong> @System.Text.RegularExpressions.Regex.Replace(Model.TipoGasto.ToString(), "([a-z])([A-Z])", "$1 $2")</p>
+            <p class="mb-1 text-secondary"><strong>Monto original:</strong> <span class="font-monospace fw-bold">@Model.Monto.ToString("N2") (@Model.MonedaNombre)</span></p>
+            <p class="mb-0 text-secondary"><strong>Fecha Registro:</strong> @Model.FechaGasto.ToString("dd/MM/yyyy")</p>
+        </div>
+
+        <form asp-action="EliminarConfirmado" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="d-flex justify-content-around">
+                <a asp-action="Index" asp-route-ordenId="@Model.OrdenId" class="btn btn-outline-secondary px-4">Cancelar</a>
+                <button type="submit" class="btn btn-danger px-4 shadow-sm">Aceptar</button>
+            </div>
+        </form>
+    </div>
+</div>

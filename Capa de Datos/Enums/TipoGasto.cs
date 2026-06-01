@@ -2,9 +2,13 @@ namespace Capa_de_Datos.Enums
 {
     public enum TipoGasto
     {
-        Flete,
-        Seguro,
-        Aduanas,
-        Otros
+        FleteInternacional,
+        SeguroInternacional,
+        GastosPortuarios,
+        TransporteLocal,
+        HonorariosAduanales,
+        Almacenaje,
+        ManejoDeCarga,
+        OtrosGastos
     }
 }
