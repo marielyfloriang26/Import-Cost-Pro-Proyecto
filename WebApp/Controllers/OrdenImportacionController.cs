@@ -20,19 +20,22 @@ public class OrdenImportacionController : Controller
     private readonly IProveedorService _proveedorService;
     private readonly IPaisService _paisService;
     private readonly IMonedaService _monedaService;
+    private readonly IProductoOrdenService _productoOrdenService;
 
     public OrdenImportacionController(
         IOrdenImportacionService service,
         IImportadorService importadorService,
         IProveedorService proveedorService,
         IPaisService paisService,
-        IMonedaService monedaService)
+        IMonedaService monedaService,
+        IProductoOrdenService productoOrdenService)
     {
         _service = service;
         _importadorService = importadorService;
         _proveedorService = proveedorService;
         _paisService = paisService;
         _monedaService = monedaService;
+        _productoOrdenService = productoOrdenService;
     }
 
     // GET: OrdenImportacion
@@ -63,6 +66,9 @@ public class OrdenImportacionController : Controller
     {
         var o = await _service.ObtenerPorIdAsync(id);
         if (o == null) return NotFound();
+
+        var resumenFob = await _productoOrdenService.ObtenerResumenOrdenAsync(id);
+        ViewBag.ResumenFob = resumenFob;
 
         var viewModel = new OrdenImportacionIndexViewModel
         {

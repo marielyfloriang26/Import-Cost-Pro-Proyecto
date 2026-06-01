@@ -30,6 +30,8 @@ namespace WebApp
             builder.Services.AddScoped<IPaisService, PaisService>();
             builder.Services.AddScoped<IImportadorRepository, ImportadorRepository>();
             builder.Services.AddScoped<IImportadorService, ImportadorService>();
+            builder.Services.AddScoped<IProductoOrdenRepository, ProductoOrdenRepository>();
+            builder.Services.AddScoped<IProductoOrdenService, ProductoOrdenService>();
 
             builder.Services.AddScoped<IProveedorService, ProveedorService>();
             builder.Services.AddScoped<ICategoriaArancelariaService, CategoriaArancelariaService>();
