@@ -34,6 +34,8 @@ namespace WebApp
             
             builder.Services.AddScoped<IGastoImportacionRepository, GastoImportacionRepository>();
             builder.Services.AddScoped<IGastoImportacionService, GastoImportacionService>();
+            builder.Services.AddScoped<IProductoOrdenRepository, ProductoOrdenRepository>();
+            builder.Services.AddScoped<IProductoOrdenService, ProductoOrdenService>();
 
             builder.Services.AddScoped<IProveedorService, ProveedorService>();
             builder.Services.AddScoped<ICategoriaArancelariaService, CategoriaArancelariaService>();

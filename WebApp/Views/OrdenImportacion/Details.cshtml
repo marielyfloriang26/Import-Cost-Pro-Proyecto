@@ -1,6 +1,10 @@
 @model Capa_de_Negocio.ViewModels.OrdenImportacionIndexViewModel
 @using Capa_de_Datos.Enums
 
+@{
+    var resumenFob = ViewBag.ResumenFob as Capa_de_Negocio.DTOs.OrdenResumenFobDto;
+}
+
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="text-dark font-weight-bold">Detalle de la Orden: @Model.NumeroOrden</h2>
@@ -13,9 +17,18 @@
         </div>
     </div>
 
+    @if (resumenFob != null && resumenFob.TieneProductosSinDimensiones)
+    {
+        <div class="alert alert-warning border-0 shadow-sm mb-4 d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill fs-4 me-2"></i>
+            <div>
+                <strong>Nota de cubicación:</strong> Uno o más productos no poseen sus dimensiones físicas configuradas.
+            </div>
+        </div>
+    }
+
     <div class="row">
         <div class="col-md-8">
-            <!-- Información General -->
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-white py-3">
                     <h5 class="mb-0 font-weight-bold text-primary">Información General</h5>
@@ -30,18 +43,10 @@
                             <label class="small text-uppercase text-secondary font-weight-bold d-block">Estado</label>
                             @switch (Model.EstadoOrden)
                             {
-                                case EstadoOrden.Abierta:
-                                    <span class="badge bg-primary fs-6">Abierta</span>
-                                    break;
-                                case EstadoOrden.Calculada:
-                                    <span class="badge bg-info text-dark fs-6">Calculada</span>
-                                    break;
-                                case EstadoOrden.Cerrada:
-                                    <span class="badge bg-success fs-6">Cerrada</span>
-                                    break;
-                                case EstadoOrden.Cancelada:
-                                    <span class="badge bg-secondary fs-6">Cancelada</span>
-                                    break;
+                                case EstadoOrden.Abierta: <span class="badge bg-primary fs-6">Abierta</span> break;
+                                case EstadoOrden.Calculada: <span class="badge bg-info text-dark fs-6">Calculada</span> break;
+                                case EstadoOrden.Cerrada: <span class="badge bg-success fs-6">Cerrada</span> break;
+                                case EstadoOrden.Cancelada: <span class="badge bg-secondary fs-6">Cancelada</span> break;
                             }
                         </div>
                         <div class="col-sm-6 mb-3">
@@ -68,15 +73,104 @@
                 </div>
             </div>
 
-            <!-- Aquí irán las tablas de Productos y Gastos en el futuro -->
-            <div class="alert alert-secondary text-center py-4 border-dashed">
-                <i class="bi bi-box-seam fs-2 d-block mb-2"></i>
-                <p class="mb-0">Los módulos de <strong>Detalle de Productos</strong> y <strong>Gastos de Importación</strong> se integrarán en esta vista próximamente.</p>
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 font-weight-bold text-primary">Productos en la Orden</h5>
+                    @if (Model.EstadoOrden == EstadoOrden.Abierta)
+                    {
+                        <a asp-controller="DetalleOrden" asp-action="AgregarProducto" asp-route-ordenId="@Model.Id" class="btn btn-sm btn-success px-3 shadow-sm">
+                            Agregar Artículo
+                        </a>
+                    }
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light text-secondary text-uppercase small">
+                            <tr>
+                                <th class="p-3">Producto</th>
+                                <th class="p-3 text-center">Cant.</th>
+                                <th class="p-3 text-end">FOB Unitario</th>
+                                <th class="p-3 text-end">FOB Total</th>
+                                <th class="p-3 text-end">Peso</th>
+                                <th class="p-3 text-end">Volumen</th>
+                                <th class="p-3 text-center">Margen</th>
+                                @if (Model.EstadoOrden == EstadoOrden.Abierta)
+                                {
+                                    <th class="p-3 text-center">Acciones</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (resumenFob == null || !resumenFob.Productos.Any())
+                            {
+                                <tr>
+                                    <td colspan="8" class="text-center py-5 text-muted">
+                                        No hay productos vinculados a esta orden de importación.
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                foreach (var p in resumenFob.Productos)
+                                {
+                                    <tr>
+                                        <td class="p-3">
+                                            <div class="text-dark font-weight-bold">@p.NombreProducto</div>
+                                            <div class="small text-secondary">@p.CodigoReferencia</div>
+                                        </td>
+                                        <td class="p-3 text-center font-weight-bold">@p.Cantidad.ToString("N0")</td>
+                                        <td class="p-3 text-end">@p.PrecioUnitarioFob.ToString("N2")</td>
+                                        <td class="p-3 text-end font-weight-bold text-dark">@p.FobTotal.ToString("N2")</td>
+                                        <td class="p-3 text-end small">@p.PesoTotal.ToString("N2") kg</td>
+                                        <td class="p-3 text-end small">
+                                            @(p.VolumenTotal.HasValue ? p.VolumenTotal.Value.ToString("N2") + " cm³" : "N/D")
+                                        </td>
+                                        <td class="p-3 text-center">@p.MargenGananciaDeseado.ToString("N2")%</td>
+                                        @if (Model.EstadoOrden == EstadoOrden.Abierta)
+                                        {
+                                            <td class="p-3 text-center" style="min-width: 140px;">
+                                                <a asp-controller="DetalleOrden" asp-action="EditarProducto" asp-route-id="@p.Id" class="btn btn-sm btn-warning text-white fw-bold me-1 shadow-sm">
+                                                    Editar
+                                                </a>
+                                                <a asp-controller="DetalleOrden" asp-action="EliminarProducto" asp-route-id="@p.Id" class="btn btn-sm btn-outline-danger fw-bold shadow-sm">
+                                                    Quitar
+                                                </a>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                
+                @if (resumenFob != null && resumenFob.Productos.Any())
+                {
+                    <div class="card-footer bg-light border-0 p-3">
+                        <div class="row text-center g-2">
+                            <div class="col-6 col-sm-3 border-end">
+                                <span class="small text-muted d-block">Unidades Totales</span>
+                                <strong class="text-dark fs-5">@resumenFob.CantidadTotalProductos.ToString("N0")</strong>
+                            </div>
+                            <div class="col-6 col-sm-3 border-end">
+                                <span class="small text-muted d-block">Peso Bruto</span>
+                                <strong class="text-dark fs-5">@resumenFob.PesoTotalOrden.ToString("N2") kg</strong>
+                            </div>
+                            <div class="col-6 col-sm-3 border-end">
+                                <span class="small text-muted d-block">Volumen Total</span>
+                                <strong class="text-dark fs-5">@resumenFob.VolumenTotalOrden.ToString("N2") cm³</strong>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <span class="small text-muted d-block">FOB Acumulado</span>
+                                <strong class="text-primary fs-5">@resumenFob.FobTotalOrden.ToString("N2")</strong>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
 
         <div class="col-md-4">
-            <!-- Resumen de Costos -->
             <div class="card shadow-sm border-0 mb-4 bg-light">
                 <div class="card-header bg-dark text-white py-3">
                     <h5 class="mb-0 font-weight-bold">Resumen Financiero</h5>
@@ -101,18 +195,8 @@
                     {
                         <button class="btn btn-primary w-100 shadow-sm mb-2" disabled>Calcular Landed Cost</button>
                     }
-                    else if (Model.EstadoOrden == EstadoOrden.Calculada)
-                    {
-                        <button class="btn btn-success w-100 shadow-sm" disabled>Cerrar Orden</button>
-                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .border-dashed {
-        border: 2px dashed #dee2e6 !important;
-    }
-</style>
