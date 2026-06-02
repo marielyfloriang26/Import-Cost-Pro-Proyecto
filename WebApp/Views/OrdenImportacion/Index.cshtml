@@ -10,96 +10,77 @@
     <div class="card shadow-sm border-0">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
-                <thead class="bg-light text-secondary text-uppercase">
+                <thead class="bg-light text-secondary text-uppercase small">
                     <tr>
-                        <th class="p-3"># Orden</th>
-                        <th class="p-3">Importador / Proveedor</th>
-                        <th class="p-3">País / Moneda</th>
-                        <th class="p-3">Transporte</th>
-                        <th class="p-3">Fecha</th>
+                        <th class="p-3">Número de orden</th>
+                        <th class="p-3">Importador</th>
+                        <th class="p-3">Proveedor</th>
+                        <th class="p-3">País de origen</th>
+                        <th class="p-3">Moneda</th>
+                        <th class="p-3">Fecha de la orden</th>
+                        <th class="p-3">Modalidad de transporte</th>
                         <th class="p-3">Estado</th>
-                        <th class="p-3 text-end">Totales (Local)</th>
-                        <th class="p-3 text-end">Acciones</th>
+                        <th class="p-3 text-end">FOB total</th>
+                        <th class="p-3 text-end">Total estimado de importación</th>
+                        <th class="p-3 text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if (!Model.Any())
                     {
                         <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">No hay órdenes de importación registradas.</td>
+                            <td colspan="11" class="text-center py-4 text-muted">No hay órdenes de importación registradas.</td>
                         </tr>
                     }
                     @foreach (var item in Model)
                     {
-                        <tr>
+                        <tr style="font-size: 0.9rem;">
                             <td class="p-3 font-weight-bold text-dark">@item.NumeroOrden</td>
+                            <td class="p-3">@item.ImportadorNombre</td>
+                            <td class="p-3">@item.ProveedorNombre</td>
+                            <td class="p-3">@item.PaisOrigenNombre</td>
+                            <td class="p-3">@item.MonedaNombre</td>
+                            <td class="p-3">@item.FechaOrden.ToString("dd/MM/yyyy")</td>
                             <td class="p-3">
-                                <div class="text-dark">@item.ImportadorNombre</div>
-                                <div class="small text-secondary">@item.ProveedorNombre</div>
-                            </td>
-                            <td class="p-3">
-                                <div class="text-dark">@item.PaisOrigenNombre</div>
-                                <div class="small text-secondary">@item.MonedaNombre</div>
-                            </td>
-                            <td class="p-3 text-secondary">
                                 @switch (item.MedioTransporte)
                                 {
-                                    case MedioTransporte.Maritimo:
-                                        <i class="fas fa-ship"></i> <span>Marítimo</span>
-                                        break;
-                                    case MedioTransporte.Aereo:
-                                        <i class="fas fa-plane"></i> <span>Aéreo</span>
-                                        break;
-                                    case MedioTransporte.Terrestre:
-                                        <i class="fas fa-truck"></i> <span>Terrestre</span>
-                                        break;
+                                    case MedioTransporte.Maritimo: <span>Marítimo</span> break;
+                                    case MedioTransporte.Aereo: <span>Aéreo</span> break;
+                                    case MedioTransporte.Terrestre: <span>Terrestre</span> break;
                                 }
                             </td>
-                            <td class="p-3 text-secondary">@Html.DisplayFor(modelItem => item.FechaOrden)</td>
                             <td class="p-3">
                                 @switch (item.EstadoOrden)
                                 {
-                                    case EstadoOrden.Abierta:
-                                        <span class="badge bg-primary px-2 py-1">Abierta</span>
-                                        break;
-                                    case EstadoOrden.Calculada:
-                                        <span class="badge bg-info text-dark px-2 py-1">Calculada</span>
-                                        break;
-                                    case EstadoOrden.Cerrada:
-                                        <span class="badge bg-success px-2 py-1">Cerrada</span>
-                                        break;
-                                    case EstadoOrden.Cancelada:
-                                        <span class="badge bg-secondary px-2 py-1">Cancelada</span>
-                                        break;
+                                    case EstadoOrden.Abierta: <span class="badge bg-primary">Abierta</span> break;
+                                    case EstadoOrden.Calculada: <span class="badge bg-info text-dark">Calculada</span> break;
+                                    case EstadoOrden.Cerrada: <span class="badge bg-success">Cerrada</span> break;
+                                    case EstadoOrden.Cancelada: <span class="badge bg-secondary">Cancelada</span> break;
                                 }
                             </td>
+                            <td class="p-3 text-end font-weight-bold">@item.FobTotal.ToString("N2")</td>
                             <td class="p-3 text-end">
-                                <div class="font-weight-bold">FOB: @item.FobTotal.ToString("N2")</div>
                                 @if (item.EstadoOrden == EstadoOrden.Calculada || item.EstadoOrden == EstadoOrden.Cerrada)
                                 {
-                                    <div class="small text-success">Landed: @item.TotalEstimadoLandedCost.ToString("N2")</div>
+                                    <span class="text-success font-weight-bold">@item.TotalEstimadoLandedCost.ToString("N2")</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">---</span>
                                 }
                             </td>
-                            <td class="p-3 text-end" style="min-width: 250px;">
+                            <td class="p-3 text-center">
                                 <div class="btn-group">
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">Detalle</a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white" title="Ver detalle">Detalle</a>
                                     
                                     @if (item.EstadoOrden == EstadoOrden.Abierta)
                                     {
-                                        <form asp-controller="LandedCost" asp-action="Calcular" method="post" style="display:inline;">
-                                            <input type="hidden" name="SelectedOrdenId" value="@item.Id" />
-                                            <button type="submit" class="btn btn-sm btn-success text-white mx-1">Calcular</button>
-                                        </form>
-                                        <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-warning text-white me-1">Editar</a>
+                                        <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-warning text-white mx-1">Editar</a>
                                         <a asp-action="Eliminar" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
                                     }
-                                    else if (item.EstadoOrden == EstadoOrden.Calculada || item.EstadoOrden == EstadoOrden.Cerrada)
+                                    else if (item.EstadoOrden == EstadoOrden.Calculada)
                                     {
-                                        <a asp-controller="LandedCost" asp-action="VerOficial" asp-route-ordenId="@item.Id" class="btn btn-sm btn-primary text-white mx-1">Ver Landed</a>
-                                        @if (item.EstadoOrden == EstadoOrden.Calculada)
-                                        {
-                                            <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-warning text-white me-1">Editar</a>
-                                        }
+                                        <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-warning text-white ms-1">Editar</a>
                                     }
                                 </div>
                             </td>

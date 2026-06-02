@@ -13,33 +13,21 @@ namespace WebApp.Controllers
     {
         private readonly IProductoOrdenService _productoOrdenService;
 
-        // CORRECCIÓN: Ahora el constructor SOLO recibe e inyecta el Service
         public DetalleOrdenController(IProductoOrdenService productoOrdenService)
         {
             _productoOrdenService = productoOrdenService;
         }
 
-        // GET: DetalleOrden/Index/5
-        public async Task<IActionResult> Index(int id)
+        // GET: DetalleOrden/Index/5 -> Redirigir siempre al detalle consolidado
+        public IActionResult Index(int id)
         {
-            try
-            {
-                var resumen = await _productoOrdenService.ObtenerResumenOrdenAsync(id);
-                return View(resumen);
-            }
-            catch (BusinessException ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Index", "Home");
-            }
+            return RedirectToAction("Details", "OrdenImportacion", new { id = id });
         }
 
         // GET: DetalleOrden/AgregarProducto?ordenId=5
         public async Task<IActionResult> AgregarProducto(int ordenId)
         {
-            // REGLA DEL MAESTRO: Llamamos al servicio para obtener los productos activos
             var productosActivos = await _productoOrdenService.ObtenerProductosActivosAsync();
-
             ViewBag.Productos = new SelectList(productosActivos, "ProductoId", "NombreProducto");
             return View(new ProductoOrdenViewModel { OrdenImportacionId = ordenId });
         }
@@ -67,12 +55,11 @@ namespace WebApp.Controllers
                 };
 
                 await _productoOrdenService.AgregarProductoAOrdenAsync(dto);
-                return RedirectToAction(nameof(Index), new { id = model.OrdenImportacionId });
+                return RedirectToAction("Details", "OrdenImportacion", new { id = model.OrdenImportacionId });
             }
             catch (BusinessException ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
-                
                 var productosActivos = await _productoOrdenService.ObtenerProductosActivosAsync();
                 ViewBag.Productos = new SelectList(productosActivos, "ProductoId", "NombreProducto", model.ProductoId);
                 return View(model);
@@ -118,7 +105,7 @@ namespace WebApp.Controllers
                 };
 
                 await _productoOrdenService.EditarProductoEnOrdenAsync(dto);
-                return RedirectToAction(nameof(Index), new { id = model.OrdenImportacionId });
+                return RedirectToAction("Details", "OrdenImportacion", new { id = model.OrdenImportacionId });
             }
             catch (BusinessException ex)
             {
@@ -150,7 +137,7 @@ namespace WebApp.Controllers
             try
             {
                 await _productoOrdenService.EliminarProductoDeOrdenAsync(id);
-                return RedirectToAction(nameof(Index), new { id = ordenId });
+                return RedirectToAction("Details", "OrdenImportacion", new { id = ordenId });
             }
             catch (BusinessException ex)
             {

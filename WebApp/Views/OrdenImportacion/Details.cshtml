@@ -168,21 +168,25 @@
                 {
                     <div class="card-footer bg-light border-0 p-3">
                         <div class="row text-center g-2">
-                            <div class="col-6 col-sm-3 border-end">
-                                <span class="small text-muted d-block">Unidades Totales</span>
+                            <div class="col-md-2 border-end">
+                                <span class="small text-muted d-block">Cantidad total de productos</span>
                                 <strong class="text-dark fs-5">@resumenFob.CantidadTotalProductos.ToString("N0")</strong>
                             </div>
-                            <div class="col-6 col-sm-3 border-end">
-                                <span class="small text-muted d-block">Peso Bruto</span>
+                            <div class="col-md-2 border-end">
+                                <span class="small text-muted d-block">Peso total</span>
                                 <strong class="text-dark fs-5">@resumenFob.PesoTotalOrden.ToString("N2") kg</strong>
                             </div>
-                            <div class="col-6 col-sm-3 border-end">
-                                <span class="small text-muted d-block">Volumen Total</span>
+                            <div class="col-md-3 border-end">
+                                <span class="small text-muted d-block">Volumen total</span>
                                 <strong class="text-dark fs-5">@resumenFob.VolumenTotalOrden.ToString("N2") cm³</strong>
                             </div>
-                            <div class="col-6 col-sm-3">
-                                <span class="small text-muted d-block">FOB Acumulado</span>
+                            <div class="col-md-3 border-end">
+                                <span class="small text-muted d-block">FOB total</span>
                                 <strong class="text-primary fs-5">@resumenFob.FobTotalOrden.ToString("N2")</strong>
+                            </div>
+                            <div class="col-md-2">
+                                <span class="small text-muted d-block">Moneda de la orden</span>
+                                <strong class="text-secondary fs-5">@Model.MonedaNombre</strong>
                             </div>
                         </div>
                     </div>
@@ -261,13 +265,13 @@
                 <div class="card-body p-0">
                     <ul class="list-group list-group-flush bg-transparent">
                         <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
-                            <span class="text-secondary font-weight-bold">FOB TOTAL (Local)</span>
+                            <span class="text-secondary font-weight-bold">FOB total (Local)</span>
                             <span class="text-dark font-weight-bold fs-5">@Model.FobTotal.ToString("N2")</span>
                         </li>
                         @if (Model.EstadoOrden == EstadoOrden.Calculada || Model.EstadoOrden == EstadoOrden.Cerrada)
                         {
                             <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3 border-top border-2">
-                                <span class="text-success font-weight-bold">LANDED COST ESTIMADO</span>
+                                <span class="text-success font-weight-bold">Total estimado de importación</span>
                                 <span class="text-success font-weight-bold fs-4">@Model.TotalEstimadoLandedCost.ToString("N2")</span>
                             </li>
                         }
