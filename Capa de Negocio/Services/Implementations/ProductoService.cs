@@ -22,10 +22,8 @@ namespace Capa_de_Negocio.Implementations;
         // Obtener todos los productos para la pantalla inicial (Index)
         public async Task<IEnumerable<ProductoDTO>> ObtenerTodosAsync()
         {
-            // Busca todos los productos y todos los paises en la bd
+            // Busca todos los productos en la bd (incluyendo Pais y Categoria via Repo)
             var productos = await _productoRepo.GetAllAsync();
-            var paises = await _paisRepo.GetAllAsync();
-            var categorias = await _categoriaRepo.GetAllAsync();
 
             // Mapea la lista de Entidades fisicas a la lista de DTOs tradicionales
             var listaDto = productos.Select(p => new ProductoDTO
@@ -34,13 +32,12 @@ namespace Capa_de_Negocio.Implementations;
                 Nombre = p.Nombre,
                 CodigoReferencia = p.CodigoReferencia,
                 PaisOrigenId = p.PaisOrigenId,
-                // Busca el nombre del pais correspondiente usando su ID
-                PaisOrigenNombre = paises.FirstOrDefault(x => x.Id == p.PaisOrigenId)?.Nombre ?? "No asignado",
+                // Usa la propiedad de navegacion ya cargada
+                PaisOrigenNombre = p.PaisOrigen?.Nombre ?? "No asignado",
                 
                 CategoriaId = p.CategoriaId,
-                
-                // !!!!
-                CategoriaNombre = categorias.FirstOrDefault(c => c.Id == p.CategoriaId)?.Descripcion ?? "Sin categoría",
+                // Usa la propiedad de navegacion ya cargada
+                CategoriaNombre = p.Categoria?.Descripcion ?? "Sin categoría",
                 
                 PesoUnitario = p.PesoUnitario,
                 Largo = p.Largo,
@@ -74,7 +71,7 @@ namespace Capa_de_Negocio.Implementations;
         // Obtiene un solo producto por su ID para cargar el formulario de edicion
         public async Task<ProductoDTO?> ObtenerPorIdAsync(int id)
         {
-            // busca el producto en la bd usando el ID
+            // busca el producto en la bd usando el ID (incluyendo relaciones)
             var producto = await _productoRepo.GetByIdAsync(id);
 
             // Si no se encuentra, devuelve null de forma segura
@@ -87,7 +84,9 @@ namespace Capa_de_Negocio.Implementations;
                 Nombre = producto.Nombre,
                 CodigoReferencia = producto.CodigoReferencia,
                 PaisOrigenId = producto.PaisOrigenId,
+                PaisOrigenNombre = producto.PaisOrigen?.Nombre ?? "No asignado",
                 CategoriaId = producto.CategoriaId,
+                CategoriaNombre = producto.Categoria?.Descripcion ?? "Sin categoría",
                 PesoUnitario = producto.PesoUnitario,
                 Largo = producto.Largo,
                 Ancho = producto.Ancho,

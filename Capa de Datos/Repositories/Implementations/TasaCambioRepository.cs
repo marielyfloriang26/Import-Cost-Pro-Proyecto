@@ -8,6 +8,23 @@ namespace Capa_de_Datos.Repositories.Implementations
     public class TasaCambioRepository : Repository<TasaCambio>, ITasaCambioRepository
     {
         public TasaCambioRepository(ImportCostContext context) : base(context) { }
+
+        public override async Task<TasaCambio?> GetByIdAsync(int id)
+        {
+            return await _context.TasasCambio
+                .Include(t => t.MonedaOrigen)
+                .Include(t => t.MonedaDestino)
+                .FirstOrDefaultAsync(t => t.Id == id);
+        }
+
+        public override async Task<IEnumerable<TasaCambio>> GetAllAsync()
+        {
+            return await _context.TasasCambio
+                .Include(t => t.MonedaOrigen)
+                .Include(t => t.MonedaDestino)
+                .ToListAsync();
+        }
+
         public async Task<bool> HasBeenUsedInLandedCostAsync(TasaCambio tasaAEditar)
         {
             var siguienteTasa = await _context.TasasCambio

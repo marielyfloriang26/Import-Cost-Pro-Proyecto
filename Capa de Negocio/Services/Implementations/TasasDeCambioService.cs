@@ -24,15 +24,14 @@ namespace Capa_de_Negocio.Services.Implementations
 
         public async Task<IEnumerable<TasaCambioDto>> GetTasasActivas()
         {
-            var tasas = await _repository.FindAsync(t => t.Estado);
-            var monedas = await _monedaService.ObtenerTodasAsync();
-            return tasas.Select(t => new TasaCambioDto
+            var tasas = await _repository.GetAllAsync();
+            return tasas.Where(t => t.Estado).Select(t => new TasaCambioDto
             {
                 IdTasaCambio = t.Id,
                 MonedaOrigenId = t.MonedaOrigenId,
-                MonedaOrigenNombre = monedas.FirstOrDefault(m => m.Id == t.MonedaOrigenId)?.Nombre ?? "N/A",
+                MonedaOrigenNombre = t.MonedaOrigen?.Nombre ?? "N/A",
                 MonedaDestinoId = t.MonedaDestinoId,
-                MonedaDestinoNombre = monedas.FirstOrDefault(m => m.Id == t.MonedaDestinoId)?.Nombre ?? "N/A",
+                MonedaDestinoNombre = t.MonedaDestino?.Nombre ?? "N/A",
                 ValorTasa = t.ValorTasa,
                 FechaVigencia = t.FechaVigencia,
                 Estado = t.Estado
@@ -42,15 +41,14 @@ namespace Capa_de_Negocio.Services.Implementations
         public async Task<IEnumerable<TasaCambioDto>> GetTasas()
         {
             var tasas = await _repository.GetAllAsync();
-            var monedas = await _monedaService.ObtenerTodasAsync();
 
             return tasas.Select(t => new TasaCambioDto
             {
                 IdTasaCambio = t.Id,
                 MonedaOrigenId = t.MonedaOrigenId,
-                MonedaOrigenNombre = monedas.FirstOrDefault(m => m.Id == t.MonedaOrigenId)?.Nombre ?? "N/A",
+                MonedaOrigenNombre = t.MonedaOrigen?.Nombre ?? "N/A",
                 MonedaDestinoId = t.MonedaDestinoId,
-                MonedaDestinoNombre = monedas.FirstOrDefault(m => m.Id == t.MonedaDestinoId)?.Nombre ?? "N/A",
+                MonedaDestinoNombre = t.MonedaDestino?.Nombre ?? "N/A",
                 ValorTasa = t.ValorTasa,
                 FechaVigencia = t.FechaVigencia,
                 Estado = t.Estado
@@ -65,16 +63,13 @@ namespace Capa_de_Negocio.Services.Implementations
                 throw new TasaCambioNotFoundException($"No se encontró una tasa de cambio con el ID {id}");
             }
 
-            var monedaOrigen = await _monedaService.ObtenerPorIdAsync(tasa.MonedaOrigenId);
-            var monedaDestino = await _monedaService.ObtenerPorIdAsync(tasa.MonedaDestinoId);
-
             return new TasaCambioDto
             {
                 IdTasaCambio = tasa.Id,
                 MonedaOrigenId = tasa.MonedaOrigenId,
-                MonedaOrigenNombre = monedaOrigen?.Nombre ?? "N/A",
+                MonedaOrigenNombre = tasa.MonedaOrigen?.Nombre ?? "N/A",
                 MonedaDestinoId = tasa.MonedaDestinoId,
-                MonedaDestinoNombre = monedaDestino?.Nombre ?? "N/A",
+                MonedaDestinoNombre = tasa.MonedaDestino?.Nombre ?? "N/A",
                 ValorTasa = tasa.ValorTasa,
                 FechaVigencia = tasa.FechaVigencia,
                 Estado = tasa.Estado
