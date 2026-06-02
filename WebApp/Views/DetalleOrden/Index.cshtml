@@ -30,18 +30,29 @@
         </div>
     }
 
-    <div class="mb-4 d-flex gap-2">
+    <div class="mb-4 d-flex gap-2 align-items-center">
         @if (Model.EstadoOrden == EstadoOrden.Abierta)
         {
             <a asp-action="AgregarProducto" asp-route-ordenId="@Model.OrdenId" class="btn btn-primary px-4 shadow-sm">＋ Agregar Producto</a>
             <a asp-controller="GastosImportacion" asp-action="Index" asp-route-ordenId="@Model.OrdenId" class="btn btn-outline-info px-4 shadow-sm">📋 Registrar Gastos</a>
-            <button class="btn btn-outline-success px-4 shadow-sm">🧮 Calcular Landed Cost</button>
+            <form asp-controller="LandedCost" asp-action="Calcular" method="post" style="display:inline;">
+                <input type="hidden" name="SelectedOrdenId" value="@Model.OrdenId" />
+                <button type="submit" class="btn btn-success px-4 shadow-sm">🧮 Calcular Landed Cost</button>
+            </form>
         }
         else
         {
             <button class="btn btn-secondary px-4" disabled>＋ Agregar Producto (Bloqueado)</button>
             <button class="btn btn-secondary px-4" disabled>📋 Registrar Gastos (Bloqueado)</button>
-            <button class="btn btn-secondary px-4" disabled>🧮 Calcular Landed Cost (Bloqueado)</button>
+            
+            @if (Model.EstadoOrden == EstadoOrden.Calculada || Model.EstadoOrden == EstadoOrden.Cerrada)
+            {
+                <a asp-controller="LandedCost" asp-action="VerOficial" asp-route-ordenId="@Model.OrdenId" class="btn btn-info text-white px-4 shadow-sm">👁️ Ver Detalle de Cálculo</a>
+            }
+            else
+            {
+                <button class="btn btn-secondary px-4" disabled>🧮 Calcular Landed Cost (Bloqueado)</button>
+            }
         }
     </div>
 

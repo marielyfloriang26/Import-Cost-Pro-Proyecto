@@ -65,16 +65,28 @@
                                     <div class="small text-success">Landed: @item.TotalEstimadoLandedCost.ToString("N2")</div>
                                 }
                             </td>
-                            <td class="p-3 text-end" style="min-width: 200px;">
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white me-1">Detalle</a>
-                                @if (item.EstadoOrden == EstadoOrden.Abierta || item.EstadoOrden == EstadoOrden.Calculada)
-                                {
-                                    <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-warning text-white me-1">Editar</a>
-                                }
-                                @if (item.EstadoOrden == EstadoOrden.Abierta)
-                                {
-                                    <a asp-action="Eliminar" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
-                                }
+                            <td class="p-3 text-end" style="min-width: 250px;">
+                                <div class="btn-group">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">Detalle</a>
+                                    
+                                    @if (item.EstadoOrden == EstadoOrden.Abierta)
+                                    {
+                                        <form asp-controller="LandedCost" asp-action="Calcular" method="post" style="display:inline;">
+                                            <input type="hidden" name="SelectedOrdenId" value="@item.Id" />
+                                            <button type="submit" class="btn btn-sm btn-success text-white mx-1">Calcular</button>
+                                        </form>
+                                        <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-warning text-white me-1">Editar</a>
+                                        <a asp-action="Eliminar" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                                    }
+                                    else if (item.EstadoOrden == EstadoOrden.Calculada || item.EstadoOrden == EstadoOrden.Cerrada)
+                                    {
+                                        <a asp-controller="LandedCost" asp-action="VerOficial" asp-route-ordenId="@item.Id" class="btn btn-sm btn-primary text-white mx-1">Ver Landed</a>
+                                        @if (item.EstadoOrden == EstadoOrden.Calculada)
+                                        {
+                                            <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-warning text-white me-1">Editar</a>
+                                        }
+                                    }
+                                </div>
                             </td>
                         </tr>
                     }

@@ -1,0 +1,47 @@
+@model Capa_de_Negocio.DTOs.OrdenImportacionDto
+
+@{
+    ViewData["Title"] = "Confirmar Cierre de Orden";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-body p-5 text-center">
+                    <div class="mb-4">
+                        <i class="bi bi-shield-lock-fill text-warning" style="font-size: 4rem;"></i>
+                    </div>
+                    <h3 class="font-weight-bold text-dark mb-3">¿Confirmar Cierre de Orden?</h3>
+                    <p class="text-secondary mb-4">
+                        Está a punto de cerrar la orden <strong>@Model.NumeroOrden</strong>. 
+                        Una vez cerrada, la orden quedará bloqueada para modificaciones y solo podrá ser consultada con sus valores históricos.
+                    </p>
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger border-0 small mb-4">
+                            @TempData["Error"]
+                        </div>
+                    }
+
+                    <div class="d-grid gap-2">
+                        <form asp-action="ConfirmarCierre" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <button type="submit" class="btn btn-dark btn-lg w-100 shadow-sm mb-2">
+                                <i class="bi bi-lock-fill me-2"></i> Cerrar Orden Definitivamente
+                            </button>
+                        </form>
+                        <a asp-action="VerOficial" asp-route-ordenId="@Model.Id" class="btn btn-outline-secondary">
+                            Cancelar y Volver
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer bg-light border-0 py-3 text-center">
+                    <small class="text-muted"><i class="bi bi-info-circle me-1"></i> Esta acción es irreversible.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

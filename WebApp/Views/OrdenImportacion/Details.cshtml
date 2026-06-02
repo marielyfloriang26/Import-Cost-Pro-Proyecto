@@ -193,7 +193,18 @@
                 <div class="card-footer bg-white p-3 border-0 text-center">
                     @if (Model.EstadoOrden == EstadoOrden.Abierta)
                     {
-                        <button class="btn btn-primary w-100 shadow-sm mb-2" disabled>Calcular Landed Cost</button>
+                        <form asp-controller="LandedCost" asp-action="Calcular" method="post">
+                            <input type="hidden" name="SelectedOrdenId" value="@Model.Id" />
+                            <button type="submit" class="btn btn-primary w-100 shadow-sm mb-2">
+                                <i class="bi bi-calculator me-1"></i> Calcular Landed Cost
+                            </button>
+                        </form>
+                    }
+                    else if (Model.EstadoOrden == EstadoOrden.Calculada || Model.EstadoOrden == EstadoOrden.Cerrada)
+                    {
+                        <a asp-controller="LandedCost" asp-action="VerOficial" asp-route-ordenId="@Model.Id" class="btn btn-success w-100 shadow-sm mb-2">
+                            <i class="bi bi-eye me-1"></i> Ver Detalle de Cálculo
+                        </a>
                     }
                 </div>
             </div>

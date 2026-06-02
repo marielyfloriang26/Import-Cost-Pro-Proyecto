@@ -20,6 +20,9 @@ namespace Capa_de_Datos.Repositories.Implementations
                 .Include(o => o.Moneda)
                 .Include(o => o.ProductosOrden)
                 .ThenInclude(po => po.Producto)
+                .ThenInclude(p => p!.Categoria)
+                .Include(o => o.GastosImportacion)
+                .ThenInclude(g => g.Moneda)
                 .Include(o => o.LandedCostCalculo)
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
@@ -33,6 +36,9 @@ namespace Capa_de_Datos.Repositories.Implementations
                 .Include(o => o.Moneda)
                 .Include(o => o.ProductosOrden)
                 .ThenInclude(po => po.Producto)
+                .ThenInclude(p => p!.Categoria)
+                .Include(o => o.GastosImportacion)
+                .ThenInclude(g => g.Moneda)
                 .Include(o => o.LandedCostCalculo)
                 .ToListAsync();
                 
