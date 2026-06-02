@@ -13,7 +13,13 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WebApp</a>
+               <!-- <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WebApp</a> -->
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+    ImportCost<span class="app-accent">Pro</span> <!-- Agregado el span para dar color solo a 'App' -->
+</a>
+
+
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -21,19 +27,19 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
+                           
+                           
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item dropdown">
+                           
+                           
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Módulos
                             </a>
+                            
                             <ul class="dropdown-menu shadow-sm border-0" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item py-2" asp-controller="OrdenImportacion" asp-action="Index">Mantenimiento de Órdenes</a></li>
-                                <li><a class="dropdown-item py-2" asp-controller="OrdenImportacion" asp-action="Index">Detalle de Productos</a></li>
-                                <li><a class="dropdown-item py-2" asp-controller="GastosImportacion" asp-action="Index">Registro de Gastos</a></li>
-                                <li><a class="dropdown-item py-2" asp-controller="LandedCost" asp-action="Index">Cálculo de Landed Cost</a></li>
-                                <li><a class="dropdown-item py-2" asp-controller="OrdenImportacion" asp-action="Index">Confirmación y Cierre</a></li>
-                                <li><hr class="dropdown-divider"></li>
+                             
                                 <li><h6 class="dropdown-header text-uppercase small font-weight-bold">Configuración y Catálogos</h6></li>
                                 <li><a class="dropdown-item py-2" asp-controller="Paises" asp-action="Index">Mantenimiento de Países</a></li>
                                 <li><a class="dropdown-item py-2" asp-controller="Monedas" asp-action="Index">Mantenimiento de Monedas</a></li>
@@ -42,6 +48,14 @@
                                 <li><a class="dropdown-item py-2" asp-controller="Productos" asp-action="Index">Mantenimiento de Productos</a></li>
                                 <li><a class="dropdown-item py-2" asp-controller="CategoriasArancelarias" asp-action="Index">Categorías Arancelarias</a></li>
                                 <li><a class="dropdown-item py-2" asp-controller="TasasCambio" asp-action="Index">Tasas de Cambio</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                 <li><a class="dropdown-item py-2" asp-controller="OrdenImportacion" asp-action="Index">Mantenimiento de Órdenes</a></li>
+                                 
+                                <li><a class="dropdown-item py-2" asp-controller="OrdenImportacion" asp-action="Index">Detalle de Productos</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="GastosImportacion" asp-action="Index">Registro de Gastos</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="LandedCost" asp-action="Index">Cálculo de Landed Cost</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="OrdenImportacion" asp-action="Index">Confirmación y Cierre</a></li>
+                                
                                 <li><a class="dropdown-item py-2 fw-bold text-primary border-top" asp-controller="ConfiguracionImpuestos" asp-action="Index">Configuración de Impuestos</a></li>
                             </ul>
                         </li>

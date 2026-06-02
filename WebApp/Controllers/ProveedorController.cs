@@ -146,13 +146,23 @@ public class ProveedorController : Controller
         }
         catch (ReglasProvException ex)
         {
-            TempData["Error"] = ex.Message;
-            return RedirectToAction(nameof(Eliminar), new { id });
+            var proveedorDto = await _proveedorService.ObtenerPorIdAsync(id);
+            if (proveedorDto == null) return NotFound();
+
+            ViewBag.Error = ex.Message; // Pasa el mensaje de validación de ordenes
+            return View("Eliminar", proveedorDto); // se queda en la misma vista enseñando el error
+           // TempData["Error"] = ex.Message;
+          //  return RedirectToAction(nameof(Eliminar), new { id });
         }
         catch (Exception)
         {
-            TempData["Error"] = "No se pudo eliminar el proveedor debido a un error inesperado.";
-            return RedirectToAction(nameof(Eliminar), new { id });
+            var proveedorDto = await _proveedorService.ObtenerPorIdAsync(id);
+            if (proveedorDto == null) return NotFound();
+
+            ViewBag.Error = "No se pudo eliminar el proveedor debido a un error inesperado en el sistema.";
+            return View("Eliminar", proveedorDto);
+           // TempData["Error"] = "No se pudo eliminar el proveedor debido a un error inesperado.";
+           // return RedirectToAction(nameof(Eliminar), new { id });
         }
     }
 

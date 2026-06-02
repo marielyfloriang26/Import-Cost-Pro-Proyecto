@@ -17,6 +17,8 @@ namespace Capa_de_Negocio.ViewModels;
         public string? Correo { get; set; }
 
         [StringLength(20, ErrorMessage = "El teléfono no puede exceder los 20 caracteres.")]
+        [RegularExpression(@"^(\+?[0-9\s\-]{7,20})?$", 
+        ErrorMessage = "El teléfono debe tener una longitud razonable y un formato válido (ej: 809-555-1234 o +1 305 555 1234).")]
         [Display(Name = "Teléfono de Contacto")]
         public string? Telefono { get; set; }
 
