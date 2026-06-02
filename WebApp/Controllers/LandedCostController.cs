@@ -113,38 +113,5 @@ namespace WebApp.Controllers
             };
             return View("Resultado", viewModel);
         }
-
-        // GET: LandedCost/Cerrar/5
-        public async Task<IActionResult> Cerrar(int ordenId)
-        {
-            var orden = await _ordenService.ObtenerPorIdAsync(ordenId);
-            if (orden == null) return NotFound();
-
-            if (orden.EstadoOrden != EstadoOrden.Calculada)
-            {
-                TempData["Error"] = "Solo se pueden cerrar órdenes que tengan un cálculo oficial guardado.";
-                return RedirectToAction("VerOficial", new { ordenId });
-            }
-
-            return View(orden);
-        }
-
-        // POST: LandedCost/ConfirmarCierre
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmarCierre(int id)
-        {
-            try
-            {
-                await _ordenService.CambiarEstadoAsync(id, EstadoOrden.Cerrada);
-                TempData["Success"] = "La orden ha sido cerrada exitosamente y ya no podrá ser modificada.";
-                return RedirectToAction("VerOficial", new { ordenId = id });
-            }
-            catch (BusinessException ex)
-            {
-                TempData["Error"] = ex.Message;
-                return RedirectToAction("Cerrar", new { ordenId = id });
-            }
-        }
     }
 }

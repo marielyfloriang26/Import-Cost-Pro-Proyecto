@@ -52,6 +52,7 @@ public class OrdenImportacionController : Controller
             PaisOrigenNombre = o.PaisOrigenNombre,
             MonedaNombre = o.MonedaNombre,
             FechaOrden = o.FechaOrden,
+            FechaCierre = o.FechaCierre,
             MedioTransporte = o.MedioTransporte,
             EstadoOrden = o.EstadoOrden,
             FobTotal = o.FobTotal,
@@ -79,6 +80,7 @@ public class OrdenImportacionController : Controller
             PaisOrigenNombre = o.PaisOrigenNombre,
             MonedaNombre = o.MonedaNombre,
             FechaOrden = o.FechaOrden,
+            FechaCierre = o.FechaCierre,
             MedioTransporte = o.MedioTransporte,
             EstadoOrden = o.EstadoOrden,
             FobTotal = o.FobTotal,
@@ -155,6 +157,7 @@ public class OrdenImportacionController : Controller
             PaisOrigenId = o.PaisOrigenId,
             MonedaId = o.MonedaId,
             FechaOrden = o.FechaOrden,
+            FechaCierre = o.FechaCierre,
             MedioTransporte = o.MedioTransporte,
             EstadoOrden = o.EstadoOrden
         };
@@ -236,6 +239,7 @@ public class OrdenImportacionController : Controller
             PaisOrigenNombre = o.PaisOrigenNombre,
             MonedaNombre = o.MonedaNombre,
             FechaOrden = o.FechaOrden,
+            FechaCierre = o.FechaCierre,
             MedioTransporte = o.MedioTransporte,
             EstadoOrden = o.EstadoOrden,
             FobTotal = o.FobTotal,

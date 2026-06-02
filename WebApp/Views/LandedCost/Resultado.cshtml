@@ -30,7 +30,7 @@
             }
             else if (calculo.EstadoOrden == Capa_de_Datos.Enums.EstadoOrden.Calculada)
             {
-                <a asp-action="Cerrar" asp-route-ordenId="@calculo.OrdenId" class="btn btn-dark px-4 shadow-sm">
+                <a asp-controller="ConfirmacionCierre" asp-action="Confirmar" asp-route-id="@calculo.OrdenId" class="btn btn-dark px-4 shadow-sm">
                     <i class="bi bi-lock me-1"></i> Cerrar Orden
                 </a>
             }

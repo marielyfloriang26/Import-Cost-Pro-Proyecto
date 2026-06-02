@@ -252,6 +252,7 @@ namespace Capa_de_Negocio.Services.Implementations
                 MonedaId = o.MonedaId,
                 MonedaNombre = o.Moneda?.Nombre ?? "N/A",
                 FechaOrden = o.FechaOrden,
+                FechaCierre = o.FechaCierre,
                 MedioTransporte = o.MedioTransporte,
                 EstadoOrden = o.EstadoOrden,
                 FobTotal = o.ProductosOrden?.Sum(p => p.Cantidad * p.PrecioUnitarioFob) ?? 0,

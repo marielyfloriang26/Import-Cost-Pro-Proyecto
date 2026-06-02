@@ -4,6 +4,7 @@ using Capa_de_Datos.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Capa_de_Datos.Migrations
 {
     [DbContext(typeof(ImportCostContext))]
-    partial class ImportCostContextModelSnapshot : ModelSnapshot
+    [Migration("20260602062437_AddFechaCierreToOrdenImportacion")]
+    partial class AddFechaCierreToOrdenImportacion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

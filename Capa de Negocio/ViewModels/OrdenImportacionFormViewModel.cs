@@ -40,4 +40,7 @@ public class OrdenImportacionFormViewModel
 
     [Display(Name = "Estado")]
     public EstadoOrden EstadoOrden { get; set; } = EstadoOrden.Abierta;
+
+    [Display(Name = "Fecha de Cierre")]
+    public DateTime? FechaCierre { get; set; }
 }

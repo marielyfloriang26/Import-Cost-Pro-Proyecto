@@ -21,6 +21,7 @@ namespace Capa_de_Negocio.DTOs
         public string MonedaNombre { get; set; } = string.Empty;
 
         public DateTime FechaOrden { get; set; }
+        public DateTime? FechaCierre { get; set; }
         public MedioTransporte MedioTransporte { get; set; }
         public EstadoOrden EstadoOrden { get; set; }
 

@@ -27,6 +27,10 @@ public class OrdenImportacionIndexViewModel
     [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
     public DateTime FechaOrden { get; set; }
 
+    [Display(Name = "Fecha de Cierre")]
+    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
+    public DateTime? FechaCierre { get; set; }
+
     [Display(Name = "Transporte")]
     public MedioTransporte MedioTransporte { get; set; }
 

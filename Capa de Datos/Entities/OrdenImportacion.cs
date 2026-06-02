@@ -15,6 +15,7 @@ namespace Capa_de_Datos.Entities
         public int MonedaId { get; set; }
         public virtual Moneda? Moneda { get; set; }
         public DateTime FechaOrden { get; set; }
+        public DateTime? FechaCierre { get; set; }
         public MedioTransporte MedioTransporte { get; set; }
         public EstadoOrden EstadoOrden { get; set; } = EstadoOrden.Abierta;
 

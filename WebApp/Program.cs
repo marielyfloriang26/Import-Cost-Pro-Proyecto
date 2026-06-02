@@ -42,6 +42,7 @@ namespace WebApp
             builder.Services.AddScoped<ICategoriaArancelariaService, CategoriaArancelariaService>();
             builder.Services.AddScoped<IProductoService, ProductoService>();
             builder.Services.AddScoped<Capa_de_Negocio.Services.Interfaces.ILandedCostService, Capa_de_Negocio.Services.Implementations.LandedCostService>();
+            builder.Services.AddScoped<Capa_de_Negocio.Services.Interfaces.IConfirmacionCierreService, Capa_de_Negocio.Services.Implementations.ConfirmacionCierreService>();
 
             var app = builder.Build();
 

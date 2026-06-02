@@ -56,6 +56,13 @@
                         <div class="col-sm-6 mb-3 text-sm-end">
                             <label class="small text-uppercase text-secondary font-weight-bold d-block">Fecha de Orden</label>
                             <span class="text-dark">@Model.FechaOrden.ToString("dd/MM/yyyy")</span>
+                            @if (Model.FechaCierre.HasValue)
+                            {
+                                <div class="mt-1">
+                                    <label class="small text-uppercase text-success font-weight-bold d-block">Fecha de Cierre</label>
+                                    <span class="text-success small">@Model.FechaCierre.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                                </div>
+                            }
                         </div>
                         <div class="col-sm-4 mb-3">
                             <label class="small text-uppercase text-secondary font-weight-bold d-block">País de Origen</label>
@@ -205,6 +212,12 @@
                         <a asp-controller="LandedCost" asp-action="VerOficial" asp-route-ordenId="@Model.Id" class="btn btn-success w-100 shadow-sm mb-2">
                             <i class="bi bi-eye me-1"></i> Ver Detalle de Cálculo
                         </a>
+                        @if (Model.EstadoOrden == EstadoOrden.Calculada)
+                        {
+                            <a asp-controller="ConfirmacionCierre" asp-action="Confirmar" asp-route-id="@Model.Id" class="btn btn-dark w-100 shadow-sm mb-2">
+                                <i class="bi bi-lock me-1"></i> Cerrar Orden
+                            </a>
+                        }
                     }
                 </div>
             </div>
