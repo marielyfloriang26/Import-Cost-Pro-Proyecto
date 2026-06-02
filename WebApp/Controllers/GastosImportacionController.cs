@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Capa_de_Negocio.Services.Interfaces;
 
-namespace Capa_de_Web.Controllers;
+namespace WebApp.Controllers;
     public class GastosImportacionController : Controller
     {
         private readonly IGastoImportacionService _gastoService;
@@ -65,8 +65,8 @@ namespace Capa_de_Web.Controllers;
             return View(listaGastos);
         }
 
-        // GET: GastosImportacion/Registrar?ordenId=5
-        public async Task<IActionResult> Registrar(int ordenId)
+        // GET: GastosImportacion/Crear?ordenId=5
+        public async Task<IActionResult> Crear(int ordenId)
         {
             var orden = await _ordenService.ObtenerPorIdAsync(ordenId);
             if (orden == null) return NotFound();
@@ -88,10 +88,10 @@ namespace Capa_de_Web.Controllers;
             return View(model);
         }
 
-        // POST: GastosImportacion/Registrar
+        // POST: GastosImportacion/Crear
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Registrar(GastoImportacionViewModel model)
+        public async Task<IActionResult> Crear(GastoImportacionViewModel model)
         {
             if (!ModelState.IsValid)
             {

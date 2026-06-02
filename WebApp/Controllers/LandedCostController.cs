@@ -24,10 +24,12 @@ namespace WebApp.Controllers
         // GET: LandedCost
         public async Task<IActionResult> Index()
         {
-            var ordenesAbiertas = await _ordenService.ObtenerAbiertasAsync();
+            var ordenesAbiertas = (await _ordenService.ObtenerAbiertasAsync()).OrderByDescending(o => o.FechaOrden).ToList();
+            
             var viewModel = new LandedCostIndexViewModel
             {
-                OrdenesAbiertas = new SelectList(ordenesAbiertas, "Id", "NumeroOrden")
+                OrdenesAbiertas = new SelectList(ordenesAbiertas, "Id", "NumeroOrden"),
+                SelectedOrdenId = ordenesAbiertas.FirstOrDefault()?.Id
             };
 
             return View(viewModel);

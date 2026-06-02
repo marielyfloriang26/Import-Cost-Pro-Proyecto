@@ -237,10 +237,28 @@ namespace Capa_de_Negocio.Services.Implementations
                     case MetodoDistribucion.PorPeso:
                         if (orden.ProductosOrden.Any(po => po.Producto == null || po.Producto.PesoUnitario <= 0))
                             throw new BusinessException("No se puede calcular el landed cost porque existen gastos distribuidos por peso y uno o más productos no tienen peso configurado.");
+                        
+                        decimal totalPeso = orden.ProductosOrden.Sum(po => po.Cantidad * po.Producto!.PesoUnitario);
+                        if (totalPeso <= 0)
+                            throw new BusinessException("No se puede calcular el landed cost porque el peso total de la orden es 0.");
                         break;
                     case MetodoDistribucion.PorVolumen:
                         if (orden.ProductosOrden.Any(po => po.Producto == null || (po.Producto.Largo ?? 0) <= 0 || (po.Producto.Ancho ?? 0) <= 0 || (po.Producto.Alto ?? 0) <= 0))
                             throw new BusinessException("No se puede calcular el landed cost porque existen gastos distribuidos por volumen y uno o más productos no tienen dimensiones configuradas.");
+                        
+                        decimal totalVol = orden.ProductosOrden.Sum(po => po.Cantidad * (po.Producto!.Largo ?? 0) * (po.Producto.Ancho ?? 0) * (po.Producto.Alto ?? 0));
+                        if (totalVol <= 0)
+                            throw new BusinessException("No se puede calcular el landed cost porque el volumen total de la orden es 0.");
+                        break;
+                    case MetodoDistribucion.PorValorFOB:
+                        decimal totalFob = orden.ProductosOrden.Sum(po => po.Cantidad * po.PrecioUnitarioFob);
+                        if (totalFob <= 0)
+                            throw new BusinessException("No se puede calcular el landed cost porque el FOB total de la orden es 0.");
+                        break;
+                    case MetodoDistribucion.PorCantidad:
+                        decimal totalCant = orden.ProductosOrden.Sum(po => po.Cantidad);
+                        if (totalCant <= 0)
+                            throw new BusinessException("No se puede calcular el landed cost porque la cantidad total de la orden es 0.");
                         break;
                 }
             }

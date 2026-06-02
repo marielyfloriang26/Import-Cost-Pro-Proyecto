@@ -23,38 +23,27 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Paises" asp-action="Index">Países</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Importadores" asp-action="Index">Importadores</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Monedas" asp-action="Index">Monedas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Productos" asp-action="Index">Productos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Proveedor" asp-action="Index">Proveedores</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="CategoriasArancelarias" asp-action="Index">Categorías Arancelarias</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TasasCambio" asp-action="Index">Tasas de Cambio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="OrdenImportacion" asp-action="Index">Órdenes de Importación</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="GastosImportacion" asp-action="Index">Gastos de Importación</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ConfiguracionImpuestos" asp-action="Index">Configuración Impuestos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark fw-bold text-primary" asp-area="" asp-controller="LandedCost" asp-action="Index">Cálculo Landed Cost</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Módulos
+                            </a>
+                            <ul class="dropdown-menu shadow-sm border-0" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item py-2" asp-controller="OrdenImportacion" asp-action="Index">Mantenimiento de Órdenes</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="OrdenImportacion" asp-action="Index">Detalle de Productos</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="GastosImportacion" asp-action="Index">Registro de Gastos</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="LandedCost" asp-action="Index">Cálculo de Landed Cost</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="OrdenImportacion" asp-action="Index">Confirmación y Cierre</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header text-uppercase small font-weight-bold">Configuración y Catálogos</h6></li>
+                                <li><a class="dropdown-item py-2" asp-controller="Paises" asp-action="Index">Mantenimiento de Países</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="Monedas" asp-action="Index">Mantenimiento de Monedas</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="Importadores" asp-action="Index">Mantenimiento de Importadores</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="Proveedor" asp-action="Index">Mantenimiento de Proveedores</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="Productos" asp-action="Index">Mantenimiento de Productos</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="CategoriasArancelarias" asp-action="Index">Categorías Arancelarias</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="TasasCambio" asp-action="Index">Tasas de Cambio</a></li>
+                                <li><a class="dropdown-item py-2 fw-bold text-primary border-top" asp-controller="ConfiguracionImpuestos" asp-action="Index">Configuración de Impuestos</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
