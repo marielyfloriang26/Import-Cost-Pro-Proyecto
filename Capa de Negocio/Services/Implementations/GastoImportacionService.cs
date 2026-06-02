@@ -140,7 +140,7 @@ namespace Capa_de_Negocio.Services.Implementations;
         private async Task ValidarReglasGastoAsync(GastoImportacionDto dto, bool isEdicion = false)
         {
             // Valida la existencia de la Orden
-            var orden = await _ordenRepository.GetByIdAsync(dto.OrdenId);
+            var orden = await _ordenRepository.GetWithDetailsAsync(dto.OrdenId);
             if (orden == null)
                 throw new BusinessException("La orden de importación seleccionada no existe.");
 

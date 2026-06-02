@@ -34,7 +34,7 @@
         @if (Model.EstadoOrden == EstadoOrden.Abierta)
         {
             <a asp-action="AgregarProducto" asp-route-ordenId="@Model.OrdenId" class="btn btn-primary px-4 shadow-sm">＋ Agregar Producto</a>
-            <button class="btn btn-outline-info px-4 shadow-sm">📋 Registrar Gastos</button>
+            <a asp-controller="GastosImportacion" asp-action="Index" asp-route-ordenId="@Model.OrdenId" class="btn btn-outline-info px-4 shadow-sm">📋 Registrar Gastos</a>
             <button class="btn btn-outline-success px-4 shadow-sm">🧮 Calcular Landed Cost</button>
         }
         else
