@@ -20,5 +20,6 @@ namespace Capa_de_Negocio.DTOs
         public bool TieneProductosSinDimensiones { get; set; }
 
         public List<ProductoOrdenDto> Productos { get; set; } = new List<ProductoOrdenDto>();
+        public List<GastoImportacionDto> Gastos { get; set; } = new List<GastoImportacionDto>();
     }
 }

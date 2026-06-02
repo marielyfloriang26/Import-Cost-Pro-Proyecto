@@ -43,6 +43,10 @@ namespace Capa_de_Negocio.Servicios
                 throw new BusinessException("La orden de importación seleccionada no existe.");
 
             var detalles = await _productoOrdenRepository.ObtenerPorOrdenIdAsync(ordenId);
+            var gastos = await _context.GastosImportacion
+                .Include(g => g.Moneda)
+                .Where(g => g.OrdenId == ordenId)
+                .ToListAsync();
 
             var resumen = new OrdenResumenFobDto
             {
@@ -52,6 +56,21 @@ namespace Capa_de_Negocio.Servicios
                 MonedaNombre = orden.Moneda?.Nombre ?? "No especificada",
                 ProveedorNombre = orden.Proveedor?.Nombre ?? "No especificado"
             };
+
+            foreach (var g in gastos)
+            {
+                resumen.Gastos.Add(new GastoImportacionDto
+                {
+                    Id = g.Id,
+                    OrdenId = g.OrdenId,
+                    TipoGasto = g.TipoGasto,
+                    Monto = g.Monto,
+                    MonedaId = g.MonedaId,
+                    MonedaNombre = g.Moneda?.Nombre,
+                    MetodoDistribucion = g.MetodoDistribucion,
+                    FechaGasto = g.FechaGasto
+                });
+            }
 
             foreach (var d in detalles)
             {

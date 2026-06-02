@@ -15,6 +15,7 @@
                         <th class="p-3"># Orden</th>
                         <th class="p-3">Importador / Proveedor</th>
                         <th class="p-3">País / Moneda</th>
+                        <th class="p-3">Transporte</th>
                         <th class="p-3">Fecha</th>
                         <th class="p-3">Estado</th>
                         <th class="p-3 text-end">Totales (Local)</th>
@@ -39,6 +40,20 @@
                             <td class="p-3">
                                 <div class="text-dark">@item.PaisOrigenNombre</div>
                                 <div class="small text-secondary">@item.MonedaNombre</div>
+                            </td>
+                            <td class="p-3 text-secondary">
+                                @switch (item.MedioTransporte)
+                                {
+                                    case MedioTransporte.Maritimo:
+                                        <i class="fas fa-ship"></i> <span>Marítimo</span>
+                                        break;
+                                    case MedioTransporte.Aereo:
+                                        <i class="fas fa-plane"></i> <span>Aéreo</span>
+                                        break;
+                                    case MedioTransporte.Terrestre:
+                                        <i class="fas fa-truck"></i> <span>Terrestre</span>
+                                        break;
+                                }
                             </td>
                             <td class="p-3 text-secondary">@Html.DisplayFor(modelItem => item.FechaOrden)</td>
                             <td class="p-3">

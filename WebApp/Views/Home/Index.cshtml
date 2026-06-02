@@ -1,8 +1,168 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model WebApp.Models.ViewModels.DashboardViewModel
+@using Capa_de_Datos.Enums
+
+@{
+    ViewData["Title"] = "Dashboard Principal";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div> 
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h3 mb-0 text-gray-800">Dashboard de Importaciones</h1>
+        </div>
+    </div>
+
+    <!-- Tarjetas de Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2 border-0 border-start border-primary border-4">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Órdenes</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalOrdenes</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-file-invoice fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2 border-0 border-start border-success border-4">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">FOB Acumulado</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">RD$ @Model.TotalFobAcumulado.ToString("N2")</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2 border-0 border-start border-info border-4">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Importaciones en Proceso</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@(Model.OrdenesAbiertas + Model.OrdenesCalculadas)</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-tasks fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2 border-0 border-start border-warning border-4">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Órdenes Cerradas</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.OrdenesCerradas</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Órdenes Recientes -->
+        <div class="col-lg-8">
+            <div class="card shadow mb-4 border-0">
+                <div class="card-header py-3 bg-white d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Órdenes de Importación Recientes</h6>
+                    <a asp-controller="OrdenImportacion" asp-action="Index" class="btn btn-sm btn-link">Ver todas</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light text-secondary text-uppercase small">
+                                <tr>
+                                    <th class="p-3"># Orden</th>
+                                    <th class="p-3">Importador</th>
+                                    <th class="p-3">Fecha</th>
+                                    <th class="p-3">Estado</th>
+                                    <th class="p-3 text-end">FOB</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Recientes)
+                                {
+                                    <tr onclick="location.href='@Url.Action("Details", "OrdenImportacion", new { id = item.Id })'" style="cursor:pointer">
+                                        <td class="p-3 font-weight-bold">@item.NumeroOrden</td>
+                                        <td class="p-3">@item.ImportadorNombre</td>
+                                        <td class="p-3 text-secondary">@item.FechaOrden.ToShortDateString()</td>
+                                        <td class="p-3">
+                                            @switch (item.EstadoOrden)
+                                            {
+                                                case EstadoOrden.Abierta: <span class="badge bg-primary">Abierta</span> break;
+                                                case EstadoOrden.Calculada: <span class="badge bg-info text-dark">Calculada</span> break;
+                                                case EstadoOrden.Cerrada: <span class="badge bg-success">Cerrada</span> break;
+                                                case EstadoOrden.Cancelada: <span class="badge bg-secondary">Cancelada</span> break;
+                                            }
+                                        </td>
+                                        <td class="p-3 text-end font-weight-bold">@item.FobTotal.ToString("N2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumen de Entidades -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4 border-0">
+                <div class="card-header py-3 bg-white">
+                    <h6 class="m-0 font-weight-bold text-primary">Resumen de Catálogos</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span><i class="fas fa-box me-2 text-secondary"></i> Productos</span>
+                            <span class="badge bg-light text-dark rounded-pill">@Model.TotalProductos</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span><i class="fas fa-truck-loading me-2 text-secondary"></i> Proveedores</span>
+                            <span class="badge bg-light text-dark rounded-pill">@Model.TotalProveedores</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span><i class="fas fa-building me-2 text-secondary"></i> Importadores</span>
+                            <span class="badge bg-light text-dark rounded-pill">@Model.TotalImportadores</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a asp-controller="OrdenImportacion" asp-action="Crear" class="btn btn-primary w-100 shadow-sm">
+                            <i class="fas fa-plus me-1"></i> Nueva Orden de Importación
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .border-left-primary { border-left: .25rem solid #4e73df !important; }
+    .border-left-success { border-left: .25rem solid #1cc88a !important; }
+    .border-left-info { border-left: .25rem solid #36b9cc !important; }
+    .border-left-warning { border-left: .25rem solid #f6c23e !important; }
+    .text-xs { font-size: .7rem; }
+    .text-gray-300 { color: #dddfeb !important; }
+    .text-gray-800 { color: #5a5c69 !important; }
+</style>

@@ -74,7 +74,20 @@
                         </div>
                         <div class="col-sm-4 mb-3 text-end">
                             <label class="small text-uppercase text-secondary font-weight-bold d-block">Transporte</label>
-                            <span class="text-dark">@Model.MedioTransporte</span>
+                            <span class="text-dark">
+                                @switch (Model.MedioTransporte)
+                                {
+                                    case MedioTransporte.Maritimo:
+                                        <i class="fas fa-ship me-1 text-primary"></i> <span>Marítimo</span>
+                                        break;
+                                    case MedioTransporte.Aereo:
+                                        <i class="fas fa-plane me-1 text-primary"></i> <span>Aéreo</span>
+                                        break;
+                                    case MedioTransporte.Terrestre:
+                                        <i class="fas fa-truck me-1 text-primary"></i> <span>Terrestre</span>
+                                        break;
+                                }
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -174,6 +187,69 @@
                         </div>
                     </div>
                 }
+            </div>
+
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 font-weight-bold text-primary">Gastos en la Orden</h5>
+                    @if (Model.EstadoOrden == EstadoOrden.Abierta)
+                    {
+                        <a asp-controller="GastosImportacion" asp-action="Crear" asp-route-ordenId="@Model.Id" class="btn btn-sm btn-success px-3 shadow-sm">
+                            Registrar Gasto
+                        </a>
+                    }
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light text-secondary text-uppercase small">
+                            <tr>
+                                <th class="p-3">Tipo de Gasto</th>
+                                <th class="p-3">Fecha</th>
+                                <th class="p-3 text-end">Monto</th>
+                                <th class="p-3">Moneda</th>
+                                <th class="p-3">Distribución</th>
+                                @if (Model.EstadoOrden == EstadoOrden.Abierta)
+                                {
+                                    <th class="p-3 text-center">Acciones</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (resumenFob == null || !resumenFob.Gastos.Any())
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center py-5 text-muted">
+                                        No hay gastos registrados para esta orden.
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                foreach (var g in resumenFob.Gastos)
+                                {
+                                    <tr>
+                                        <td class="p-3 font-weight-bold">@g.TipoGasto</td>
+                                        <td class="p-3 text-secondary small">@g.FechaGasto.ToString("dd/MM/yyyy")</td>
+                                        <td class="p-3 text-end font-weight-bold">@g.Monto.ToString("N2")</td>
+                                        <td class="p-3 small">@g.MonedaNombre</td>
+                                        <td class="p-3 small text-secondary">@g.MetodoDistribucion</td>
+                                        @if (Model.EstadoOrden == EstadoOrden.Abierta)
+                                        {
+                                            <td class="p-3 text-center">
+                                                <a asp-controller="GastosImportacion" asp-action="Editar" asp-route-id="@g.Id" class="btn btn-sm btn-warning text-white shadow-sm me-1">
+                                                    Editar
+                                                </a>
+                                                <a asp-controller="GastosImportacion" asp-action="Eliminar" asp-route-id="@g.Id" class="btn btn-sm btn-outline-danger shadow-sm">
+                                                    Eliminar
+                                                </a>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
