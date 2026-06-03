@@ -78,7 +78,7 @@ namespace Capa_de_Negocio.Services.Implementations
         {
             var ordenExistente = await _repository.GetWithDetailsAsync(id);
             if (ordenExistente == null)
-                throw new OrdenImportacionNotFoundException($"No se encontró la orden con ID {id}");
+                throw new NotFoundException($"No se encontró la orden con ID {id}");
 
             ValidarEstadoEdicion(ordenExistente);
             await ValidarEdicionCamposCriticos(ordenExistente, dto);
@@ -105,7 +105,7 @@ namespace Capa_de_Negocio.Services.Implementations
 
             if (orden.EstadoOrden == EstadoOrden.Calculada || orden.EstadoOrden == EstadoOrden.Cerrada || orden.LandedCostCalculo != null)
             {
-                throw new OrdenImportacionLockedException("No se puede eliminar esta orden porque ya tiene un cálculo oficial de landed cost o está cerrada.");
+                throw new ValidationException("No se puede eliminar esta orden porque ya tiene un cálculo oficial de landed cost o está cerrada.");
             }
 
             _repository.Remove(orden);
@@ -117,36 +117,36 @@ namespace Capa_de_Negocio.Services.Implementations
             if (dto.ImportadorId != orden.ImportadorId)
             {
                 var ent = await _importadorService.ObtenerPorIdAsync(dto.ImportadorId);
-                if (ent == null) throw new ImportadorNotFoundException($"El importador con ID {dto.ImportadorId} no existe.");
-                if (!ent.Estado) throw new InactiveImportadorException("El nuevo importador seleccionado no está activo.");
+                if (ent == null) throw new NotFoundException($"El importador con ID {dto.ImportadorId} no existe.");
+                if (!ent.Estado) throw new ValidationException("El nuevo importador seleccionado no está activo.");
             }
 
             if (dto.ProveedorId != orden.ProveedorId)
             {
                 var ent = await _proveedorService.ObtenerPorIdAsync(dto.ProveedorId);
-                if (ent == null) throw new ProveedorNotFoundException($"El proveedor con ID {dto.ProveedorId} no existe.");
-                if (!ent.Estado) throw new InactiveProveedorException("El nuevo proveedor seleccionado no está activo.");
+                if (ent == null) throw new NotFoundException($"El proveedor con ID {dto.ProveedorId} no existe.");
+                if (!ent.Estado) throw new ValidationException("El nuevo proveedor seleccionado no está activo.");
             }
 
             if (dto.PaisOrigenId != orden.PaisOrigenId)
             {
                 var ent = await _paisService.ObtenerPorIdAsync(dto.PaisOrigenId);
-                if (ent == null) throw new PaisNotFoundException($"El país con ID {dto.PaisOrigenId} no existe.");
-                if (!ent.Estado) throw new InactivePaisException("El nuevo país seleccionado no está activo.");
+                if (ent == null) throw new NotFoundException($"El país con ID {dto.PaisOrigenId} no existe.");
+                if (!ent.Estado) throw new ValidationException("El nuevo país seleccionado no está activo.");
             }
 
             if (dto.MonedaId != orden.MonedaId)
             {
                 var ent = await _monedaService.ObtenerPorIdAsync(dto.MonedaId);
-                if (ent == null) throw new CurrencyNotFoundException($"La moneda con ID {dto.MonedaId} no existe.");
-                if (!ent.Estado) throw new InactiveCurrencyException("La nueva moneda seleccionada no está activa.");
+                if (ent == null) throw new NotFoundException($"La moneda con ID {dto.MonedaId} no existe.");
+                if (!ent.Estado) throw new ValidationException("La nueva moneda seleccionada no está activa.");
             }
         }
 
         public async Task<bool> CambiarEstadoAsync(int id, EstadoOrden nuevoEstado)
         {
             var orden = await _repository.GetByIdAsync(id);
-            if (orden == null) throw new OrdenImportacionNotFoundException($"Orden {id} no encontrada.");
+            if (orden == null) throw new NotFoundException($"Orden {id} no encontrada.");
 
             ValidarTransicionEstado(orden.EstadoOrden, nuevoEstado);
 
@@ -159,46 +159,46 @@ namespace Capa_de_Negocio.Services.Implementations
         private async Task ValidarOrdenNueva(CrearOrdenImportacionDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.NumeroOrden))
-                throw new OrdenImportacionException("El número de orden es requerido.");
+                throw new ValidationException("El número de orden es requerido.");
 
             if (dto.NumeroOrden.Length > 30)
-                throw new OrdenImportacionException("El número de orden no puede exceder los 30 caracteres.");
+                throw new ValidationException("El número de orden no puede exceder los 30 caracteres.");
 
             var duplicado = await _repository.FindAsync(o => o.NumeroOrden == dto.NumeroOrden.Trim());
             if (duplicado.Any())
-                throw new DuplicateOrderNumberException("Ya existe una orden de importación registrada con este número.");
+                throw new ConflictException("Ya existe una orden de importación registrada con este número.");
 
             var importador = await _importadorService.ObtenerPorIdAsync(dto.ImportadorId);
-            if (importador == null) throw new ImportadorNotFoundException($"El importador con ID {dto.ImportadorId} no existe.");
+            if (importador == null) throw new NotFoundException($"El importador con ID {dto.ImportadorId} no existe.");
             if (!importador.Estado)
-                throw new InactiveImportadorException("El importador seleccionado no está activo.");
+                throw new ValidationException("El importador seleccionado no está activo.");
 
             var proveedor = await _proveedorService.ObtenerPorIdAsync(dto.ProveedorId);
-            if (proveedor == null) throw new ProveedorNotFoundException($"El proveedor con ID {dto.ProveedorId} no existe.");
+            if (proveedor == null) throw new NotFoundException($"El proveedor con ID {dto.ProveedorId} no existe.");
             if (!proveedor.Estado)
-                throw new InactiveProveedorException("El proveedor seleccionado no está activo.");
+                throw new ValidationException("El proveedor seleccionado no está activo.");
 
             var pais = await _paisService.ObtenerPorIdAsync(dto.PaisOrigenId);
-            if (pais == null) throw new PaisNotFoundException($"El país con ID {dto.PaisOrigenId} no existe.");
+            if (pais == null) throw new NotFoundException($"El país con ID {dto.PaisOrigenId} no existe.");
             if (!pais.Estado)
-                throw new InactivePaisException("El país seleccionado no está activo.");
+                throw new ValidationException("El país seleccionado no está activo.");
 
             var moneda = await _monedaService.ObtenerPorIdAsync(dto.MonedaId);
-            if (moneda == null) throw new CurrencyNotFoundException($"La moneda con ID {dto.MonedaId} no existe.");
+            if (moneda == null) throw new NotFoundException($"La moneda con ID {dto.MonedaId} no existe.");
             if (!moneda.Estado)
-                throw new InactiveCurrencyException("La moneda seleccionada no está activa.");
+                throw new ValidationException("La moneda seleccionada no está activa.");
         }
 
         private void ValidarEstadoEdicion(OrdenImportacion orden)
         {
             if (orden.EstadoOrden == EstadoOrden.Cerrada || orden.EstadoOrden == EstadoOrden.Cancelada)
-                throw new OrdenImportacionLockedException("No se puede editar esta orden porque está cerrada o cancelada.");
+                throw new ValidationException("No se puede editar esta orden porque está cerrada o cancelada.");
         }
 
         private async Task ValidarEdicionCamposCriticos(OrdenImportacion orden, OrdenImportacionDto dto)
         {
             if (dto.NumeroOrden.Length > 30)
-                throw new OrdenImportacionException("El número de orden no puede exceder los 30 caracteres.");
+                throw new ValidationException("El número de orden no puede exceder los 30 caracteres.");
 
             if (orden.EstadoOrden == EstadoOrden.Calculada)
             {
@@ -211,14 +211,14 @@ namespace Capa_de_Negocio.Services.Implementations
                     orden.MedioTransporte != dto.MedioTransporte;
 
                 if (camposCriticosCambiaron)
-                    throw new OrdenImportacionLockedException("No se pueden modificar estos datos porque la orden ya tiene un cálculo oficial de landed cost.");
+                    throw new ValidationException("No se pueden modificar estos datos porque la orden ya tiene un cálculo oficial de landed cost.");
             }
 
             if (orden.NumeroOrden != dto.NumeroOrden.Trim())
             {
                 var duplicado = await _repository.FindAsync(o => o.NumeroOrden == dto.NumeroOrden.Trim() && o.Id != orden.Id);
                 if (duplicado.Any())
-                    throw new DuplicateOrderNumberException("Ya existe otra orden registrada con este número.");
+                    throw new ConflictException("Ya existe otra orden registrada con este número.");
             }
         }
 
@@ -234,7 +234,7 @@ namespace Capa_de_Negocio.Services.Implementations
                 esValida = false;
 
             if (!esValida)
-                throw new InvalidOrderStatusTransitionException($"Transición de estado de {actual} a {nuevo} no permitida.");
+                throw new ValidationException($"Transición de estado de {actual} a {nuevo} no permitida.");
         }
 
         private OrdenImportacionDto MapToDto(OrdenImportacion o)

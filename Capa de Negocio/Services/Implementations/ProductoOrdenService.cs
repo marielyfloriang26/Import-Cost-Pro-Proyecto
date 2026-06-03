@@ -40,7 +40,7 @@ namespace Capa_de_Negocio.Servicios
                 .FirstOrDefaultAsync(o => o.Id == ordenId);
 
             if (orden == null)
-                throw new BusinessException("La orden de importación seleccionada no existe.");
+                throw new NotFoundException("La orden de importación seleccionada no existe.");
 
             var detalles = await _productoOrdenRepository.ObtenerPorOrdenIdAsync(ordenId);
             var gastos = await _context.GastosImportacion
@@ -137,23 +137,23 @@ namespace Capa_de_Negocio.Servicios
         public async Task AgregarProductoAOrdenAsync(ProductoOrdenDto dto)
         {
             var orden = await _ordenRepository.GetByIdAsync(dto.OrdenImportacionId);
-            if (orden == null) throw new BusinessException("La orden de importación no existe.");
+            if (orden == null) throw new NotFoundException("La orden de importación no existe.");
 
             // Solo se pueden agregar productos a órdenes en estado Abierta
             if (orden.EstadoOrden != EstadoOrden.Abierta)
-                throw new BusinessException($"No se pueden añadir productos a la orden porque se encuentra en estado: {orden.EstadoOrden}.");
+                throw new ValidationException($"No se pueden añadir productos a la orden porque se encuentra en estado: {orden.EstadoOrden}.");
 
             // No se puede agregar el mismo producto dos veces a una misma orden
             bool existe = await _productoOrdenRepository.ExisteProductoEnOrdenAsync(dto.OrdenImportacionId, dto.ProductoId);
             if (existe)
-                throw new BusinessException("Este producto ya fue agregado a la orden. Si desea modificar la cantidad, precio o margen, debe editar el producto ya agregado.");
+                throw new ConflictException("Este producto ya fue agregado a la orden. Si desea modificar la cantidad, precio o margen, debe editar el producto ya agregado.");
 
             var producto = await _productoRepository.GetByIdAsync(dto.ProductoId);
-            if (producto == null) throw new BusinessException("El producto seleccionado no existe.");
+            if (producto == null) throw new NotFoundException("El producto seleccionado no existe.");
 
             // Solo se deben mostrar y permitir productos activos
             if (!producto.Estado)
-                throw new BusinessException("El producto seleccionado no se puede agregar porque está inactivo.");
+                throw new ValidationException("El producto seleccionado no se puede agregar porque está inactivo.");
 
             ValidarValoresEstructurales(dto);
 
@@ -173,14 +173,14 @@ namespace Capa_de_Negocio.Servicios
         public async Task EditarProductoEnOrdenAsync(ProductoOrdenDto dto)
         {
             var dRealPhysical = await _context.Set<ProductoOrden>().FindAsync(dto.Id);
-            if (dRealPhysical == null) throw new BusinessException("El registro de producto a editar no existe.");
+            if (dRealPhysical == null) throw new NotFoundException("El registro de producto a editar no existe.");
 
             var orden = await _ordenRepository.GetByIdAsync(dRealPhysical.OrdenId);
-            if (orden == null) throw new BusinessException("La orden de importación no existe.");
+            if (orden == null) throw new NotFoundException("La orden de importación no existe.");
 
             // Bloqueo estricto por estados
             if (orden.EstadoOrden == EstadoOrden.Calculada || orden.EstadoOrden == EstadoOrden.Cerrada || orden.EstadoOrden == EstadoOrden.Cancelada)
-                throw new BusinessException($"No se puede editar este producto porque la orden ya fue {orden.EstadoOrden}.");
+                throw new ValidationException($"No se puede editar este producto porque la orden ya fue {orden.EstadoOrden}.");
 
             ValidarValoresEstructurales(dto);
 
@@ -198,11 +198,11 @@ namespace Capa_de_Negocio.Servicios
             if (dRealPhysical == null) return;
 
             var orden = await _ordenRepository.GetByIdAsync(dRealPhysical.OrdenId);
-            if (orden == null) throw new BusinessException("La orden de importación no existe.");
+            if (orden == null) throw new NotFoundException("La orden de importación no existe.");
 
             // Bloqueo de eliminación por estados
             if (orden.EstadoOrden == EstadoOrden.Calculada || orden.EstadoOrden == EstadoOrden.Cerrada || orden.EstadoOrden == EstadoOrden.Cancelada)
-                throw new BusinessException($"No se puede eliminar este producto porque la orden ya fue {orden.EstadoOrden}.");
+                throw new ValidationException($"No se puede eliminar este producto porque la orden ya fue {orden.EstadoOrden}.");
 
             _context.Set<ProductoOrden>().Remove(dRealPhysical);
             await _context.SaveChangesAsync();
@@ -211,13 +211,13 @@ namespace Capa_de_Negocio.Servicios
         private void ValidarValoresEstructurales(ProductoOrdenDto dto)
         {
             if (dto.Cantidad <= 0)
-                throw new BusinessException("La cantidad debe ser mayor que 0.");
+                throw new ValidationException("La cantidad debe ser mayor que 0.");
 
             if (dto.PrecioUnitarioFob <= 0)
-                throw new BusinessException("El precio unitario FOB debe ser mayor que 0.");
+                throw new ValidationException("El precio unitario FOB debe ser mayor que 0.");
 
             if (dto.MargenGananciaDeseado < 0 || dto.MargenGananciaDeseado >= 100)
-                throw new BusinessException("El margen de ganancia deseado debe ser mayor o igual que 0 y menor que 100.");
+                throw new ValidationException("El margen de ganancia deseado debe ser mayor o igual que 0 y menor que 100.");
         }
 
         public async Task<IEnumerable<ProductoOrdenDto>> ObtenerProductosActivosAsync()

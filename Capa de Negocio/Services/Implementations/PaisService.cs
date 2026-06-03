@@ -46,21 +46,21 @@ namespace Capa_de_Negocio.Servicios
         public async Task CrearAsync(PaisDto paisDto)
         {
             if (string.IsNullOrWhiteSpace(paisDto.Nombre))
-                throw new BusinessException("El nombre del país es requerido.");
+                throw new ValidationException("El nombre del país es requerido.");
 
             if (string.IsNullOrWhiteSpace(paisDto.CodigoIso))
-                throw new BusinessException("El código ISO es requerido.");
+                throw new ValidationException("El código ISO es requerido.");
 
             // Guardar en mayúsculas y limpiar espacios
             string isoFormateado = paisDto.CodigoIso.Trim().ToUpper();
 
             if (isoFormateado.Length < 2 || isoFormateado.Length > 3)
-                throw new BusinessException("El código ISO debe tener entre 2 y 3 caracteres.");
+                throw new ValidationException("El código ISO debe tener entre 2 y 3 caracteres.");
 
             // No permitir duplicados, Usamos FindAsync del repositorio genérico
             var existente = await _paisRepository.FindAsync(p => p.CodigoIso == isoFormateado);
             if (existente.Any())
-                throw new BusinessException("Ya existe un país registrado con este código ISO.");
+                throw new ConflictException("Ya existe un país registrado con este código ISO.");
 
             var nuevoPais = new Pais
             {
@@ -77,23 +77,23 @@ namespace Capa_de_Negocio.Servicios
         {
             var paisExistente = await _paisRepository.GetByIdAsync(paisDto.Id);
             if (paisExistente == null)
-                throw new BusinessException("El país a editar no existe.");
+                throw new NotFoundException("El país a editar no existe.");
 
             if (string.IsNullOrWhiteSpace(paisDto.Nombre))
-                throw new BusinessException("El nombre del país es requerido.");
+                throw new ValidationException("El nombre del país es requerido.");
 
             if (string.IsNullOrWhiteSpace(paisDto.CodigoIso))
-                throw new BusinessException("El código ISO es requerido.");
+                throw new ValidationException("El código ISO es requerido.");
 
             string isoFormateado = paisDto.CodigoIso.Trim().ToUpper();
 
             if (isoFormateado.Length < 2 || isoFormateado.Length > 3)
-                throw new BusinessException("El código ISO debe tener entre 2 y 3 caracteres.");
+                throw new ValidationException("El código ISO debe tener entre 2 y 3 caracteres.");
 
             // Validar que no pertenezca a otro país
             var duplicado = await _paisRepository.FindAsync(p => p.CodigoIso == isoFormateado && p.Id != paisDto.Id);
             if (duplicado.Any())
-                throw new BusinessException("Ya existe un país registrado con este código ISO.");
+                throw new ConflictException("Ya existe un país registrado con este código ISO.");
 
             paisExistente.Nombre = paisDto.Nombre.Trim();
             paisExistente.CodigoIso = isoFormateado;
@@ -112,7 +112,7 @@ namespace Capa_de_Negocio.Servicios
             bool estaEnUso = await _paisRepository.RelacionesActivasAsync(id);
             if (estaEnUso)
             {
-                throw new BusinessException("No se puede eliminar este país porque está asociado a otros registros del sistema.");
+                throw new ValidationException("No se puede eliminar este país porque está asociado a otros registros del sistema.");
             }
 
             _paisRepository.Remove(pais);

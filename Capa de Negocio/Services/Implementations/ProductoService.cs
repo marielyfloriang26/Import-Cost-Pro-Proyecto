@@ -106,7 +106,7 @@ namespace Capa_de_Negocio.Implementations;
             // Regla: Validar si el codigo ya existe
             if (await ExisteCodigoAsync(dto.CodigoReferencia))
             {
-                throw new ReglasProductoException("Ya existe un producto registrado con este código o referencia.");
+                throw new ValidationException("Ya existe un producto registrado con este código o referencia.");
             }
 
             // Regla: Si se coloca largo, ancho o alto, los tres deben tener valor y ser mayores a 0
@@ -119,13 +119,13 @@ namespace Capa_de_Negocio.Implementations;
             {
                 if (!tieneLargo || !tieneAncho || !tieneAlto)
                 {
-                    throw new ReglasProductoException("Si se especifica una dimensión física (Largo, Ancho o Alto), se deben colocar las tres obligatoriamente.");
+                    throw new ValidationException("Si se especifica una dimensión física (Largo, Ancho o Alto), se deben colocar las tres obligatoriamente.");
                 }
 
                 // Si estan los tres, valida que sean mayores que 0
                 if (dto.Largo <= 0 || dto.Ancho <= 0 || dto.Alto <= 0)
                 {
-                    throw new ReglasProductoException("Los valores de Largo, Ancho y Alto deben ser mayores que 0.");
+                    throw new ValidationException("Los valores de Largo, Ancho y Alto deben ser mayores que 0.");
                 }
             }
 
@@ -159,7 +159,7 @@ namespace Capa_de_Negocio.Implementations;
             var productoExistente = await _productoRepo.GetByIdAsync(dto.Id);
             if (productoExistente == null)
             {
-                throw new ReglasProductoException("El producto que intenta editar no existe en el sistema.");
+                throw new ValidationException("El producto que intenta editar no existe en el sistema.");
             }
 
             // Limpia los espacios en blanco 
@@ -169,7 +169,7 @@ namespace Capa_de_Negocio.Implementations;
             // Regla: Valida si el codigo ya existe en otro producto, pasando el dto.Id para excluirlo
             if (await ExisteCodigoAsync(dto.CodigoReferencia, dto.Id))
             {
-                throw new ReglasProductoException("Ya existe un producto registrado con este código o referencia.");
+                throw new ValidationException("Ya existe un producto registrado con este código o referencia.");
             }
 
             // Regla: Validar dimensiones dependientes (Largo, Ancho, Alto)
@@ -181,12 +181,12 @@ namespace Capa_de_Negocio.Implementations;
             {
                 if (!tieneLargo || !tieneAncho || !tieneAlto)
                 {
-                    throw new ReglasProductoException("Si se especifica una dimensión física (Largo, Ancho o Alto), se deben colocar las tres obligatoriamente.");
+                    throw new ValidationException("Si se especifica una dimensión física (Largo, Ancho o Alto), se deben colocar las tres obligatoriamente.");
                 }
 
                 if (dto.Largo <= 0 || dto.Ancho <= 0 || dto.Alto <= 0)
                 {
-                    throw new ReglasProductoException("Los valores de Largo, Ancho y Alto deben ser mayores que 0.");
+                    throw new ValidationException("Los valores de Largo, Ancho y Alto deben ser mayores que 0.");
                 }
             }
 
@@ -218,13 +218,13 @@ namespace Capa_de_Negocio.Implementations;
             var producto = await _productoRepo.GetByIdAsync(id);
             if (producto == null)
             {
-                throw new ReglasProductoException("El producto que intenta eliminar no existe.");
+                throw new ValidationException("El producto que intenta eliminar no existe.");
             }
 
             // Regla: Valida si esta asociado a ordenes de importación
             if (producto.ProductosOrden != null && producto.ProductosOrden.Any())
             {
-                throw new ReglasProductoException("No se puede eliminar este producto porque está asociado a una o más órdenes de importación.");
+                throw new ValidationException("No se puede eliminar este producto porque está asociado a una o más órdenes de importación.");
             }
 
             // Si esta limpio y no tiene registros historicos, se elimina

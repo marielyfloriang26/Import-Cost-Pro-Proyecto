@@ -110,7 +110,7 @@ public class ProveedorController : Controller
                 TempData["Success"] = "¡Proveedor actualizado con éxito!";
                 return RedirectToAction(nameof(Index));
             }
-            catch (ReglasProvException ex) 
+            catch (BusinessException ex) 
             {
                 ModelState.AddModelError("", ex.Message);
             }
@@ -144,15 +144,13 @@ public class ProveedorController : Controller
             TempData["Success"] = "¡Proveedor eliminado con éxito!";
             return RedirectToAction(nameof(Index));
         }
-        catch (ReglasProvException ex)
+        catch (BusinessException ex)
         {
             var proveedorDto = await _proveedorService.ObtenerPorIdAsync(id);
             if (proveedorDto == null) return NotFound();
 
             ViewBag.Error = ex.Message; // Pasa el mensaje de validación de ordenes
             return View("Eliminar", proveedorDto); // se queda en la misma vista enseñando el error
-           // TempData["Error"] = ex.Message;
-          //  return RedirectToAction(nameof(Eliminar), new { id });
         }
         catch (Exception)
         {

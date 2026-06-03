@@ -22,38 +22,38 @@ namespace Capa_de_Negocio.Services.Implementations
 
             if (orden == null)
             {
-                throw new OrdenImportacionNotFoundException($"No se encontró la orden con ID {ordenId}.");
+                throw new NotFoundException($"No se encontró la orden con ID {ordenId}.");
             }
 
             // Validaciones según el documento funcional
             if (orden.EstadoOrden == EstadoOrden.Cerrada)
             {
-                throw new BusinessException("La orden ya se encuentra cerrada.");
+                throw new ValidationException("La orden ya se encuentra cerrada.");
             }
 
             if (orden.EstadoOrden == EstadoOrden.Cancelada)
             {
-                throw new BusinessException("No se puede cerrar una orden que ha sido cancelada.");
+                throw new ValidationException("No se puede cerrar una orden que ha sido cancelada.");
             }
 
             if (orden.EstadoOrden != EstadoOrden.Calculada)
             {
-                throw new BusinessException("Solo se pueden cerrar órdenes que estén en estado Calculada.");
+                throw new ValidationException("Solo se pueden cerrar órdenes que estén en estado Calculada.");
             }
 
             if (orden.LandedCostCalculo == null)
             {
-                throw new BusinessException("No se puede cerrar esta orden porque no tiene un cálculo oficial de landed cost guardado.");
+                throw new ValidationException("No se puede cerrar esta orden porque no tiene un cálculo oficial de landed cost guardado.");
             }
 
             if (orden.ProductosOrden == null || !orden.ProductosOrden.Any())
             {
-                throw new BusinessException("La orden debe tener productos registrados para ser cerrada.");
+                throw new ValidationException("La orden debe tener productos registrados para ser cerrada.");
             }
 
             if (orden.LandedCostCalculo.CostoTotalImportacion <= 0)
             {
-                throw new BusinessException("El cálculo oficial debe tener un costo total de importación mayor que 0 para proceder con el cierre.");
+                throw new ValidationException("El cálculo oficial debe tener un costo total de importación mayor que 0 para proceder con el cierre.");
             }
 
             // Cambio de estado

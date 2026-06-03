@@ -96,11 +96,11 @@ namespace Capa_de_Negocio.Services.Implementations;
         {
             var gastoExistente = await _gastoRepository.GetByIdAsync(dto.Id);
             if (gastoExistente == null)
-                throw new BusinessException("El gasto de importación a editar no existe.");
+                throw new NotFoundException("El gasto de importación a editar no existe.");
 
             // No se permite cambiar la orden de importacion asociada en la edicion
             if (gastoExistente.OrdenId != dto.OrdenId)
-                throw new BusinessException("No se puede modificar la orden de importación asociada a un gasto existente. Debe eliminarlo y crearlo de nuevo.");
+                throw new ValidationException("No se puede modificar la orden de importación asociada a un gasto existente. Debe eliminarlo y crearlo de nuevo.");
 
             // Validaciones logicas pesadas
             await ValidarReglasGastoAsync(dto, isEdicion: true);
@@ -124,12 +124,12 @@ namespace Capa_de_Negocio.Services.Implementations;
             // Valida estado de la orden antes de eliminar fisica o logicamente
             var orden = await _ordenRepository.GetByIdAsync(gasto.OrdenId);
             if (orden == null)
-                throw new BusinessException("La orden asociada al gasto no existe.");
+                throw new NotFoundException("La orden asociada al gasto no existe.");
 
             // Prohibe acciones si la orden no esta Abierta
             if (orden.EstadoOrden != EstadoOrden.Abierta)
             {
-                throw new BusinessException("No se puede eliminar este gasto porque la orden ya fue calculada, cerrada o cancelada.");
+                throw new ValidationException("No se puede eliminar este gasto porque la orden ya fue calculada, cerrada o cancelada.");
             }
 
             _gastoRepository.Remove(gasto);
@@ -142,24 +142,24 @@ namespace Capa_de_Negocio.Services.Implementations;
             // Valida la existencia de la Orden
             var orden = await _ordenRepository.GetWithDetailsAsync(dto.OrdenId);
             if (orden == null)
-                throw new BusinessException("La orden de importación seleccionada no existe.");
+                throw new NotFoundException("La orden de importación seleccionada no existe.");
 
             // Valida que el Estado de la Orden permita modificaciones (Solo "Abierta")
             if (orden.EstadoOrden != EstadoOrden.Abierta)
-                throw new BusinessException("La orden seleccionada no está en un estado que permita registrar o modificar gastos.");
+                throw new ValidationException("La orden seleccionada no está en un estado que permita registrar o modificar gastos.");
 
             // El monto debe ser estrictamente mayor a 0
             if (dto.Monto <= 0)
-                throw new BusinessException("El monto debe ser mayor que 0.");
+                throw new ValidationException("El monto debe ser mayor que 0.");
 
             // Valida existencia y estado de la Moneda
             var monedaGasto = await _monedaService.ObtenerPorIdAsync(dto.MonedaId);
             if (monedaGasto == null)
-                throw new BusinessException("La moneda seleccionada no existe en el mantenimiento de monedas.");
+                throw new NotFoundException("La moneda seleccionada no existe en el mantenimiento de monedas.");
 
             // En creacion exige moneda activa, En edicion se permite historica si ya la tenia
             if (!isEdicion && !monedaGasto.Estado)
-                throw new BusinessException("La moneda seleccionada no está activa.");
+                throw new ValidationException("La moneda seleccionada no está activa.");
 
             // Validaciones de tipos unicos (Flete y Seguro)
             var gastosExistentes = await _gastoRepository.FindAsync(g => g.OrdenId == dto.OrdenId);
@@ -168,14 +168,14 @@ namespace Capa_de_Negocio.Services.Implementations;
             {
                 bool yaExisteFlete = gastosExistentes.Any(g => g.TipoGasto == TipoGasto.FleteInternacional && (!isEdicion || g.Id != dto.Id));
                 if (yaExisteFlete)
-                    throw new BusinessException("Ya existe un gasto de flete internacional registrado para esta orden.");
+                    throw new ConflictException("Ya existe un gasto de flete internacional registrado para esta orden.");
             }
 
             if (dto.TipoGasto == TipoGasto.SeguroInternacional)
             {
                 bool yaExisteSeguro = gastosExistentes.Any(g => g.TipoGasto == TipoGasto.SeguroInternacional && (!isEdicion || g.Id != dto.Id));
                 if (yaExisteSeguro)
-                    throw new BusinessException("Ya existe un gasto de seguro internacional registrado para esta orden.");
+                    throw new ConflictException("Ya existe un gasto de seguro internacional registrado para esta orden.");
             }
 
             // Valida Tasa de Cambio si la moneda no es la local
@@ -190,13 +190,13 @@ namespace Capa_de_Negocio.Services.Implementations;
                     .FirstOrDefault();
 
                 if (tasaValida == null)
-                    throw new BusinessException("No existe una tasa de cambio activa desde la moneda del gasto hacia la moneda local para la fecha del gasto.");
+                    throw new NotFoundException("No existe una tasa de cambio activa desde la moneda del gasto hacia la moneda local para la fecha del gasto.");
             }
 
             // Validaciones segun el Metodo de Distribucion y los Productos de la Orden
             if (orden.ProductosOrden == null || !orden.ProductosOrden.Any())
             {
-                throw new BusinessException("La orden debe tener al menos un producto registrado para poder asociarle gastos.");
+                throw new ValidationException("La orden debe tener al menos un producto registrado para poder asociarle gastos.");
             }
 
             switch (dto.MetodoDistribucion)
@@ -204,14 +204,14 @@ namespace Capa_de_Negocio.Services.Implementations;
                 case MetodoDistribucion.PorValorFOB:
                     decimal fobTotal = orden.ProductosOrden.Sum(po => po.Cantidad * po.PrecioUnitarioFob);
                     if (fobTotal <= 0)
-                        throw new BusinessException("Si el método de distribución es Por valor FOB, el FOB total de la orden debe ser mayor que 0.");
+                        throw new ValidationException("Si el método de distribución es Por valor FOB, el FOB total de la orden debe ser mayor que 0.");
                     break;
 
                 case MetodoDistribucion.PorPeso:
                     // Validar que todos los productos enlazados tengan un peso unitario asignado mayor a 0
                     bool tieneProductosSinPeso = orden.ProductosOrden.Any(po => po.Producto == null || po.Producto.PesoUnitario <= 0);
                     if (tieneProductosSinPeso)
-                        throw new BusinessException("Si el método de distribución es Por peso, todos los productos deben tener peso unitario mayor que 0.");
+                        throw new ValidationException("Si el método de distribución es Por peso, todos los productos deben tener peso unitario mayor que 0.");
                     break;
 
                 case MetodoDistribucion.PorVolumen:
@@ -223,13 +223,13 @@ namespace Capa_de_Negocio.Services.Implementations;
                         (po.Producto.Alto ?? 0) <= 0);
                     
                     if (tieneProductosSinVolumen)
-                        throw new BusinessException("Si el método de distribución es Por volumen, todos los productos deben tener largo, ancho y alto mayores que 0.");
+                        throw new ValidationException("Si el método de distribución es Por volumen, todos los productos deben tener largo, ancho y alto mayores que 0.");
                     break;
 
                 case MetodoDistribucion.PorCantidad:
                     decimal cantidadTotal = orden.ProductosOrden.Sum(po => po.Cantidad);
                     if (cantidadTotal <= 0)
-                        throw new BusinessException("Si el método de distribución es Por cantidad, la cantidad total debe ser mayor que 0.");
+                        throw new ValidationException("Si el método de distribución es Por cantidad, la cantidad total debe ser mayor que 0.");
                     break;
             }
         }

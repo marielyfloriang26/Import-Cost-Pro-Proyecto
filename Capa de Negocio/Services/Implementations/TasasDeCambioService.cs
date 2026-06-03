@@ -60,7 +60,7 @@ namespace Capa_de_Negocio.Services.Implementations
             var tasa = await _repository.GetByIdAsync(id);
             if (tasa == null)
             {
-                throw new TasaCambioNotFoundException($"No se encontró una tasa de cambio con el ID {id}");
+                throw new NotFoundException($"No se encontró una tasa de cambio con el ID {id}");
             }
 
             return new TasaCambioDto
@@ -99,7 +99,7 @@ namespace Capa_de_Negocio.Services.Implementations
             var tasaExistente = await _repository.GetByIdAsync(id);
             if (tasaExistente == null)
             {
-                throw new TasaCambioNotFoundException($"No se encontró una tasa de cambio con el ID {id}");
+                throw new NotFoundException($"No se encontró una tasa de cambio con el ID {id}");
             }
 
             bool hasBeenUsedInLandedCost = await _repository.HasBeenUsedInLandedCostAsync(tasaExistente);
@@ -111,7 +111,7 @@ namespace Capa_de_Negocio.Services.Implementations
                     tasaExistente.ValorTasa != tasaDto.ValorTasa ||
                     tasaExistente.FechaVigencia.Date != tasaDto.FechaVigencia.Date)
                 {
-                    throw new TasaCambioLockedException("Esta tasa de cambio ya fue utilizada en un calculo oficial de landed cost y no puede ser modificada.");
+                    throw new ValidationException("Esta tasa de cambio ya fue utilizada en un calculo oficial de landed cost y no puede ser modificada.");
                 }
             }
 
@@ -142,13 +142,13 @@ namespace Capa_de_Negocio.Services.Implementations
             var tasaExistente = await _repository.GetByIdAsync(id);
             if (tasaExistente == null)
             {
-                throw new TasaCambioNotFoundException($"No se encontró una tasa de cambio con el ID {id}");
+                throw new NotFoundException($"No se encontró una tasa de cambio con el ID {id}");
             }
             bool hasBeenUsedInLandedCost = await _repository.HasBeenUsedInLandedCostAsync(tasaExistente);
 
             if(hasBeenUsedInLandedCost)
             {
-                throw new TasaCambioLockedException("Esta tasa de cambio ya fue utilizada en un calculo oficial de landed cost y no puede ser eliminada.");
+                throw new ValidationException("Esta tasa de cambio ya fue utilizada en un calculo oficial de landed cost y no puede ser eliminada.");
             }
 
             _repository.Remove(tasaExistente);
@@ -160,7 +160,7 @@ namespace Capa_de_Negocio.Services.Implementations
         {
             if (tasaDto.MonedaOrigenId == tasaDto.MonedaDestinoId)
             {
-                throw new SameCurrencyNotAllowedException("La moneda origen no puede ser igual a la moneda destino.");
+                throw new ConflictException("La moneda origen no puede ser igual a la moneda destino.");
             }
 
             var monedaOrigen = await _monedaService.ObtenerPorIdAsync(tasaDto.MonedaOrigenId);
@@ -168,32 +168,32 @@ namespace Capa_de_Negocio.Services.Implementations
 
             if (monedaOrigen == null)
             {
-                throw new CurrencyNotFoundException($"No se encontró una moneda con el ID {tasaDto.MonedaOrigenId}");
+                throw new NotFoundException($"No se encontró una moneda con el ID {tasaDto.MonedaOrigenId}");
             }
 
             if (!monedaOrigen.Estado)
             {
-                throw new InactiveCurrencyException($"La moneda de origen con ID {tasaDto.MonedaOrigenId} no está activa");
+                throw new ValidationException($"La moneda de origen con ID {tasaDto.MonedaOrigenId} no está activa");
             }
 
             if (monedaDestino == null)
             {
-                throw new CurrencyNotFoundException($"No se encontró una moneda con el ID {tasaDto.MonedaDestinoId}");
+                throw new NotFoundException($"No se encontró una moneda con el ID {tasaDto.MonedaDestinoId}");
             }
 
             if (!monedaDestino.Estado)
             {
-                throw new InactiveCurrencyException($"La moneda de destino con ID {tasaDto.MonedaDestinoId} no está activa");
+                throw new ValidationException($"La moneda de destino con ID {tasaDto.MonedaDestinoId} no está activa");
             }
 
             if (!monedaDestino.EsMonedaLocal)
             {
-                throw new LocalCurrencyRequiredException("La moneda destino debe ser local.");
+                throw new ConflictException("La moneda destino debe ser local.");
             }
 
             if (tasaDto.ValorTasa <= 0)
             {
-                throw new InvalidExchangeRateValueException("El valor de la tasa de cambio debe ser mayor a cero");
+                throw new ValidationException("El valor de la tasa de cambio debe ser mayor a cero");
             }
 
             var tasasDuplicadas = await _repository.FindAsync(t =>
@@ -205,7 +205,7 @@ namespace Capa_de_Negocio.Services.Implementations
 
             if (tasasDuplicadas.Any())
             {
-                throw new DuplicateExchangeRateException("Ya existe una tasa de cambio activa para esta moneda origen, moneda destino y fecha de vigencia.");
+                throw new ConflictException("Ya existe una tasa de cambio activa para esta moneda origen, moneda destino y fecha de vigencia.");
             }
         }
     }

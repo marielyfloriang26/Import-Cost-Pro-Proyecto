@@ -59,7 +59,7 @@ public class TasasCambioController : Controller
 
             return View(viewModel);
         }
-        catch (TasaCambioNotFoundException)
+        catch (NotFoundException)
         {
             return NotFound();
         }
@@ -97,12 +97,7 @@ public class TasasCambioController : Controller
             await _service.CreateTasa(dto);
             return RedirectToAction(nameof(Index));
         }
-        catch (Exception ex) when (ex is SameCurrencyNotAllowedException || 
-                                   ex is InactiveCurrencyException || 
-                                   ex is LocalCurrencyRequiredException || 
-                                   ex is InvalidExchangeRateValueException || 
-                                   ex is DuplicateExchangeRateException ||
-                                   ex is CurrencyNotFoundException)
+        catch (BusinessException ex)
         {
             ModelState.AddModelError("", ex.Message);
             await CargarMonedasEnViewBag();
@@ -130,7 +125,7 @@ public class TasasCambioController : Controller
             await CargarMonedasEnViewBag();
             return View(viewModel);
         }
-        catch (TasaCambioNotFoundException)
+        catch (NotFoundException)
         {
             return NotFound();
         }
@@ -164,19 +159,7 @@ public class TasasCambioController : Controller
             await _service.UpdateTasa(id, dto);
             return RedirectToAction(nameof(Index));
         }
-        catch (TasaCambioLockedException ex)
-        {
-            ModelState.AddModelError("", ex.Message);
-            await CargarMonedasEnViewBag();
-            return View(viewModel);
-        }
-        catch (Exception ex) when (ex is SameCurrencyNotAllowedException || 
-                                   ex is InactiveCurrencyException || 
-                                   ex is LocalCurrencyRequiredException || 
-                                   ex is InvalidExchangeRateValueException || 
-                                   ex is DuplicateExchangeRateException ||
-                                   ex is CurrencyNotFoundException ||
-                                   ex is TasaCambioNotFoundException)
+        catch (BusinessException ex)
         {
             ModelState.AddModelError("", ex.Message);
             await CargarMonedasEnViewBag();
@@ -202,7 +185,7 @@ public class TasasCambioController : Controller
 
             return View(viewModel);
         }
-        catch (TasaCambioNotFoundException)
+        catch (NotFoundException)
         {
             return NotFound();
         }
@@ -218,12 +201,12 @@ public class TasasCambioController : Controller
             await _service.DeleteTasa(id);
             return RedirectToAction(nameof(Index));
         }
-        catch (TasaCambioLockedException ex)
+        catch (BusinessException ex)
         {
             TempData["ErrorMessage"] = ex.Message;
             return RedirectToAction(nameof(Eliminar), new { id });
         }
-        catch (TasaCambioNotFoundException)
+        catch (Exception)
         {
             return NotFound();
         }

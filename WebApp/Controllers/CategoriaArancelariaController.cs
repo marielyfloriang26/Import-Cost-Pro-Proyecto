@@ -83,7 +83,7 @@ namespace WebApp.Controllers;
                 TempData["SuccessMessage"] = "Categoría arancelaria registrada de manera exitosa.";
                 return RedirectToAction(nameof(Index));
             }
-            catch (CatArancelariaException ex)
+            catch (BusinessException ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
             }
@@ -189,7 +189,7 @@ namespace WebApp.Controllers;
                 TempData["SuccessMessage"] = "Categoría arancelaria actualizada de manera exitosa.";
                 return RedirectToAction(nameof(Index));
             }
-            catch (CatArancelariaException ex)
+            catch (BusinessException ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
             }
@@ -238,7 +238,7 @@ public async Task<IActionResult> Eliminar(int id)
                 TempData["SuccessMessage"] = "Categoría arancelaria eliminada de manera exitosa.";
                 return RedirectToAction(nameof(Index));
             }
-            catch (CatArancelariaException ex)
+            catch (BusinessException ex)
             {
                 // Almacena el mensaje y se queda en la misma vista para mostrar la advertencia
                 TempData["ErrorMessage"] = ex.Message;

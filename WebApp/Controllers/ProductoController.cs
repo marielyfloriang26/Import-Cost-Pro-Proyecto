@@ -97,7 +97,7 @@ namespace WebApp.Controllers;
                 TempData["SuccessMessage"] = "Producto registrado de manera exitosa.";
                 return RedirectToAction(nameof(Index));
             }
-            catch (ReglasProductoException ex) 
+            catch (BusinessException ex) 
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
             }
@@ -213,7 +213,7 @@ namespace WebApp.Controllers;
                 TempData["SuccessMessage"] = "Producto actualizado de manera exitosa.";
                 return RedirectToAction(nameof(Index));
             }
-            catch (ReglasProductoException ex) 
+            catch (BusinessException ex) 
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
             }
@@ -261,7 +261,7 @@ namespace WebApp.Controllers;
                 TempData["SuccessMessage"] = "Producto eliminado de manera exitosa.";
                 return RedirectToAction(nameof(Index));
             }
-            catch (ReglasProductoException ex) 
+            catch (BusinessException ex) 
             {
               //  TempData["ErrorMessage"] = ex.Message;
             var dto = await _productoService.ObtenerPorIdAsync(id);

@@ -76,15 +76,15 @@ namespace Capa_de_Negocio.Servicios
             // El RNC no puede repetirse en el sistema
             var existeRnc = await _importadorRepository.FindAsync(x => x.RncIdentificacion == rncFormateado);
             if (existeRnc.Any())
-                throw new BusinessException("Ya existe un importador registrado con este RNC o identificación fiscal.");
+                throw new ConflictException("Ya existe un importador registrado con este RNC o identificación fiscal.");
 
             // Validar que el país exista y esté activo en su propio mantenimiento
             var paisSeleccionado = await _paisRepository.GetByIdAsync(dto.PaisId);
             if (paisSeleccionado == null)
-                throw new BusinessException("El país seleccionado no es válido.");
+                throw new NotFoundException("El país seleccionado no es válido.");
             
             if (!paisSeleccionado.Estado)
-                throw new BusinessException("El país seleccionado debe estar activo.");
+                throw new ValidationException("El país seleccionado debe estar activo.");
 
             var nuevoImportador = new Importador
             {
@@ -105,7 +105,7 @@ namespace Capa_de_Negocio.Servicios
         {
             var importadorExistente = await _importadorRepository.GetByIdAsync(dto.Id);
             if (importadorExistente == null)
-                throw new BusinessException("El importador a editar no existe.");
+                throw new NotFoundException("El importador a editar no existe.");
 
             ValidarCamposEstructurales(dto);
             string rncFormateado = dto.RncIdentificacion.Trim();
@@ -113,7 +113,7 @@ namespace Capa_de_Negocio.Servicios
             // Validar que el RNC no pertenezca a OTRO importador diferente
             var duplicadoRnc = await _importadorRepository.FindAsync(x => x.RncIdentificacion == rncFormateado && x.Id != dto.Id);
             if (duplicadoRnc.Any())
-                throw new BusinessException("Ya existe un importador registrado con este RNC o identificación fiscal.");
+                throw new ConflictException("Ya existe un importador registrado con este RNC o identificación fiscal.");
 
             // Si intenta modificar el RNC, verificar si ya tiene órdenes asociadas para bloquearlo
             if (importadorExistente.RncIdentificacion != rncFormateado)
@@ -121,13 +121,13 @@ namespace Capa_de_Negocio.Servicios
                 bool tieneOrdenes = await _importadorRepository.TieneOrdenesAsociadasAsync(dto.Id);
                 if (tieneOrdenes)
                 {
-                    throw new BusinessException("No se puede modificar el RNC o identificación fiscal de este importador porque ya tiene órdenes de importación registradas.");
+                    throw new ValidationException("No se puede modificar el RNC o identificación fiscal de este importador porque ya tiene órdenes de importación registradas.");
                 }
             }
 
             var paisSeleccionado = await _paisRepository.GetByIdAsync(dto.PaisId);
             if (paisSeleccionado == null)
-                throw new BusinessException("El país seleccionado no es válido.");
+                throw new NotFoundException("El país seleccionado no es válido.");
 
             // Actualizamos propiedades físicas
             importadorExistente.NombreRazonSocial = dto.NombreRazonSocial.Trim();
@@ -151,7 +151,7 @@ namespace Capa_de_Negocio.Servicios
             bool tieneOrdenes = await _importadorRepository.TieneOrdenesAsociadasAsync(id);
             if (tieneOrdenes)
             {
-                throw new BusinessException("No se puede eliminar este importador porque tiene órdenes de importación registradas.");
+                throw new ValidationException("No se puede eliminar este importador porque tiene órdenes de importación registradas.");
             }
 
             _importadorRepository.Remove(importador);
@@ -162,25 +162,25 @@ namespace Capa_de_Negocio.Servicios
         {
             // Centralizamos las validaciones de longitud y obligatoriedad en el negocio
             if (string.IsNullOrWhiteSpace(dto.NombreRazonSocial))
-                throw new BusinessException("El nombre o razón social es requerido.");
+                throw new ValidationException("El nombre o razón social es requerido.");
 
             if (dto.NombreRazonSocial.Length > 150)
-                throw new BusinessException("El nombre o razón social debe tener un máximo de 150 caracteres.");
+                throw new ValidationException("El nombre o razón social debe tener un máximo de 150 caracteres.");
 
             if (string.IsNullOrWhiteSpace(dto.RncIdentificacion))
-                throw new BusinessException("El RNC o identificación fiscal es requerido.");
+                throw new ValidationException("El RNC o identificación fiscal es requerido.");
 
             if (dto.RncIdentificacion.Length > 20)
-                throw new BusinessException("El RNC o identificación fiscal debe tener un máximo de 20 caracteres.");
+                throw new ValidationException("El RNC o identificación fiscal debe tener un máximo de 20 caracteres.");
 
             if (!string.IsNullOrWhiteSpace(dto.Telefono) && dto.Telefono.Length > 20)
-                throw new BusinessException("El teléfono debe tener un máximo de 20 caracteres.");
+                throw new ValidationException("El teléfono debe tener un máximo de 20 caracteres.");
 
             if (!string.IsNullOrWhiteSpace(dto.Direccion) && dto.Direccion.Length > 250)
-                throw new BusinessException("La dirección debe tener un máximo de 250 caracteres.");
+                throw new ValidationException("La dirección debe tener un máximo de 250 caracteres.");
 
             if (!string.IsNullOrWhiteSpace(dto.Correo) && dto.Correo.Length > 100)
-                throw new BusinessException("El correo electrónico debe tener un máximo de 100 caracteres.");
+                throw new ValidationException("El correo electrónico debe tener un máximo de 100 caracteres.");
         }
     }
 }

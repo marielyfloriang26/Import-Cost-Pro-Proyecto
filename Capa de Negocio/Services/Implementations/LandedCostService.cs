@@ -41,7 +41,7 @@ namespace Capa_de_Negocio.Services.Implementations
         {
             var orden = await _ordenRepository.GetWithDetailsAsync(ordenId);
             if (orden == null)
-                throw new OrdenImportacionNotFoundException($"No se encontró la orden con ID {ordenId}");
+                throw new NotFoundException($"No se encontró la orden con ID {ordenId}");
 
             // Validaciones previas al cálculo
             await ValidarOrdenParaCalculoAsync(orden);
@@ -53,10 +53,10 @@ namespace Capa_de_Negocio.Services.Implementations
         {
             var orden = await _ordenRepository.GetWithDetailsAsync(ordenId);
             if (orden == null)
-                throw new OrdenImportacionNotFoundException($"No se encontró la orden con ID {ordenId}");
+                throw new NotFoundException($"No se encontró la orden con ID {ordenId}");
 
             if (orden.EstadoOrden == EstadoOrden.Calculada)
-                throw new BusinessException("Esta orden ya tiene un cálculo oficial guardado.");
+                throw new ConflictException("Esta orden ya tiene un cálculo oficial guardado.");
 
             var calculoDto = await CalcularAsync(ordenId);
 
@@ -191,34 +191,34 @@ namespace Capa_de_Negocio.Services.Implementations
         private async Task ValidarOrdenParaCalculoAsync(OrdenImportacion orden)
         {
             if (orden.EstadoOrden == EstadoOrden.Cerrada)
-                throw new BusinessException("No se puede calcular una orden cerrada.");
+                throw new ValidationException("No se puede calcular una orden cerrada.");
             if (orden.EstadoOrden == EstadoOrden.Cancelada)
-                throw new BusinessException("No se puede calcular una orden cancelada.");
+                throw new ValidationException("No se puede calcular una orden cancelada.");
 
             if (orden.ProductosOrden == null || !orden.ProductosOrden.Any())
-                throw new BusinessException("La orden debe tener al menos un producto agregado.");
+                throw new ValidationException("La orden debe tener al menos un producto agregado.");
 
             if (!orden.GastosImportacion.Any(g => g.TipoGasto == TipoGasto.FleteInternacional))
-                throw new BusinessException("No se puede calcular la orden porque no tiene registrado el gasto de flete internacional.");
+                throw new ValidationException("No se puede calcular la orden porque no tiene registrado el gasto de flete internacional.");
 
             if (!orden.GastosImportacion.Any(g => g.TipoGasto == TipoGasto.SeguroInternacional))
-                throw new BusinessException("No se puede calcular la orden porque no tiene registrado el gasto de seguro internacional.");
+                throw new ValidationException("No se puede calcular la orden porque no tiene registrado el gasto de seguro internacional.");
 
             var config = await _configImpuestoService.ObtenerConfiguracionActualAsync();
             if (config == null || config.Id == 0)
-                throw new BusinessException("No se puede calcular landed cost si no existe una configuración de impuestos activa.");
+                throw new ValidationException("No se puede calcular landed cost si no existe una configuración de impuestos activa.");
 
             var monedas = await _monedaService.ObtenerTodasAsync();
             var monedaLocal = monedas.FirstOrDefault(m => m.EsMonedaLocal && m.Estado);
             if (monedaLocal == null)
-                throw new BusinessException("No se debe permitir calcular landed cost si no existe una moneda local activa configurada en el mantenimiento de monedas.");
+                throw new ValidationException("No se debe permitir calcular landed cost si no existe una moneda local activa configurada en el mantenimiento de monedas.");
 
             // Validar tasa de cambio de la orden
             if (orden.MonedaId != monedaLocal.Id)
             {
                 var tasaOrden = await BuscarTasaActivaAsync(orden.MonedaId, monedaLocal.Id, orden.FechaOrden);
                 if (tasaOrden == null)
-                    throw new BusinessException("No existe una tasa de cambio activa desde la moneda de la orden hacia la moneda local para la fecha de la orden.");
+                    throw new ValidationException("No existe una tasa de cambio activa desde la moneda de la orden hacia la moneda local para la fecha de la orden.");
             }
 
             // Validar tasas de cambio de los gastos
@@ -228,7 +228,7 @@ namespace Capa_de_Negocio.Services.Implementations
                 {
                     var tasaGasto = await BuscarTasaActivaAsync(gasto.MonedaId, monedaLocal.Id, gasto.FechaGasto);
                     if (tasaGasto == null)
-                        throw new BusinessException($"No existe una tasa de cambio activa desde la moneda del gasto ({gasto.Moneda?.CodigoIso}) hacia la moneda local para la fecha del gasto.");
+                        throw new ValidationException($"No existe una tasa de cambio activa desde la moneda del gasto ({gasto.Moneda?.CodigoIso}) hacia la moneda local para la fecha del gasto.");
                 }
 
                 // Validaciones de distribución
@@ -236,29 +236,29 @@ namespace Capa_de_Negocio.Services.Implementations
                 {
                     case MetodoDistribucion.PorPeso:
                         if (orden.ProductosOrden.Any(po => po.Producto == null || po.Producto.PesoUnitario <= 0))
-                            throw new BusinessException("No se puede calcular el landed cost porque existen gastos distribuidos por peso y uno o más productos no tienen peso configurado.");
+                            throw new ValidationException("No se puede calcular el landed cost porque existen gastos distribuidos por peso y uno o más productos no tienen peso configurado.");
                         
                         decimal totalPeso = orden.ProductosOrden.Sum(po => po.Cantidad * po.Producto!.PesoUnitario);
                         if (totalPeso <= 0)
-                            throw new BusinessException("No se puede calcular el landed cost porque el peso total de la orden es 0.");
+                            throw new ValidationException("No se puede calcular el landed cost porque el peso total de la orden es 0.");
                         break;
                     case MetodoDistribucion.PorVolumen:
                         if (orden.ProductosOrden.Any(po => po.Producto == null || (po.Producto.Largo ?? 0) <= 0 || (po.Producto.Ancho ?? 0) <= 0 || (po.Producto.Alto ?? 0) <= 0))
-                            throw new BusinessException("No se puede calcular el landed cost porque existen gastos distribuidos por volumen y uno o más productos no tienen dimensiones configuradas.");
+                            throw new ValidationException("No se puede calcular el landed cost porque existen gastos distribuidos por volumen y uno o más productos no tienen dimensiones configuradas.");
                         
                         decimal totalVol = orden.ProductosOrden.Sum(po => po.Cantidad * (po.Producto!.Largo ?? 0) * (po.Producto.Ancho ?? 0) * (po.Producto.Alto ?? 0));
                         if (totalVol <= 0)
-                            throw new BusinessException("No se puede calcular el landed cost porque el volumen total de la orden es 0.");
+                            throw new ValidationException("No se puede calcular el landed cost porque el volumen total de la orden es 0.");
                         break;
                     case MetodoDistribucion.PorValorFOB:
                         decimal totalFob = orden.ProductosOrden.Sum(po => po.Cantidad * po.PrecioUnitarioFob);
                         if (totalFob <= 0)
-                            throw new BusinessException("No se puede calcular el landed cost porque el FOB total de la orden es 0.");
+                            throw new ValidationException("No se puede calcular el landed cost porque el FOB total de la orden es 0.");
                         break;
                     case MetodoDistribucion.PorCantidad:
                         decimal totalCant = orden.ProductosOrden.Sum(po => po.Cantidad);
                         if (totalCant <= 0)
-                            throw new BusinessException("No se puede calcular el landed cost porque la cantidad total de la orden es 0.");
+                            throw new ValidationException("No se puede calcular el landed cost porque la cantidad total de la orden es 0.");
                         break;
                 }
             }
@@ -267,10 +267,10 @@ namespace Capa_de_Negocio.Services.Implementations
             foreach (var po in orden.ProductosOrden)
             {
                 if (po.Producto?.Categoria == null)
-                    throw new BusinessException($"El producto {po.Producto?.Nombre} no tiene una categoría arancelaria válida.");
+                    throw new ValidationException($"El producto {po.Producto?.Nombre} no tiene una categoría arancelaria válida.");
                 
                 if (po.MargenDeseado < 0 || po.MargenDeseado >= 100)
-                    throw new BusinessException($"El margen de ganancia para el producto {po.Producto?.Nombre} debe ser mayor o igual que 0 y menor que 100.");
+                    throw new ValidationException($"El margen de ganancia para el producto {po.Producto?.Nombre} debe ser mayor o igual que 0 y menor que 100.");
             }
         }
 
@@ -331,7 +331,7 @@ namespace Capa_de_Negocio.Services.Implementations
             resultado.CantidadTotalImportada = resultado.Detalles.Sum(d => d.Cantidad);
 
             if (resultado.FobTotalLocal == 0)
-                throw new BusinessException("El FOB total de la orden es 0, no se puede continuar con el cálculo.");
+                throw new ValidationException("El FOB total de la orden es 0, no se puede continuar con el cálculo.");
 
             // Paso 3: Convertir gastos a moneda local
             var gastosLocales = new List<(GastoImportacion Gasto, decimal MontoLocal)>();

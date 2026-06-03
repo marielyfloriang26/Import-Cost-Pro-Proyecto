@@ -125,16 +125,7 @@ public class OrdenImportacionController : Controller
                 // Redirigir al detalle según requisito pág. 77
                 return RedirectToAction(nameof(Details), new { id = nuevaOrden.Id });
             }
-            catch (Exception ex) when (ex is DuplicateOrderNumberException || 
-                                       ex is ImportadorNotFoundException || 
-                                       ex is InactiveImportadorException || 
-                                       ex is ProveedorNotFoundException || 
-                                       ex is InactiveProveedorException || 
-                                       ex is PaisNotFoundException || 
-                                       ex is InactivePaisException || 
-                                       ex is CurrencyNotFoundException || 
-                                       ex is InactiveCurrencyException ||
-                                       ex is OrdenImportacionException)
+            catch (BusinessException ex)
             {
                 ModelState.AddModelError("", ex.Message);
                 await CargarCatalogosEnViewBag();
@@ -198,24 +189,7 @@ public class OrdenImportacionController : Controller
             await _service.EditarAsync(id, dto);
             return RedirectToAction(nameof(Index));
         }
-        catch (OrdenImportacionLockedException ex)
-        {
-            ModelState.AddModelError("", ex.Message);
-            var oActual = await _service.ObtenerPorIdAsync(id);
-            await CargarCatalogosEnViewBag(oActual);
-            return View(viewModel);
-        }
-        catch (Exception ex) when (ex is DuplicateOrderNumberException || 
-                                   ex is ImportadorNotFoundException || 
-                                   ex is InactiveImportadorException || 
-                                   ex is ProveedorNotFoundException || 
-                                   ex is InactiveProveedorException || 
-                                   ex is PaisNotFoundException || 
-                                   ex is InactivePaisException || 
-                                   ex is CurrencyNotFoundException || 
-                                   ex is InactiveCurrencyException ||
-                                   ex is OrdenImportacionNotFoundException ||
-                                   ex is OrdenImportacionException)
+        catch (BusinessException ex)
         {
             ModelState.AddModelError("", ex.Message);
             var oActual = await _service.ObtenerPorIdAsync(id);
@@ -259,7 +233,7 @@ public class OrdenImportacionController : Controller
             await _service.EliminarAsync(id);
             return RedirectToAction(nameof(Index));
         }
-        catch (OrdenImportacionLockedException ex)
+        catch (BusinessException ex)
         {
             TempData["ErrorMessage"] = ex.Message;
             return RedirectToAction(nameof(Eliminar), new { id });

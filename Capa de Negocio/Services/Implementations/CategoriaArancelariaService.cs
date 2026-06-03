@@ -110,7 +110,7 @@ namespace Capa_Negocio.Implementations
             // Regla: Validar unicidad del código
             if (await ExisteCodigoAsync(dto.Codigo))
             {
-                throw new CatArancelariaException("Ya existe una categoría arancelaria registrada con este código.");
+                throw new ValidationException("Ya existe una categoría arancelaria registrada con este código.");
             }
 
             // Validar limites de los porcentajes
@@ -140,7 +140,7 @@ namespace Capa_Negocio.Implementations
             var categoriaExistente = await _categoriaRepo.GetByIdAsync(dto.Id);
             if (categoriaExistente == null)
             {
-                throw new CatArancelariaException("La categoría arancelaria que intenta editar no existe.");
+                throw new ValidationException("La categoría arancelaria que intenta editar no existe.");
             }
 
             dto.Codigo = dto.Codigo.Trim();
@@ -149,7 +149,7 @@ namespace Capa_Negocio.Implementations
             // Regla: Validar unicidad excluyendo la actual
             if (await ExisteCodigoAsync(dto.Codigo, dto.Id))
             {
-                throw new CatArancelariaException("Ya existe una categoría arancelaria registrada con este código.");
+                throw new ValidationException("Ya existe una categoría arancelaria registrada con este código.");
             }
 
             ValidarPorcentajes(dto);
@@ -167,7 +167,7 @@ namespace Capa_Negocio.Implementations
                     categoriaExistente.AplicaSelectivo != dto.AplicaSelectivo ||
                     categoriaExistente.PorcentajeSelectivo != (dto.AplicaSelectivo ? dto.PorcentajeSelectivo : 0))
                 {
-                    throw new CatArancelariaException("No se pueden modificar los campos críticos (Código, Arancel o Impuestos) porque esta categoría ya está asociada a productos registrados. Desactívela si no desea usarla más.");
+                    throw new ValidationException("No se pueden modificar los campos críticos (Código, Arancel o Impuestos) porque esta categoría ya está asociada a productos registrados. Desactívela si no desea usarla más.");
                 }
             }
             else
@@ -196,14 +196,14 @@ namespace Capa_Negocio.Implementations
             var categoria = await _categoriaRepo.GetByIdAsync(id);
             if (categoria == null)
             {
-                throw new CatArancelariaException("La categoría arancelaria que intenta eliminar no existe.");
+                throw new ValidationException("La categoría arancelaria que intenta eliminar no existe.");
             }
 
             // Regla: No eliminar si esta amarrada a productos
             var productosAsociados = await _productoRepo.FindAsync(p => p.CategoriaId == id);
             if (productosAsociados.Any())
             {
-                throw new CatArancelariaException("No se puede eliminar esta categoría arancelaria porque está asociada a productos registrados.");
+                throw new ValidationException("No se puede eliminar esta categoría arancelaria porque está asociada a productos registrados.");
             }
 
             _categoriaRepo.Remove(categoria);
@@ -218,7 +218,7 @@ namespace Capa_Negocio.Implementations
             // Validaciones de Arancel
             if (dto.PorcentajeArancel < 0 || dto.PorcentajeArancel > 100)
             {
-                throw new CatArancelariaException("El porcentaje de arancel debe estar entre 0 y 100.");
+                throw new ValidationException("El porcentaje de arancel debe estar entre 0 y 100.");
             }
 
             // Validaciones del Impuesto Selectivo
@@ -226,7 +226,7 @@ namespace Capa_Negocio.Implementations
             {
                 if (dto.PorcentajeSelectivo <= 0 || dto.PorcentajeSelectivo > 100)
                 {
-                    throw new CatArancelariaException("Si aplica impuesto selectivo, el porcentaje debe ser requerido y mayor que 0, hasta un máximo de 100.");
+                    throw new ValidationException("Si aplica impuesto selectivo, el porcentaje debe ser requerido y mayor que 0, hasta un máximo de 100.");
                 }
             }
         }
