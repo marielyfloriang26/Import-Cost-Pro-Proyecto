@@ -27,7 +27,7 @@ namespace Capa_Negocio.Implementations
 
             foreach (var c in categorias)
             {
-                // 🛠️ EDICIÓN: Consultamos directamente a la tabla de productos si existen registros asociados a esta categoría.
+                // Consultamos directamente a la tabla de productos si existen registros asociados a esta categoría.
                 var productosAsociados = await _productoRepo.FindAsync(p => p.CategoriaId == c.Id);
                 
                 result.Add(new CategoriaArancelariaDTO
@@ -160,7 +160,7 @@ namespace Capa_Negocio.Implementations
 
             if (tieneProductos)
             {
-                // 🛠️ EDICIÓN: El candado estricto de seguridad del negocio ahora se activará obligatoriamente.
+                //  El candado estricto de seguridad del negocio ahora se activará obligatoriamente.
                 if (categoriaExistente.Codigo != dto.Codigo ||
                     categoriaExistente.PorcentajeArancel != dto.PorcentajeArancel ||
                     categoriaExistente.AplicaItbis != dto.AplicaItbis ||
@@ -212,7 +212,7 @@ namespace Capa_Negocio.Implementations
             return true;
         }
 
-        // Método auxiliar para validar aranceles e impuestos
+        // Metodo auxiliar para validar aranceles e impuestos
         private void ValidarPorcentajes(CategoriaArancelariaDTO dto)
         {
             // Validaciones de Arancel
