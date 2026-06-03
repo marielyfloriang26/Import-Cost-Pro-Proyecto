@@ -259,17 +259,54 @@ namespace WebApp.Controllers;
 
                 // Si todo sale bien, manda un mensaje de exito al Index
                 TempData["SuccessMessage"] = "Producto eliminado de manera exitosa.";
+                return RedirectToAction(nameof(Index));
             }
             catch (ReglasProductoException ex) 
             {
-                TempData["ErrorMessage"] = ex.Message;
+              //  TempData["ErrorMessage"] = ex.Message;
+            var dto = await _productoService.ObtenerPorIdAsync(id);
+            if (dto == null) return NotFound();
+
+        var model = new ProductoViewModel
+        {
+            Id = dto.Id,
+            Nombre = dto.Nombre,
+            CodigoReferencia = dto.CodigoReferencia,
+            PaisOrigenNombre = dto.PaisOrigenNombre,
+            CategoriaNombre = dto.CategoriaNombre,
+            PesoUnitario = dto.PesoUnitario,
+            UnidadMedidaSelected = dto.UnidadMedida.ToString(),
+            Estado = dto.Estado
+        };
+
+        // Pasa el mensaje de error especifico a la vista
+        ViewBag.Error = ex.Message;
+        return View("Eliminar", model);
             }
             catch (Exception)
             {
-                TempData["ErrorMessage"] = "Ocurrió un error inesperado al intentar eliminar el producto.";
-            }
+                var dto = await _productoService.ObtenerPorIdAsync(id);
+                if (dto == null) return NotFound();
+
+        var model = new ProductoViewModel
+        {
+            Id = dto.Id,
+            Nombre = dto.Nombre,
+            CodigoReferencia = dto.CodigoReferencia,
+            PaisOrigenNombre = dto.PaisOrigenNombre,
+            CategoriaNombre = dto.CategoriaNombre,
+            PesoUnitario = dto.PesoUnitario,
+            UnidadMedidaSelected = dto.UnidadMedida.ToString(),
+            Estado = dto.Estado
+        };
+            
+        ViewBag.Error = "No se puede eliminar este producto porque está asociado a una o más órdenes de importación.";
+        return View("Eliminar", model);
+               // TempData["ErrorMessage"] = "Ocurrió un error inesperado al intentar eliminar el producto.";
+            
 
             // Redirecciona siempre al listado principal para refrescar la tabla y ver las alertas
-            return RedirectToAction(nameof(Index));
+           // return RedirectToAction(nameof(Index));
         }
+    }
     }

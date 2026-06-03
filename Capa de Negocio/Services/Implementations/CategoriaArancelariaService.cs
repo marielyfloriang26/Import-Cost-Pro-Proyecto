@@ -9,38 +9,47 @@ namespace Capa_Negocio.Implementations
     public class CategoriaArancelariaService : ICategoriaArancelariaService
     {
         private readonly IRepository<CategoriaArancelaria> _categoriaRepo;
+        private readonly IRepository<Producto> _productoRepo;
 
         // Constructor 
         public CategoriaArancelariaService(
-            IRepository<CategoriaArancelaria> categoriaRepo)
+            IRepository<CategoriaArancelaria> categoriaRepo, IRepository<Producto> productoRepo)
         {
             _categoriaRepo = categoriaRepo;
+            _productoRepo = productoRepo;
         }
 
     
         public async Task<IEnumerable<CategoriaArancelariaDTO>> ObtenerTodasAsync()
         {
             var categorias = await _categoriaRepo.GetAllAsync();
+            var result = new List<CategoriaArancelariaDTO>();
 
-            return categorias.Select(c => new CategoriaArancelariaDTO
+            foreach (var c in categorias)
             {
-                Id = c.Id,
-                Codigo = c.Codigo,
-                Descripcion = c.Descripcion,
-                PorcentajeArancel = c.PorcentajeArancel,
-                AplicaItbis = c.AplicaItbis,
-                AplicaSelectivo = c.AplicaSelectivo,
-                PorcentajeSelectivo = c.PorcentajeSelectivo,
-                Estado = c.Estado,
-                // Evalua si tiene productos vinculados en la coleccion de la entidad
-                TieneProductosAsociados = c.Productos != null && c.Productos.Any()
-            }).ToList();
+                // 🛠️ EDICIÓN: Consultamos directamente a la tabla de productos si existen registros asociados a esta categoría.
+                var productosAsociados = await _productoRepo.FindAsync(p => p.CategoriaId == c.Id);
+                
+                result.Add(new CategoriaArancelariaDTO
+                {
+                    Id = c.Id,
+                    Codigo = c.Codigo,
+                    Descripcion = c.Descripcion,
+                    PorcentajeArancel = c.PorcentajeArancel,
+                    AplicaItbis = c.AplicaItbis,
+                    AplicaSelectivo = c.AplicaSelectivo,
+                    PorcentajeSelectivo = c.PorcentajeSelectivo,
+                    Estado = c.Estado,
+                    TieneProductosAsociados = productosAsociados.Any() // 🛠️ Conteo 100% Real
+                });
+            }
+
+            return result;
         }
 
         // Para el select de Productos, Retorna solo las activas
         public async Task<IEnumerable<CategoriaArancelariaDTO>> ObtenerActivasAsync()
         {
-            // Busca las categorias cuyo Estado sea true
             var categoriasActivas = await _categoriaRepo.FindAsync(c => c.Estado == true);
 
             return categoriasActivas.Select(c => new CategoriaArancelariaDTO
@@ -62,6 +71,8 @@ namespace Capa_Negocio.Implementations
             var c = await _categoriaRepo.GetByIdAsync(id);
             if (c == null) return null;
 
+            var productosAsociados = await _productoRepo.FindAsync(p => p.CategoriaId == id);
+
             return new CategoriaArancelariaDTO
             {
                 Id = c.Id,
@@ -72,7 +83,7 @@ namespace Capa_Negocio.Implementations
                 AplicaSelectivo = c.AplicaSelectivo,
                 PorcentajeSelectivo = c.PorcentajeSelectivo,
                 Estado = c.Estado,
-                TieneProductosAsociados = c.Productos != null && c.Productos.Any()
+                TieneProductosAsociados = productosAsociados.Any()
             };
         }
 
@@ -144,11 +155,12 @@ namespace Capa_Negocio.Implementations
             ValidarPorcentajes(dto);
 
             // Verificar si tiene productos asociados para aplicar el bloqueo critico
-            bool tieneProductos = categoriaExistente.Productos != null && categoriaExistente.Productos.Any();
+            var productosAsociados = await _productoRepo.FindAsync(p => p.CategoriaId == dto.Id);
+            bool tieneProductos = productosAsociados.Any();
 
             if (tieneProductos)
             {
-                // Regla: Si ya tiene productos, no se permiten alterar campos de calculo
+                // 🛠️ EDICIÓN: El candado estricto de seguridad del negocio ahora se activará obligatoriamente.
                 if (categoriaExistente.Codigo != dto.Codigo ||
                     categoriaExistente.PorcentajeArancel != dto.PorcentajeArancel ||
                     categoriaExistente.AplicaItbis != dto.AplicaItbis ||
@@ -160,7 +172,7 @@ namespace Capa_Negocio.Implementations
             }
             else
             {
-                // Si esta limpia, se permite modificar todo
+                // Si está limpia de productos, se permite modificar todo libremente
                 categoriaExistente.Codigo = dto.Codigo;
                 categoriaExistente.PorcentajeArancel = dto.PorcentajeArancel;
                 categoriaExistente.AplicaItbis = dto.AplicaItbis;
@@ -188,7 +200,8 @@ namespace Capa_Negocio.Implementations
             }
 
             // Regla: No eliminar si esta amarrada a productos
-            if (categoria.Productos != null && categoria.Productos.Any())
+            var productosAsociados = await _productoRepo.FindAsync(p => p.CategoriaId == id);
+            if (productosAsociados.Any())
             {
                 throw new CatArancelariaException("No se puede eliminar esta categoría arancelaria porque está asociada a productos registrados.");
             }
