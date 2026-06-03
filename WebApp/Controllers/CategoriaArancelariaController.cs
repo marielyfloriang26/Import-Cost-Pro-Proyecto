@@ -126,14 +126,47 @@ namespace WebApp.Controllers;
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editar(CategoriaArancelariaViewModel model)
         {
+            // Busca el registro real actual directamente desde la base de datos para comparar sus valores
+            var categoriaOriginal = await _categoriaService.ObtenerPorIdAsync(model.Id);
+            if (categoriaOriginal == null)
+            {
+                return NotFound();
+            }
+
+            // Evalua si la categoria original de la base de datos ya cuenta con productos amarrados
+            if (categoriaOriginal.TieneProductosAsociados)
+            {
+            
+               if( model.Codigo != categoriaOriginal.Codigo ||
+                model.PorcentajeArancel != categoriaOriginal.PorcentajeArancel ||
+                model.AplicaItbis != categoriaOriginal.AplicaItbis ||
+                model.AplicaSelectivo != categoriaOriginal.AplicaSelectivo ||
+                model.PorcentajeSelectivo != categoriaOriginal.PorcentajeSelectivo)
+            {
+                // Si cambio algo, registram el error en el ModelState. Esto detiene el flujo de guardado.
+                    ModelState.AddModelError(string.Empty, "No se permite modificar estos parámetros (Código, Aranceles o Impuestos) en categorías que ya tienen productos asociados para proteger el histórico de cálculos.");
+                    
+                    // Forza la propiedad de control en true para que la vista mantenga los inputs bloqueados al recargar.
+                    model.TieneProductosAsociados = true;
+                    return View(model);
+            }
+              /*  ModelState.Remove(nameof(model.Codigo));
+                ModelState.Remove(nameof(model.PorcentajeArancel));
+                ModelState.Remove(nameof(model.PorcentajeSelectivo)); */
+            }
+            else
+            {
+
             if (!model.AplicaSelectivo)
             {
                 model.PorcentajeSelectivo = 0;
                 ModelState.Remove(nameof(model.PorcentajeSelectivo));
             }
-
+            }
             if (!ModelState.IsValid)
             {
+                // agg
+                model.TieneProductosAsociados = categoriaOriginal.TieneProductosAsociados;
                 return View(model);
             }
 

@@ -1,48 +1,92 @@
 ﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+
+/* ─── Navbar Principal ─────────────────────────────────────────────────── */
+/* el fondo oscuro con degradado y la línea inferior azul  */
+.navbar {
+  /*  background: linear-gradient(135deg, #c7cdee, #96a3ee) !important; */
+    border-bottom: 3px solid #4e73df !important; /* Línea del color de ImportCost Pro */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    padding: 0.6rem 1.5rem !important;
+} 
+
+/* ─── Logotipo WebApp ──────────────────────────────────────────────────── */
+/* Estilo para la palabra 'Web'  */
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    font-size: 1.35rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.5px;
+    color: #ffffff !important; 
+    word-break: normal !important; /* Corrige el break-all por defecto */
 }
 
-a {
-  color: #0077cc;
+/* Estilo para la palabra 'App'  */
+a.navbar-brand span.app-accent {
+    color: #4e73df !important;
+    font-weight: 800;
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+/* ─── Enlaces de Navegacion (Home / Modulos) ───────────────────────────── */
+/* Cambia los textos de la barra a un tono gris claro/blanco muy elegante */
+.navbar-nav .nav-link {
+    color: #1a1d2e !important; /* Sobrescribe el 'text-dark' de Bootstrap */
+    font-weight: 600;
+    font-size: 14px;
+    padding: 0.5rem 1rem !important;
+    transition: color 0.2s ease;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+/* Efecto al pasar el mouse por encima de Home o Modulos */
+.navbar-nav .nav-link:hover, 
+.navbar-nav .nav-link:focus {
+    color: #4e73df !important;
 }
 
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+/* ─── Menu Desplegable (Dropdown) ─────────────────────────────────────── */
+
+.navbar-nav .dropdown-menu {
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+    padding: 0.75rem 0 !important;
+    background-color: #ffffff !important;
+    margin-top: 8px !important; /* Despegado sutil de la barra */
 }
 
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+/* Encabezado interno: 'CONFIGURACION Y CATALOGOS' */
+.dropdown-header {
+    font-size: 11px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9399a6 !important;
+    padding: 0.6rem 1.25rem 0.4rem !important;
 }
 
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+/* Cada item de mantenimiento individual */
+.dropdown-item {
+    font-size: 14px !important;
+    color: #2d3748 !important;
+    padding: 0.6rem 1.25rem !important;
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s;
 }
 
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+/* Hover moderno: fondo gris sutil y texto azul */
+.dropdown-item:hover {
+    background-color: #f4f6fb !important;
+    color: #4e73df !important;
+}
+
+/* Linea divisoria interna del menu */
+.dropdown-divider {
+    border-top: 1px solid #e2e6f0 !important;
+    margin: 0.5rem 0 !important;
+}
+
+/* Estilo personalizado para el boton final de 'Configuracion de Impuestos' */
+.dropdown-item.text-primary.border-top {
+    border-top: 1px solid #e2e6f0 !important;
+    margin-top: 4px;
+    color: #4e73df !important; 
 }

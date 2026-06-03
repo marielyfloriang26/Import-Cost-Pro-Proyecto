@@ -1,187 +1,330 @@
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
 @{
     ViewData["Title"] = "Panel de Control";
 }
 
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <h1 class="display-4 font-weight-bold text-primary">ImportCost Pro</h1>
-        <p class="lead text-secondary">Sistema de Gestión de Importaciones y Cálculo de Landed Cost</p>
+<div class="dashboard-root">
+
+    <div class="dash-header">
+        <div class="dash-logo">
+            <i class="fas fa-ship"></i>
+        </div>
+        <h1>ImportCost <span class="brand-accent">Pro</span></h1>
+        <p>Sistema de Gestión de Importaciones y Cálculo de Landed Cost</p>
     </div>
 
-    <!-- Módulos de Operaciones -->
-    <h4 class="mb-4 text-secondary font-weight-bold text-uppercase small border-bottom pb-2">Proceso de Importación</h4>
-    <div class="row g-4 mb-5">
-        <div class="col-md-4 col-lg-3">
-            <a asp-controller="OrdenImportacion" asp-action="Index" class="card h-100 shadow-sm border-0 text-decoration-none module-card card-blue">
-                <div class="card-body text-center p-4">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-file-invoice fs-2"></i>
-                    </div>
-                    <h6 class="card-title font-weight-bold">Mantenimiento de Órdenes</h6>
-                </div>
-            </a>
+    <!-- Proceso de Importacion -->
+    <div class="section-block">
+        <div class="section-label">
+            <span class="section-line"></span>
+            <span>Proceso de Importación</span>
+            <span class="section-line"></span>
         </div>
-        <div class="col-md-4 col-lg-3">
-            <a asp-controller="OrdenImportacion" asp-action="Index" class="card h-100 shadow-sm border-0 text-decoration-none module-card card-cyan">
-                <div class="card-body text-center p-4">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-list-ul fs-2"></i>
-                    </div>
-                    <h6 class="card-title font-weight-bold">Detalle de Productos</h6>
+
+        <div class="card-grid">
+            <a asp-controller="OrdenImportacion" asp-action="Index" class="mod-card">
+                <div class="icon-wrap ic-blue">
+                    <i class="fas fa-file-invoice"></i>
                 </div>
+                <span class="mod-label">Mantenimiento de Órdenes</span>
+                <div class="accent-bar ab-blue"></div>
             </a>
-        </div>
-        <div class="col-md-4 col-lg-3">
-            <a asp-controller="GastosImportacion" asp-action="Index" class="card h-100 shadow-sm border-0 text-decoration-none module-card card-orange">
-                <div class="card-body text-center p-4">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-hand-holding-usd fs-2"></i>
-                    </div>
-                    <h6 class="card-title font-weight-bold">Registro de Gastos</h6>
+
+            <a asp-controller="OrdenImportacion" asp-action="Index" class="mod-card">
+                <div class="icon-wrap ic-cyan">
+                    <i class="fas fa-list-ul"></i>
                 </div>
+                <span class="mod-label">Detalle de Productos</span>
+                <div class="accent-bar ab-cyan"></div>
             </a>
-        </div>
-        <div class="col-md-4 col-lg-3">
-            <a asp-controller="LandedCost" asp-action="Index" class="card h-100 shadow-sm border-0 text-decoration-none module-card card-green">
-                <div class="card-body text-center p-4">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-calculator fs-2"></i>
-                    </div>
-                    <h6 class="card-title font-weight-bold">Cálculo de Landed Cost</h6>
+
+            <a asp-controller="GastosImportacion" asp-action="Index" class="mod-card">
+                <div class="icon-wrap ic-orange">
+                    <i class="fas fa-receipt"></i>
                 </div>
+                <span class="mod-label">Registro de Gastos</span>
+                <div class="accent-bar ab-orange"></div>
             </a>
-        </div>
-        <div class="col-md-4 col-lg-3">
-            <a asp-controller="OrdenImportacion" asp-action="Index" class="card h-100 shadow-sm border-0 text-decoration-none module-card card-dark">
-                <div class="card-body text-center p-4">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-lock fs-2"></i>
-                    </div>
-                    <h6 class="card-title font-weight-bold">Confirmación y Cierre</h6>
+
+            <a asp-controller="LandedCost" asp-action="Index" class="mod-card">
+                <div class="icon-wrap ic-green">
+                    <i class="fas fa-calculator"></i>
                 </div>
+                <span class="mod-label">Cálculo de Landed Cost</span>
+                <div class="accent-bar ab-green"></div>
+            </a>
+
+            <a asp-controller="OrdenImportacion" asp-action="Index" class="mod-card">
+                <div class="icon-wrap ic-dark">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <span class="mod-label">Confirmación</span>
+                <div class="accent-bar ab-dark"></div>
             </a>
         </div>
     </div>
 
     <!-- Catálogos y Configuración -->
-    <h4 class="mb-4 text-secondary font-weight-bold text-uppercase small border-bottom pb-2">Catálogos y Configuración</h4>
-    <div class="row g-4">
-        <div class="col-md-4 col-lg-3">
-            <a asp-controller="Paises" asp-action="Index" class="card h-100 shadow-sm border-0 text-decoration-none module-card card-indigo">
-                <div class="card-body text-center p-4">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-globe-americas fs-2"></i>
-                    </div>
-                    <h6 class="card-title font-weight-bold">Países</h6>
-                </div>
-            </a>
+    <div class="section-block">
+        <div class="section-label">
+            <span class="section-line"></span>
+            <span>Catálogos y Configuración</span>
+            <span class="section-line"></span>
         </div>
-        <div class="col-md-4 col-lg-3">
-            <a asp-controller="Monedas" asp-action="Index" class="card h-100 shadow-sm border-0 text-decoration-none module-card card-yellow">
-                <div class="card-body text-center p-4">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-coins fs-2"></i>
-                    </div>
-                    <h6 class="card-title font-weight-bold text-dark">Monedas</h6>
+
+        <div class="card-grid">
+            <a asp-controller="Paises" asp-action="Index" class="mod-card">
+                <div class="icon-wrap ic-indigo">
+                    <i class="fas fa-globe-americas"></i>
                 </div>
+                <span class="mod-label">Países</span>
+                <div class="accent-bar ab-indigo"></div>
             </a>
-        </div>
-        <div class="col-md-4 col-lg-3">
-            <a asp-controller="Importadores" asp-action="Index" class="card h-100 shadow-sm border-0 text-decoration-none module-card card-purple">
-                <div class="card-body text-center p-4">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-building fs-2"></i>
-                    </div>
-                    <h6 class="card-title font-weight-bold">Importadores</h6>
+
+            <a asp-controller="Monedas" asp-action="Index" class="mod-card">
+                <div class="icon-wrap ic-yellow">
+                    <i class="fas fa-coins"></i>
                 </div>
+                <span class="mod-label">Monedas</span>
+                <div class="accent-bar ab-yellow"></div>
             </a>
-        </div>
-        <div class="col-md-4 col-lg-3">
-            <a asp-controller="Proveedor" asp-action="Index" class="card h-100 shadow-sm border-0 text-decoration-none module-card card-teal">
-                <div class="card-body text-center p-4">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-truck-loading fs-2"></i>
-                    </div>
-                    <h6 class="card-title font-weight-bold">Proveedores</h6>
+
+            <a asp-controller="Importadores" asp-action="Index" class="mod-card">
+                <div class="icon-wrap ic-purple">
+                    <i class="fas fa-building"></i>
                 </div>
+                <span class="mod-label">Importadores</span>
+                <div class="accent-bar ab-purple"></div>
             </a>
-        </div>
-        <div class="col-md-4 col-lg-3">
-            <a asp-controller="Productos" asp-action="Index" class="card h-100 shadow-sm border-0 text-decoration-none module-card card-red">
-                <div class="card-body text-center p-4">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-box fs-2"></i>
-                    </div>
-                    <h6 class="card-title font-weight-bold">Productos</h6>
+
+            <a asp-controller="Proveedor" asp-action="Index" class="mod-card">
+                <div class="icon-wrap ic-teal">
+                    <i class="fas fa-truck-loading"></i>
                 </div>
+                <span class="mod-label">Proveedores</span>
+                <div class="accent-bar ab-teal"></div>
             </a>
-        </div>
-        <div class="col-md-4 col-lg-3">
-            <a asp-controller="CategoriasArancelarias" asp-action="Index" class="card h-100 shadow-sm border-0 text-decoration-none module-card card-brown">
-                <div class="card-body text-center p-4">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-file-invoice-dollar fs-2"></i>
-                    </div>
-                    <h6 class="card-title font-weight-bold">Cat. Arancelarias</h6>
+
+            <a asp-controller="Productos" asp-action="Index" class="mod-card">
+                <div class="icon-wrap ic-red">
+                    <i class="fas fa-box"></i>
                 </div>
+                <span class="mod-label">Productos</span>
+                <div class="accent-bar ab-red"></div>
             </a>
-        </div>
-        <div class="col-md-4 col-lg-3">
-            <a asp-controller="TasasCambio" asp-action="Index" class="card h-100 shadow-sm border-0 text-decoration-none module-card card-pink">
-                <div class="card-body text-center p-4">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-exchange-alt fs-2"></i>
-                    </div>
-                    <h6 class="card-title font-weight-bold">Tasas de Cambio</h6>
+
+            <a asp-controller="CategoriasArancelarias" asp-action="Index" class="mod-card">
+                <div class="icon-wrap ic-gray">
+                    <i class="fas fa-file-invoice-dollar"></i>
                 </div>
+                <span class="mod-label">Cat. Arancelarias</span>
+                <div class="accent-bar ab-gray"></div>
             </a>
-        </div>
-        <div class="col-md-4 col-lg-3">
-            <a asp-controller="ConfiguracionImpuestos" asp-action="Index" class="card h-100 shadow-sm border-0 text-decoration-none module-card card-primary">
-                <div class="card-body text-center p-4">
-                    <div class="icon-circle mb-3">
-                        <i class="fas fa-cogs fs-2"></i>
-                    </div>
-                    <h6 class="card-title font-weight-bold">Impuestos</h6>
+
+            <a asp-controller="TasasCambio" asp-action="Index" class="mod-card">
+                <div class="icon-wrap ic-pink">
+                    <i class="fas fa-exchange-alt"></i>
                 </div>
+                <span class="mod-label">Tasas de Cambio</span>
+                <div class="accent-bar ab-pink"></div>
+            </a>
+
+            <a asp-controller="ConfiguracionImpuestos" asp-action="Index" class="mod-card">
+                <div class="icon-wrap ic-sapph">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <span class="mod-label">Impuestos</span>
+                <div class="accent-bar ab-sapph"></div>
             </a>
         </div>
     </div>
+
 </div>
 
 <style>
-    .module-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        color: white !important;
+    /* ─── Root & Background ─────────────────────────── */
+    .dashboard-root {
+        min-height: 100vh;
+        background: #f4f6fb;
+        padding: 2.5rem 2rem 3rem;
+        font-family: 'Segoe UI', system-ui, sans-serif;
     }
-    .module-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+
+    /* ─── Header ────────────────────────────────────── */
+    .dash-header {
+        text-align: center;
+        margin-bottom: 3rem;
     }
-    .icon-circle {
-        height: 70px;
-        width: 70px;
-        border-radius: 50%;
+
+    .dash-logo {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #4e73df, #224abe);
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background: rgba(255,255,255,0.2);
+        font-size: 26px;
+        color: #fff;
+        margin-bottom: 1rem;
+        box-shadow: 0 8px 24px rgba(78, 115, 223, 0.3);
     }
-    
-    /* Colores Personalizados */
-    .card-blue { background: linear-gradient(45deg, #4e73df, #224abe); }
-    .card-cyan { background: linear-gradient(45deg, #36b9cc, #258391); }
-    .card-orange { background: linear-gradient(45deg, #fd7e14, #d96101); }
-    .card-green { background: linear-gradient(45deg, #1cc88a, #13855c); }
-    .card-dark { background: linear-gradient(45deg, #5a5c69, #373840); }
-    .card-indigo { background: linear-gradient(45deg, #6610f2, #4e08bd); }
-    .card-yellow { background: linear-gradient(45deg, #f6c23e, #dda20a); }
-    .card-purple { background: linear-gradient(45deg, #6f42c1, #563d7c); }
-    .card-teal { background: linear-gradient(45deg, #20c997, #17a2b8); }
-    .card-red { background: linear-gradient(45deg, #e74a3b, #be2617); }
-    .card-brown { background: linear-gradient(45deg, #858796, #60616f); }
-    .card-pink { background: linear-gradient(45deg, #e83e8c, #c51162); }
-    .card-primary { background: linear-gradient(45deg, #007bff, #0056b3); }
 
-    .card-yellow .icon-circle { background: rgba(0,0,0,0.1); }
+    .dash-header h1 {
+        font-size: 2.8rem; /* tenia 2rem */
+        font-weight: 700;
+        color: #1a1d2e;
+        margin: 0 0 6px;
+        letter-spacing: -0.5px;
+    }
+
+    .brand-accent {
+        color: #4e73df;
+    }
+
+    .dash-header p {
+        font-size: 18px; /* tenia 14*/
+        color: #6c757d;
+        margin: 0;
+    }
+
+    /* ─── Section Label ─────────────────────────────── */
+    .section-block {
+        margin-bottom: 2.5rem;
+    }
+
+    .section-label {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #9399a6;
+        margin-bottom: 1.25rem;
+    }
+
+    .section-line {
+        flex: 1;
+        height: 1px;
+        background: #e2e6f0;
+    }
+
+    /* ─── Card Grid ─────────────────────────────────── */
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 18px;
+       /* grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 14px; */
+    }
+
+    /* ─── Module Card ───────────────────────────────── */
+    .mod-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #eaecf4;
+        padding: 2rem 1rem 1.5rem;
+       /* padding: 1.4rem 0.75rem 1rem; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px; /* tenia 10*/
+        cursor: pointer;
+        text-decoration: none !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .mod-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.09);
+        border-color: #d0d5e8;
+        text-decoration: none !important;
+    }
+
+    .mod-card:active {
+        transform: translateY(-1px);
+    }
+
+    /* ─── Icon Wrappers ─────────────────────────────── */
+    .icon-wrap {
+        width: 68px; /* tenia 52*/
+        height: 68px; /* tenia 52*/
+        border-radius: 18px; /* tenia 14*/
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px; /* tenia 22*/
+        flex-shrink: 0;
+    }
+
+    .icon-wrap i {
+        color: inherit !important;
+        font-size: inherit !important;
+        line-height: 1;
+        display: block;
+    }
+
+    /* ─── Label ─────────────────────────────────────── */
+    .mod-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #2d3748;
+        text-align: center;
+        line-height: 1.4;
+    }
+
+    /* ─── Accent Bar ────────────────────────────────── */
+    .accent-bar {
+        width: 28px;
+        height: 3px;
+        border-radius: 2px;
+        margin-top: 2px;
+    }
+
+    /* ─── Icon Color Themes ─────────────────────────── */
+    .ic-blue   { background: #e8effe; color: #3a5bc7; }
+    .ic-cyan   { background: #dff6f0; color: #0d7a61; }
+    .ic-orange { background: #fdeee7; color: #c24a1a; }
+    .ic-green  { background: #e8f5e1; color: #3a7015; }
+    .ic-dark   { background: #ebebed; color: #4a4b56; }
+    .ic-indigo { background: #eeecfd; color: #4a3fad; }
+    .ic-yellow { background: #fdf3e0; color: #9c680a; }
+    .ic-purple { background: #f0ecfa; color: #5d3ea8; }
+    .ic-teal   { background: #dff5f0; color: #0d7a6a; }
+    .ic-red    { background: #fde8e8; color: #b02929; }
+    .ic-gray   { background: #ebebed; color: #5a5b66; }
+    .ic-pink   { background: #fce8f2; color: #a02c67; }
+    .ic-sapph  { background: #e6effe; color: #1251a0; }
+
+    /* ─── Accent Bar Colors ─────────────────────────── */
+    .ab-blue   { background: #4e73df; }
+    .ab-cyan   { background: #1aab85; }
+    .ab-orange { background: #e0622a; }
+    .ab-green  { background: #5a9e20; }
+    .ab-dark   { background: #7c7d8a; }
+    .ab-indigo { background: #5e50c8; }
+    .ab-yellow { background: #d48b12; }
+    .ab-purple { background: #7b52c8; }
+    .ab-teal   { background: #17a98e; }
+    .ab-red    { background: #d63b3b; }
+    .ab-gray   { background: #7c7d8a; }
+    .ab-pink   { background: #c2387c; }
+    .ab-sapph  { background: #1a65c0; }
+
+    /* ─── Responsive ────────────────────────────────── */
+    @@media (max-width: 576px) {
+        .dashboard-root {
+            padding: 1.5rem 1rem 2rem;
+        }
+        .card-grid {
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+    }
 </style>
