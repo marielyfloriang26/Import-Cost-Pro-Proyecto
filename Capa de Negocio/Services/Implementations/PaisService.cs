@@ -57,7 +57,7 @@ namespace Capa_de_Negocio.Servicios
             if (isoFormateado.Length < 2 || isoFormateado.Length > 3)
                 throw new BusinessException("El código ISO debe tener entre 2 y 3 caracteres.");
 
-            // No permitir duplicados. Usamos FindAsync del repositorio genérico
+            // No permitir duplicados, Usamos FindAsync del repositorio genérico
             var existente = await _paisRepository.FindAsync(p => p.CodigoIso == isoFormateado);
             if (existente.Any())
                 throw new BusinessException("Ya existe un país registrado con este código ISO.");
@@ -90,7 +90,7 @@ namespace Capa_de_Negocio.Servicios
             if (isoFormateado.Length < 2 || isoFormateado.Length > 3)
                 throw new BusinessException("El código ISO debe tener entre 2 y 3 caracteres.");
 
-            // Validar que no pertenezca a OTRO país
+            // Validar que no pertenezca a otro país
             var duplicado = await _paisRepository.FindAsync(p => p.CodigoIso == isoFormateado && p.Id != paisDto.Id);
             if (duplicado.Any())
                 throw new BusinessException("Ya existe un país registrado con este código ISO.");
@@ -108,7 +108,7 @@ namespace Capa_de_Negocio.Servicios
             var pais = await _paisRepository.GetByIdAsync(id);
             if (pais == null) return;
 
-            // AQUÍ USA EL MÉTODO DE TU INTERFAZ DE DATOS (Por eso no se borra)
+            // aqui se utiliza el metodo de la interfaz de datos
             bool estaEnUso = await _paisRepository.RelacionesActivasAsync(id);
             if (estaEnUso)
             {

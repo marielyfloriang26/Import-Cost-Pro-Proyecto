@@ -12,7 +12,7 @@ namespace Capa_de_Negocio.Interfaces
         Task EditarProductoEnOrdenAsync(ProductoOrdenDto dto);
         Task EliminarProductoDeOrdenAsync(int id);
         
-        // NUEVO MÉTODO: Para alimentar el Select del formulario sin usar repositorios en la Web
+        // Para alimentar el Select del formulario sin usar repositorios en la Web
         Task<IEnumerable<ProductoOrdenDto>> ObtenerProductosActivosAsync();
     }
 }

@@ -10,7 +10,7 @@ namespace Capa_de_Negocio.Interfaces
         Task EditarAsync(MonedaDto monedaDto);
         Task EliminarAsync(int id);
         
-        // Para llenar los dropdowns en Proveedores, Órdenes, etc.
+        // Para llenar los dropdowns en proveedores, ordenes, etc.
         Task<IEnumerable<MonedaDto>> ObtenerActivasAsync();
     }
 }

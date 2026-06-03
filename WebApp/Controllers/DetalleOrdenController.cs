@@ -18,13 +18,13 @@ namespace WebApp.Controllers
             _productoOrdenService = productoOrdenService;
         }
 
-        // GET: DetalleOrden/Index/5 -> Redirigir siempre al detalle consolidado
+        // GET: DetalleOrden/Index/id
         public IActionResult Index(int id)
         {
             return RedirectToAction("Details", "OrdenImportacion", new { id = id });
         }
 
-        // GET: DetalleOrden/AgregarProducto?ordenId=5
+        // GET: DetalleOrden/AgregarProducto?ordenId=id
         public async Task<IActionResult> AgregarProducto(int ordenId)
         {
             var productosActivos = await _productoOrdenService.ObtenerProductosActivosAsync();
@@ -66,7 +66,7 @@ namespace WebApp.Controllers
             }
         }
 
-        // GET: DetalleOrden/EditarProducto/5
+        // GET: DetalleOrden/EditarProducto/id
         public async Task<IActionResult> EditarProducto(int id)
         {
             var dto = await _productoOrdenService.ObtenerPorIdAsync(id);
@@ -114,7 +114,7 @@ namespace WebApp.Controllers
             }
         }
 
-        // GET: DetalleOrden/EliminarProducto/5
+        // GET: DetalleOrden/EliminarProducto/id
         public async Task<IActionResult> EliminarProducto(int id)
         {
             var dto = await _productoOrdenService.ObtenerPorIdAsync(id);

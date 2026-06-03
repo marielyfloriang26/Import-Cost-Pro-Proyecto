@@ -86,7 +86,7 @@ namespace Capa_de_Negocio.Servicios
                     MargenGananciaDeseado = d.MargenDeseado
                 };
 
-                // REGLAS MATEMÁTICAS DEL PDF
+                
                 if (d.Producto != null)
                 {
                     productDto.PesoTotal = d.Cantidad * d.Producto.PesoUnitario;
@@ -105,7 +105,7 @@ namespace Capa_de_Negocio.Servicios
                 resumen.Productos.Add(productDto);
             }
 
-            // SUMATORIAS FINALES EXIGIDAS EN EL RESUMEN FOB
+            // sumatorias para el FOB
             resumen.CantidadTotalProductos = resumen.Productos.Sum(p => p.Cantidad);
             resumen.FobTotalOrden = resumen.Productos.Sum(p => p.FobTotal);
             resumen.PesoTotalOrden = resumen.Productos.Sum(p => p.PesoTotal);
@@ -134,18 +134,16 @@ namespace Capa_de_Negocio.Servicios
             };
         }
 
-        public async Task TangentCrearAsync() {} // Control de trazabilidad interno
-
         public async Task AgregarProductoAOrdenAsync(ProductoOrdenDto dto)
         {
             var orden = await _ordenRepository.GetByIdAsync(dto.OrdenImportacionId);
             if (orden == null) throw new BusinessException("La orden de importación no existe.");
 
-            // REGLA DEL PDF: Solo se pueden agregar productos a órdenes en estado Abierta
+            // Solo se pueden agregar productos a órdenes en estado Abierta
             if (orden.EstadoOrden != EstadoOrden.Abierta)
                 throw new BusinessException($"No se pueden añadir productos a la orden porque se encuentra en estado: {orden.EstadoOrden}.");
 
-            // REGLA DEL PDF: No se puede agregar el mismo producto dos veces a una misma orden
+            // No se puede agregar el mismo producto dos veces a una misma orden
             bool existe = await _productoOrdenRepository.ExisteProductoEnOrdenAsync(dto.OrdenImportacionId, dto.ProductoId);
             if (existe)
                 throw new BusinessException("Este producto ya fue agregado a la orden. Si desea modificar la cantidad, precio o margen, debe editar el producto ya agregado.");
@@ -153,7 +151,7 @@ namespace Capa_de_Negocio.Servicios
             var producto = await _productoRepository.GetByIdAsync(dto.ProductoId);
             if (producto == null) throw new BusinessException("El producto seleccionado no existe.");
 
-            // REGLA DEL PDF: Solo se deben mostrar y permitir productos activos
+            // Solo se deben mostrar y permitir productos activos
             if (!producto.Estado)
                 throw new BusinessException("El producto seleccionado no se puede agregar porque está inactivo.");
 
@@ -180,7 +178,7 @@ namespace Capa_de_Negocio.Servicios
             var orden = await _ordenRepository.GetByIdAsync(dRealPhysical.OrdenId);
             if (orden == null) throw new BusinessException("La orden de importación no existe.");
 
-            // REGLA DEL PDF: Bloqueo estricto por estados
+            // Bloqueo estricto por estados
             if (orden.EstadoOrden == EstadoOrden.Calculada || orden.EstadoOrden == EstadoOrden.Cerrada || orden.EstadoOrden == EstadoOrden.Cancelada)
                 throw new BusinessException($"No se puede editar este producto porque la orden ya fue {orden.EstadoOrden}.");
 
@@ -202,7 +200,7 @@ namespace Capa_de_Negocio.Servicios
             var orden = await _ordenRepository.GetByIdAsync(dRealPhysical.OrdenId);
             if (orden == null) throw new BusinessException("La orden de importación no existe.");
 
-            // REGLA DEL PDF: Bloqueo de eliminación por estados
+            // Bloqueo de eliminación por estados
             if (orden.EstadoOrden == EstadoOrden.Calculada || orden.EstadoOrden == EstadoOrden.Cerrada || orden.EstadoOrden == EstadoOrden.Cancelada)
                 throw new BusinessException($"No se puede eliminar este producto porque la orden ya fue {orden.EstadoOrden}.");
 

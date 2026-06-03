@@ -52,7 +52,7 @@ namespace Capa_de_Negocio.Servicios
 
         public async Task<IEnumerable<MonedaDto>> ObtenerActivasAsync()
         {
-            // Monedas activas para los nuevos formularios de los compañeros
+            // Monedas activas para los nuevos formularios
             var monedasActivas = await _monedaRepository.FindAsync(m => m.Estado == true);
             return monedasActivas.Select(m => new MonedaDto
             {
@@ -67,7 +67,7 @@ namespace Capa_de_Negocio.Servicios
 
         public async Task CrearAsync(MonedaDto monedaDto)
         {
-            // Validaciones básicas de campos requeridos
+            // Validaciones de campos requeridos
             if (string.IsNullOrWhiteSpace(monedaDto.Nombre))
                 throw new BusinessException("El nombre de la moneda es requerido.");
 
@@ -132,7 +132,7 @@ namespace Capa_de_Negocio.Servicios
             if (duplicadoIso.Any())
                 throw new BusinessException("Ya existe una moneda registrada con este código ISO.");
 
-            // Si el código ISO cambia, verificar si ya se usó en otros módulos para congelarlo
+            // Si el codigo iso cambia, verificar si ya se uso en otros modulos
             if (monedaExistente.CodigoIso != isoFormateado)
             {
                 bool estaEnUso = await _monedaRepository.RelacionesActivasAsync(monedaDto.Id);
@@ -150,7 +150,7 @@ namespace Capa_de_Negocio.Servicios
                     throw new BusinessException("Ya existe una moneda configurada como moneda local. Solo puede existir una moneda local en el sistema.");
             }
 
-            // No permitir inactivar la moneda local si tiene históricos vinculados
+            // No permitir inactivar la moneda local si tiene historicos enlazados
             if (monedaExistente.EsMonedaLocal && !monedaDto.Estado)
             {
                 bool estaEnUso = await _monedaRepository.RelacionesActivasAsync(monedaDto.Id);
@@ -175,7 +175,7 @@ namespace Capa_de_Negocio.Servicios
             var moneda = await _monedaRepository.GetByIdAsync(id);
             if (moneda == null) return;
 
-            // Prohibido eliminar la moneda si está configurada como la Moneda Local
+            // no se puede eliminar la moneda si esta configurada como la Moneda Local
             if (moneda.EsMonedaLocal)
             {
                 throw new BusinessException("No se puede eliminar la moneda local del sistema.");
